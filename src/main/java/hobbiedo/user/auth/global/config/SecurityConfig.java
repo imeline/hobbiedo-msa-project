@@ -18,6 +18,10 @@ public class SecurityConfig {
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.formLogin(AbstractHttpConfigurer::disable);
 
+		http
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/login").permitAll()
+				.anyRequest().authenticated());
 
 		return http.build();
 	}
