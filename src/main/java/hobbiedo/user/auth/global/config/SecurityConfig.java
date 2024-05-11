@@ -54,7 +54,8 @@ public class SecurityConfig {
 
 		/* CORS 설정 */
 		http
-			.cors(cors -> cors.configurationSource(getCorsConfigurationSource()));
+			.cors(cors ->
+				cors.configurationSource(getCorsConfigurationSource()));
 
 		return http.build();
 	}
