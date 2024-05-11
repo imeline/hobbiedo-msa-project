@@ -44,7 +44,7 @@ public class SecurityConfig {
 
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("**/*login").permitAll()
+				.requestMatchers("**/*login", "**/*sign-up").permitAll()
 				.anyRequest().authenticated());
 
 		/* JWT 토큰 방식을 위해 Session 방식 차단 */
