@@ -53,28 +53,23 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(AbstractHttpConfigurer::disable)
-			.httpBasic(AbstractHttpConfigurer::disable)
-			.formLogin(AbstractHttpConfigurer::disable);
+				.csrf(AbstractHttpConfigurer::disable)
+				.httpBasic(AbstractHttpConfigurer::disable)
+				.formLogin(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/login/**", "/sign-up/**").permitAll()
+						.anyRequest().authenticated())
 
-		http
-			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/login/**", "/sign-up/**").permitAll()
-				.anyRequest().authenticated());
+				/* JWT 토큰 방식을 위해 Session 방식 차단 */
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-		/* JWT 토큰 방식을 위해 Session 방식 차단 */
-		http
-			.sessionManagement(session -> session
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-		/* 만들어둔 커스텀 필터 등록 */
-		http
-			.addFilterAt(new LoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
-
-		/* CORS 설정 */
-		http
-			.cors(cors ->
-				cors.configurationSource(getCorsConfigurationSource()));
+				/* 만들어둔 커스텀 필터 등록 */
+				.addFilterAt(new LoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+				
+				/* CORS 설정 */
+				.cors(cors ->
+						cors.configurationSource(getCorsConfigurationSource()));
 
 		return http.build();
 	}
