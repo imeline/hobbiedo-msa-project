@@ -1,4 +1,4 @@
-package hobbiedo.user.auth.global.config.jwt;
+package hobbiedo.user.auth.user.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import hobbiedo.user.auth.user.dto.request.LoginRequestDTO;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UserDetail implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 	private final LoginRequestDTO loginDTO;
 
 	@Override
