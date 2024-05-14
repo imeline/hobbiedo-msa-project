@@ -5,14 +5,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import hobbiedo.user.auth.global.config.jwt.UserDetail;
+import hobbiedo.user.auth.user.domain.CustomUserDetails;
 import hobbiedo.user.auth.user.dto.request.LoginRequestDTO;
 import hobbiedo.user.auth.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailService implements UserDetailsService {
+public class CustomUserDetailService implements UserDetailsService {
 	private final UserRepository userRepository;
 
 	@Override
@@ -24,6 +24,6 @@ public class UserDetailService implements UserDetailsService {
 		if (user == null) {
 			return null;
 		}
-		return new UserDetail(user);
+		return new CustomUserDetails(user);
 	}
 }
