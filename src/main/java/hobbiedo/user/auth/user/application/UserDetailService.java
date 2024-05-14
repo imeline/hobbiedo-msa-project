@@ -1,0 +1,29 @@
+package hobbiedo.user.auth.user.application;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import hobbiedo.user.auth.global.config.jwt.UserDetail;
+import hobbiedo.user.auth.user.dto.request.LoginRequestDTO;
+import hobbiedo.user.auth.user.infrastructure.UserRepository;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class UserDetailService implements UserDetailsService {
+	private final UserRepository userRepository;
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		System.out.println(username);
+		LoginRequestDTO user = userRepository
+			.findUserByUsername(username)
+			.orElse(null);
+		if (user == null) {
+			return null;
+		}
+		return new UserDetail(user);
+	}
+}
