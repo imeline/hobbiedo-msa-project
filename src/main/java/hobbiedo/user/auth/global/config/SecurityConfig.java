@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import hobbiedo.user.auth.global.config.jwt.JwtUtil;
 import hobbiedo.user.auth.global.config.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ public class SecurityConfig {
 	private static String FRONT_URL;
 
 	private final AuthenticationConfiguration authenticationConfiguration;
+	private final JwtUtil jwtUtil;
 
 	private static CorsConfigurationSource getCorsConfigurationSource() {
 		return request -> {
@@ -65,8 +67,10 @@ public class SecurityConfig {
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
 				/* 만들어둔 커스텀 필터 등록 */
-				.addFilterAt(new LoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-				
+				.addFilterAt(
+						new LoginFilter(authenticationManager(), jwtUtil),
+						UsernamePasswordAuthenticationFilter.class)
+
 				/* CORS 설정 */
 				.cors(cors ->
 						cors.configurationSource(getCorsConfigurationSource()));
