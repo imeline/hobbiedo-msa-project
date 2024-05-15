@@ -16,8 +16,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ApiResponse<T> {
 
-	private static final String DEFAULT_SUCCESS_MESSAGE = "메시지 수신 성공";
-
 	@JsonProperty("isSuccess")
 	private final Boolean isSuccess;
 	private final String status;
@@ -26,11 +24,11 @@ public class ApiResponse<T> {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T data;
 
-	public static <T> ApiResponse<T> onSuccess(T data) {
+	public static <T> ApiResponse<T> onSuccess(String message, T data) {
 		return new ApiResponse<>(
 				true,
 				String.valueOf(HttpStatus.OK.value()),
-				DEFAULT_SUCCESS_MESSAGE, data);
+				message, data);
 	}
 
 	public static <T> ApiResponse<T> of(BaseCode code, T data) {
