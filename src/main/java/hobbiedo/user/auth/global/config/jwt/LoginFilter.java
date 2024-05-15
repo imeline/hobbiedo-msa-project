@@ -1,14 +1,19 @@
 package hobbiedo.user.auth.global.config.jwt;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import hobbiedo.user.auth.global.api.ApiResponse;
+import hobbiedo.user.auth.global.api.code.status.ErrorStatus;
 import hobbiedo.user.auth.user.domain.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -54,13 +59,30 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		String jwtToken = jwtUtil.createJwt(uuid, role, 60 * 60 * 10L);
 		response.addHeader("Authorization", "Bearer " + jwtToken);
-
 	}
 
 	/* 로그인 실패시 실행됨 */
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
-		response.setStatus(HttpStatus.BAD_REQUEST.value());
+		PrintWriter writer = response.getWriter();
+		ErrorStatus loginException = ErrorStatus.USER_LOGIN_FAIL_EXCEPTION;
+
+		response.setStatus(loginException.getHttpStatus().value());
+		response.setContentType("application/json; charset=UTF-8");
+
+		writer.write(toJson(ErrorStatus.USER_LOGIN_FAIL_EXCEPTION));
+		writer.flush();
+		writer.close();
+	}
+
+	private String toJson(ErrorStatus error) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		ApiResponse<Object> response = ApiResponse.onFailure(
+				ErrorStatus.USER_LOGIN_FAIL_EXCEPTION.getStatus(),
+				ErrorStatus.USER_LOGIN_FAIL_EXCEPTION.getMessage(),
+				null);
+
+		return objectMapper.writeValueAsString(response);
 	}
 }

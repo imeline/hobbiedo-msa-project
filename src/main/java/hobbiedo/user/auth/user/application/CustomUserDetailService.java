@@ -22,9 +22,6 @@ public class CustomUserDetailService implements UserDetailsService {
 				.findUserByUuid(username)
 				.orElse(null);
 
-		if (user == null) {
-			return null;
-		}
 		return new CustomUserDetails(user);
 	}
 }

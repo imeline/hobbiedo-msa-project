@@ -23,6 +23,9 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
+		if (loginDTO == null) {
+			return null;
+		}
 		return loginDTO.getPassword();
 	}
 

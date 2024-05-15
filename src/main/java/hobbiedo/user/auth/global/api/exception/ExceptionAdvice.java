@@ -26,15 +26,15 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 	 * @return DB 테이블 유효성 대한 검증 에러 응답 처리
 	 */
 	@ExceptionHandler
-	public ResponseEntity<Object> dbValidationException(ConstraintViolationException e, WebRequest request) {
-		String errorMessage = e.getConstraintViolations()
+	public ResponseEntity<Object> dbValidationException(ConstraintViolationException ex, WebRequest request) {
+		String errorMessage = ex.getConstraintViolations()
 				.stream()
 				.map(ConstraintViolation::getMessage)
 				.findFirst()
 				.orElseThrow(() -> new RuntimeException("ConstrainViolation 추출 오류 발생"));
 
 		return handleExceptionInternalConstraint(
-				e,
+				ex,
 				errorMessage,
 				HttpHeaders.EMPTY,
 				request);
@@ -70,7 +70,6 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 	/**
 	 * @return @Valid 검증에 대한 에러 응답 처리
 	 */
-
 	private ResponseEntity<Object> handleExceptionInternalConstraint(
 			Exception ex, String errorMessage, HttpHeaders headers, WebRequest request) {
 
@@ -82,10 +81,10 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 		return toResponseEntity(ex, headers, request, ErrorStatus.VALID_EXCEPTION.getHttpStatus(), body);
 	}
 
-	private ResponseEntity<Object> toResponseEntity(Exception e, HttpHeaders headers, WebRequest request,
+	private ResponseEntity<Object> toResponseEntity(Exception ex, HttpHeaders headers, WebRequest request,
 			HttpStatus httpStatus, ApiResponse<Object> body) {
 		return super.handleExceptionInternal(
-				e,
+				ex,
 				body,
 				headers,
 				httpStatus,

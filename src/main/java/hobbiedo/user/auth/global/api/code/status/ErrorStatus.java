@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
 	VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "GLOBAL400", "데이터베이스 유효성 에러"),
-	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다");
+
+	USER_LOGIN_FAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "USER401", "아이디 혹은 비밀번호가 일치하지 않습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
