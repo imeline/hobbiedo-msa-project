@@ -26,9 +26,10 @@ public class CustomUserDetails implements UserDetails {
 		return loginDTO.getPassword();
 	}
 
+	/* 여기서 말하는 username == uuid */
 	@Override
 	public String getUsername() {
-		return loginDTO.getUsername();
+		return loginDTO.getUuid();
 	}
 
 	@Override

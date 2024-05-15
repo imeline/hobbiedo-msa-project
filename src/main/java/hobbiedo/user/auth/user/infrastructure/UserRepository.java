@@ -10,5 +10,5 @@ import hobbiedo.user.auth.user.dto.request.LoginRequestDTO;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<LoginRequestDTO> findUserByUsername(String username);
+	Optional<LoginRequestDTO> findUserByUuid(String uuid);
 }

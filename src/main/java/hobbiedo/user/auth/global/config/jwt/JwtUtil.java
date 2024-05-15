@@ -28,12 +28,12 @@ public class JwtUtil {
 		secretKey = new SecretKeySpec(raw.getBytes(StandardCharsets.UTF_8), signature);
 	}
 
-	public String getUsername(String token) {
+	public String getUuid(String token) {
 
 		return getJwtParser()
 				.parseSignedClaims(token)
 				.getPayload()
-				.get("username", String.class);
+				.get("uuid", String.class);
 	}
 
 	public Boolean isExpired(String token) {
@@ -45,11 +45,11 @@ public class JwtUtil {
 				.before(new Date());
 	}
 
-	public String createJwt(String username, String role, Long expiredMs) {
+	public String createJwt(String uuid, String role, Long expiredMs) {
 
 		return Jwts
 				.builder()
-				.claim("username", username)
+				.claim("uuid", uuid)
 				.claim("role", role)
 				.issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + expiredMs))

@@ -19,7 +19,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		LoginRequestDTO user = userRepository
-				.findUserByUsername(username)
+				.findUserByUuid(username)
 				.orElse(null);
 
 		if (user == null) {
