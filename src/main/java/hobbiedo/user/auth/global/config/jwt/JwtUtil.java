@@ -17,15 +17,14 @@ public class JwtUtil {
 
 	private final SecretKey secretKey;
 
-	public JwtUtil(
-			@Value("${spring.jwt.secret-key}") String raw) {
+	public JwtUtil(@Value("${spring.jwt.secret-key}") String secret) {
 		String signature = Jwts.SIG
 				.HS256
 				.key()
 				.build()
 				.getAlgorithm();
 
-		secretKey = new SecretKeySpec(raw.getBytes(StandardCharsets.UTF_8), signature);
+		secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), signature);
 	}
 
 	public String getUuid(String token) {
@@ -45,16 +44,17 @@ public class JwtUtil {
 				.before(new Date());
 	}
 
-	public String createJwt(String uuid, String role, Long expiredMs) {
+	public String createJwt(String uuid, Long expiredMs) {
 
-		return Jwts
+		String jwtToken = Jwts
 				.builder()
 				.claim("uuid", uuid)
-				.claim("role", role)
 				.issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + expiredMs))
 				.signWith(secretKey)
 				.compact();
+		
+		return "Bearer " + jwtToken;
 	}
 
 	private JwtParser getJwtParser() {

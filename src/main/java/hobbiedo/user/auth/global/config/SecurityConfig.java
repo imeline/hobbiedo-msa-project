@@ -14,12 +14,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import hobbiedo.user.auth.global.config.jwt.JwtUtil;
-import hobbiedo.user.auth.global.config.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -59,7 +57,7 @@ public class SecurityConfig {
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.formLogin(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/login/**", "/sign-up/**").permitAll()
+						.requestMatchers("v1/login/**", "/sign-up/**").permitAll()
 						.anyRequest().authenticated())
 
 				/* JWT 토큰 방식을 위해 Session 방식 차단 */
@@ -67,9 +65,9 @@ public class SecurityConfig {
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
 				/* 만들어둔 커스텀 필터 등록 */
-				.addFilterAt(
-						new LoginFilter(authenticationManager(), jwtUtil),
-						UsernamePasswordAuthenticationFilter.class)
+				// .addFilterAt(
+				// 		new LoginFilter(authenticationManager(), jwtUtil),
+				// 		UsernamePasswordAuthenticationFilter.class)
 
 				/* CORS 설정 */
 				.cors(cors ->
