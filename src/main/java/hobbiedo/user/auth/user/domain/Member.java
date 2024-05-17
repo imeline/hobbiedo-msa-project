@@ -10,11 +10,11 @@ import lombok.ToString;
 @Entity
 @Getter
 @ToString
-public class User {
+public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String username;
-	private String password;
+	private String loginId;
 	private String uuid;
+	private String password;
 }

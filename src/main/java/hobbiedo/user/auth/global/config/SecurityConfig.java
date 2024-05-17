@@ -64,11 +64,6 @@ public class SecurityConfig {
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-				/* 만들어둔 커스텀 필터 등록 */
-				// .addFilterAt(
-				// 		new LoginFilter(authenticationManager(), jwtUtil),
-				// 		UsernamePasswordAuthenticationFilter.class)
-
 				/* CORS 설정 */
 				.cors(cors ->
 						cors.configurationSource(getCorsConfigurationSource()));

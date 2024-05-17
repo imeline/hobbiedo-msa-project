@@ -17,6 +17,9 @@ public class JwtUtil {
 
 	private final SecretKey secretKey;
 
+	@Value("${spring.jwt.access-expire-time}")
+	private Long accessExpireTime;
+
 	public JwtUtil(@Value("${spring.jwt.secret-key}") String secret) {
 		String signature = Jwts.SIG
 				.HS256
@@ -44,16 +47,15 @@ public class JwtUtil {
 				.before(new Date());
 	}
 
-	public String createJwt(String uuid, Long expiredMs) {
+	public String createJwt(String uuid) {
 
 		String jwtToken = Jwts
 				.builder()
 				.claim("uuid", uuid)
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + expiredMs))
+				.expiration(new Date(System.currentTimeMillis() + accessExpireTime))
 				.signWith(secretKey)
 				.compact();
-		
 		return "Bearer " + jwtToken;
 	}
 

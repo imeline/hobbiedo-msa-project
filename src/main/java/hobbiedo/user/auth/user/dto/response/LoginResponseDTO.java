@@ -1,13 +1,14 @@
 package hobbiedo.user.auth.user.dto.response;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginResponseDTO {
-	private final String token;
+	private final String uuid;
+	private final String password;
+
+	public LoginResponseDTO(String uuid, String password) {
+		this.uuid = uuid;
+		this.password = password;
+	}
 }
