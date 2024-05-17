@@ -13,6 +13,7 @@ spring:
     front-url: https://hobbie-do.site
   jwt:
     secret-key: thisIsTestKeyWillBeChangeSoonCommingSoon
+    access-expire-time: 60000
 
 springdoc:
   packages-to-scan: hobbiedo.user.auth

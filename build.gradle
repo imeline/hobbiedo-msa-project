@@ -13,9 +13,8 @@ checkstyle {
     sourceSets = [sourceSets.main]
 }
 
-
 checkstyleMain {
-    source = fileTree('src/main/java')
+    source = fileTree('/src/main/java')
 }
 
 group = 'hobbiedo'
@@ -47,7 +46,7 @@ dependencies {
 
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
