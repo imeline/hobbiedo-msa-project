@@ -16,7 +16,7 @@ public class SwaggerConfig {
 	private static final String BEARER_FORMAT = "JWT";
 
 	@Bean
-	public OpenAPI openAPI() {
+	public OpenAPI openApi() {
 		return new OpenAPI()
 				.components(new Components())
 				.addSecurityItem(new SecurityRequirement().addList(BEARER_TOKEN))
