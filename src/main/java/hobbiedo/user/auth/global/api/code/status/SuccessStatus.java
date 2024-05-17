@@ -10,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SuccessStatus implements BaseCode {
-	USER_INTEGRATED_LOGIN_SUCCESS(HttpStatus.OK, "USER201", "통합 로그인에 성공했습니다."),
-	EXAMPLE_EXCEPTION(HttpStatus.OK, "EXAMPLE200", "샘플 성공 메시지입니다.");
-
+	USER_INTEGRATED_LOGIN_SUCCESS(HttpStatus.OK, "200", "통합 로그인에 성공했습니다.");
 	private final HttpStatus httpStatus;
 	private final String status;
 	private final String message;
