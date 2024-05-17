@@ -57,7 +57,11 @@ public class SecurityConfig {
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.formLogin(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("v1/login/**", "/sign-up/**").permitAll()
+						.requestMatchers("/login/**", "/sign-up/**").permitAll()
+						.requestMatchers(
+								"/swagger-ui/**",
+								"/swagger-resources/**",
+								"/api-docs/**").permitAll()
 						.anyRequest().authenticated())
 
 				/* JWT 토큰 방식을 위해 Session 방식 차단 */
