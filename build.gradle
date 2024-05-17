@@ -10,7 +10,14 @@ checkstyle {
     configFile = rootProject.file("${rootDir}/naver-checkstyle-rules.xml")
     configProperties = ["suppressionFile": "${rootDir}/naver-checkstyle-suppressions.xml"]
     toolVersion = '8.29' // checkstyle 버전 8.24 이상 선언
+    sourceSets = [sourceSets.main]
 }
+
+
+checkstyleMain {
+    source = fileTree('src/main/java')
+}
+
 group = 'hobbiedo'
 version = '0.0.1-SNAPSHOT'
 
