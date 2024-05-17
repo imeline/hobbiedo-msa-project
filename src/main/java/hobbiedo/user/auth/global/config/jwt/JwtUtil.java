@@ -16,7 +16,7 @@ import io.jsonwebtoken.Jwts;
 public class JwtUtil {
 
 	private final SecretKey secretKey;
-
+  
 	@Value("${spring.jwt.access-expire-time}")
 	private Long accessExpireTime;
 
@@ -26,7 +26,7 @@ public class JwtUtil {
 				.key()
 				.build()
 				.getAlgorithm();
-
+    
 		secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), signature);
 	}
 
@@ -46,7 +46,7 @@ public class JwtUtil {
 				.getExpiration()
 				.before(new Date());
 	}
-
+  
 	public String createJwt(String uuid) {
 
 		String jwtToken = Jwts
