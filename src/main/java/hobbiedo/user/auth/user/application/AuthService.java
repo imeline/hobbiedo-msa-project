@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import hobbiedo.user.auth.global.api.code.status.ErrorStatus;
 import hobbiedo.user.auth.global.api.exception.handler.MemberExceptionHandler;
 import hobbiedo.user.auth.global.config.jwt.JwtUtil;
+import hobbiedo.user.auth.user.domain.TokenType;
 import hobbiedo.user.auth.user.dto.response.LoginResponseDTO;
 import hobbiedo.user.auth.user.infrastructure.MeberRepository;
 import hobbiedo.user.auth.user.vo.request.LoginRequestVO;
@@ -22,11 +23,13 @@ public class AuthService {
 	public LoginResponseVO login(LoginRequestVO loginVO) {
 		LoginResponseDTO user = getUuidByLoginId(loginVO.getLoginId());
 		validatePassword(loginVO.getPassword(), user.getPassword());
-		String token = jwtUtil.createJwt(user.getUuid());
+		String accessToken = jwtUtil.createJwt(user.getUuid(), TokenType.ACCESS_TOKEN);
+		String refreshToken = jwtUtil.createJwt(user.getUuid(), TokenType.REFRESH_TOKEN);
 
 		return LoginResponseVO
 				.builder()
-				.token(token)
+				.accessToken(accessToken)
+				.refreshToken(refreshToken)
 				.build();
 	}
 

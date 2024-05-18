@@ -17,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import hobbiedo.user.auth.global.config.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -28,7 +27,6 @@ public class SecurityConfig {
 	private static String FRONT_URL;
 
 	private final AuthenticationConfiguration authenticationConfiguration;
-	private final JwtUtil jwtUtil;
 
 	private static CorsConfigurationSource getCorsConfigurationSource() {
 		return request -> {
@@ -46,7 +44,7 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public static BCryptPasswordEncoder passwordEncoder() {
+	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
@@ -57,12 +55,7 @@ public class SecurityConfig {
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.formLogin(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/login/**", "/sign-up/**").permitAll()
-						.requestMatchers(
-								"/swagger-ui/**",
-								"/swagger-resources/**",
-								"/api-docs/**").permitAll()
-						.anyRequest().authenticated())
+						.anyRequest().permitAll())
 
 				/* JWT 토큰 방식을 위해 Session 방식 차단 */
 				.sessionManagement(session -> session

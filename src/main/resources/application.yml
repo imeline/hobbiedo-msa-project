@@ -1,7 +1,7 @@
 spring:
   jpa:
     database: mysql
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: create
     show-sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,8 +11,6 @@ spring:
 
   hobbie-do:
     front-url: https://hobbie-do.site
-  jwt:
-    secret-key: thisIsTestKeyWillBeChangeSoonCommingSoon
 
 springdoc:
   packages-to-scan: hobbiedo.user.auth
@@ -30,3 +28,8 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+
+jwt:
+  secret-key: thisIsTestKeyWillBeChangeSoonCommingSoon
+  access-expire-time: 60000 #10분
+  refresh-expire-time: 86400000 #1일
