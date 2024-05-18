@@ -2,6 +2,7 @@ package hobbiedo.user.auth.user.application;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.user.auth.global.api.code.status.ErrorStatus;
 import hobbiedo.user.auth.global.api.exception.handler.MemberExceptionHandler;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
 	private final JwtUtil jwtUtil;
 	private final MeberRepository meberRepository;
