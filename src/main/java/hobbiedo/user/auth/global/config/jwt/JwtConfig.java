@@ -1,5 +1,7 @@
 package hobbiedo.user.auth.global.config.jwt;
 
+import static hobbiedo.user.auth.global.config.jwt.TokenType.*;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -11,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-import hobbiedo.user.auth.user.domain.TokenType;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ public class JwtConfig {
 		Long refreshExpireTime = Long.parseLong(
 				Objects.requireNonNull(environment.getProperty("jwt.refresh-expire-time")));
 
-		TokenType.ACCESS_TOKEN.setExpireTime(accessExpireTime);
-		TokenType.REFRESH_TOKEN.setExpireTime(refreshExpireTime);
+		ACCESS_TOKEN.setExpireTime(accessExpireTime);
+		REFRESH_TOKEN.setExpireTime(refreshExpireTime);
 	}
 
 	@Bean

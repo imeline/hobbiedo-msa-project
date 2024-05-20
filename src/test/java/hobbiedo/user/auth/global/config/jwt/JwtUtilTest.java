@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import hobbiedo.user.auth.user.domain.TokenType;
-
 @SpringBootTest
 class JwtUtilTest {
 	@Autowired

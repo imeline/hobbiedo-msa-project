@@ -6,7 +6,6 @@ import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Component;
 
-import hobbiedo.user.auth.user.domain.TokenType;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;

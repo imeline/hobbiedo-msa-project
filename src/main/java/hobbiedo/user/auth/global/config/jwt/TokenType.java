@@ -1,4 +1,4 @@
-package hobbiedo.user.auth.user.domain;
+package hobbiedo.user.auth.global.config.jwt;
 
 import java.util.Arrays;
 import java.util.Optional;

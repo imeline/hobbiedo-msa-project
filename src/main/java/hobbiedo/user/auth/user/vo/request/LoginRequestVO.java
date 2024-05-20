@@ -11,4 +11,5 @@ public class LoginRequestVO {
 	private final String loginId;
 	@NotBlank(message = "올바르지 않은 아이디입니다.")
 	private final String password;
+
 }
