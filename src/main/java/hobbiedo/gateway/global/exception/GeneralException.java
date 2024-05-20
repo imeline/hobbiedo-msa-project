@@ -8,13 +8,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class GeneralException extends RuntimeException {
-    private BaseErrorCode errorCode;
+	private BaseErrorCode errorCode;
 
-    public ErrorReasonDto getErrorReason() {
-        return errorCode.getReason();
-    }
+	public ErrorReasonDto getErrorReason() {
+		return errorCode.getReason();
+	}
 
-    public ErrorReasonDto getErrorReasonHttpStatus() {
-        return errorCode.getReasonHttpStatus();
-    }
+	public ErrorReasonDto getErrorReasonHttpStatus() {
+		return errorCode.getReasonHttpStatus();
+	}
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReasonDto {
-    private String code;
-    private HttpStatus httpStatus;
-    private String message;
+	private String code;
+	private HttpStatus httpStatus;
+	private String message;
 }
