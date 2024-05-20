@@ -13,9 +13,8 @@ checkstyle {
     sourceSets = [sourceSets.main]
 }
 
-
 checkstyleMain {
-    source = fileTree('src/main/java')
+    source = fileTree('/src/main/java')
 }
 
 group = 'hobbiedo'
