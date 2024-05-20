@@ -8,9 +8,12 @@ spring:
     url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul
     username: root
     password: 123
-
   hobbie-do:
     front-url: https://hobbie-do.site
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 springdoc:
   packages-to-scan: hobbiedo.user.auth
@@ -33,3 +36,5 @@ jwt:
   secret-key: thisIsTestKeyWillBeChangeSoonCommingSoon
   access-expire-time: 60000 #10분
   refresh-expire-time: 86400000 #1일
+server:
+  port: 0
