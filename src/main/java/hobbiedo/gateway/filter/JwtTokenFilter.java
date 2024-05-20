@@ -1,6 +1,5 @@
 package hobbiedo.gateway.filter;
 
-
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -33,12 +32,10 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.Config> {
 
-	private final Environment env;
-
-	public JwtTokenFilter(Environment env) {
+	public JwtTokenFilter() {
 		super(Config.class);
-		this.env = env;
 	}
+
 	@Value("${jwt.secret}")
 	private String secret;
 
@@ -56,19 +53,23 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 						new ExampleHandler(ErrorStatus.NOT_FOUND_TOKEN));
 			} // 헤더에 토큰이 있는지 없는지 확인하고 없으면 에러를 발생시킨다.
 
-			String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+			String authorizationHeader = request.getHeaders()
+					.get(HttpHeaders.AUTHORIZATION)
+					.get(0); // 헤더의 0번째 값인 토큰을 가져온다.
 
 			String jwt = authorizationHeader.replace("Bearer", ""); // 헤더에서 Bearer를 제거하고 토큰만 가져온다.
 
 			if (isJwtValid(jwt).equals("402")) {
 
 				return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED,
-						new ExampleHandler(ErrorStatus.INVALID_TOKEN)); // 토큰이 유효한지 확인하고 유효하지 않으면 에러를 발생시킨다.
+						new ExampleHandler(
+								ErrorStatus.INVALID_TOKEN)); // 토큰이 유효한지 확인하고 유효하지 않으면 에러를 발생시킨다.
 
 			} else if (isJwtValid(jwt).equals("403")) {
 
 				return onError(exchange, "JWT token is expired", HttpStatus.UNAUTHORIZED,
-						new ExampleHandler(ErrorStatus.EXPIRED_TOKEN)); // 토큰의 만료 여부를 확인하고 만료되었으면 에러를 발생시킨다.
+						new ExampleHandler(
+								ErrorStatus.EXPIRED_TOKEN)); // 토큰의 만료 여부를 확인하고 만료되었으면 에러를 발생시킨다.
 
 			}
 
@@ -106,16 +107,18 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 	}
 
 	// Mono 타입은 비동기로 작업을 처리할 때 사용하는 리액티브 타입
-	private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus, ExampleHandler handler) {
+	private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus,
+			ExampleHandler handler) {
 
 		ServerHttpResponse response = exchange.getResponse();
+
 		response.setStatusCode(httpStatus);
 
 		// ApiResponse 객체 생성
 		ApiResponse<String> apiResponse = ApiResponse.onFailure(
 				handler.getErrorCode().getReasonHttpStatus().getCode(),
 				handler.getErrorCode().getReasonHttpStatus().getMessage(),
-				null);
+				null); // 에러 메시지를 ApiResponse 객체로 생성
 
 		try {
 			// ApiResponse 객체를 JSON 문자열로 변환
@@ -125,7 +128,7 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 			// JSON 문자열을 바이트 배열로 변환
 			byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
 
-			// 바이트 배열을 DataBuffer로 변환
+			// 바이트 배열을 DataBuffer 로 변환
 			DataBuffer buffer = response.bufferFactory().wrap(bytes);
 
 			// HTTP 응답에 에러 메시지 설정
@@ -133,7 +136,7 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 			log.error(err);
 
-			return response.writeWith(Mono.just(buffer));
+			return response.writeWith(Mono.just(buffer)); // 에러 메시지 반환
 
 		} catch (JsonProcessingException e) { // JSON 변환 중 에러 발생 시
 
