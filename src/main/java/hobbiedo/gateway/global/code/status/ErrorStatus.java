@@ -15,10 +15,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
 	// 토큰이 없는 경우
 	NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "JWT401", "토큰이 없습니다"),
-	// 토큰이 만료된 경우
-	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "JWT401", "토큰이 만료되었습니다"),
 	// 토큰이 유효하지 않은 경우
-	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "JWT401", "토큰이 유효하지 않습니다");
+	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "JWT402", "토큰이 유효하지 않습니다"),
+	// 토큰이 만료된 경우
+	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "JWT403", "토큰이 만료되었습니다");
 
 	private final HttpStatus httpStatus;
 	private final String status;
