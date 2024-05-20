@@ -5,7 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.jdbc.Sql;
 
 import hobbiedo.user.auth.global.api.exception.handler.MemberExceptionHandler;
 import hobbiedo.user.auth.user.domain.RefreshToken;
@@ -15,7 +16,8 @@ import hobbiedo.user.auth.user.infrastructure.RefreshTokenRepository;
 import hobbiedo.user.auth.user.vo.response.LoginResponseVO;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@Profile("test")
+@Sql("/schema.sql")
 class AuthServiceTest {
 	@Autowired
 	private AuthService authService;
