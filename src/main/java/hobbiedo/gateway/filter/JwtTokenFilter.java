@@ -90,15 +90,16 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 					.parseClaimsJws(jwt)
 					.getBody()
 					.getSubject();
-		} catch (MalformedJwtException ex) {
+		} catch (MalformedJwtException | SignatureException ex) {
+
 			log.error("Error while parsing JWT: ", ex);
 			returnValue = "402";
-		} catch (SignatureException ex) {
-			log.error("Error while parsing JWT: ", ex);
-			returnValue = "402";
+
 		} catch (ExpiredJwtException ex) {
+
 			log.error("Error while parsing JWT: ", ex);
 			returnValue = "403";
+
 		}
 
 		return returnValue;
