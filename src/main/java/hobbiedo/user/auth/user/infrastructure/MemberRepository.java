@@ -11,7 +11,7 @@ import hobbiedo.user.auth.user.domain.Member;
 import hobbiedo.user.auth.user.dto.response.LoginResponseDTO;
 
 @Repository
-public interface MeberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 	@Query("SELECT new hobbiedo.user.auth.user.dto.response.LoginResponseDTO(u.uuid,u.password) "
 			+ "FROM Member u WHERE u.loginId = :loginId")
 	Optional<LoginResponseDTO> findByLoginId(@Param("loginId") String loginId);

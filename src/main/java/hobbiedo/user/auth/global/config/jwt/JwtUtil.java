@@ -1,36 +1,23 @@
 package hobbiedo.user.auth.global.config.jwt;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
-
+	public static final String TOKEN_PREFIX = "Bearer ";
 	private final SecretKey secretKey;
-	@Value("${spring.jwt.access-expire-time}")
-	private Long accessExpireTime;
-
-	public JwtUtil(@Value("${spring.jwt.secret-key}") String secret) {
-		String signature = Jwts.SIG
-				.HS256
-				.key()
-				.build()
-				.getAlgorithm();
-
-		secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), signature);
-	}
 
 	public String getUuid(String token) {
-
+		token = token.substring(TOKEN_PREFIX.length());
 		return getJwtParser()
 				.parseSignedClaims(token)
 				.getPayload()
@@ -38,7 +25,7 @@ public class JwtUtil {
 	}
 
 	public Boolean isExpired(String token) {
-
+		token = token.substring(TOKEN_PREFIX.length());
 		return getJwtParser()
 				.parseSignedClaims(token)
 				.getPayload()
@@ -46,20 +33,30 @@ public class JwtUtil {
 				.before(new Date());
 	}
 
-	public String createJwt(String uuid) {
+	public TokenType getTokenType(String token) {
+		token = token.substring(TOKEN_PREFIX.length());
+		String tokenType = getJwtParser()
+				.parseSignedClaims(token)
+				.getPayload()
+				.get("tokenType", String.class);
+		return TokenType
+				.getByName(tokenType)
+				.orElseThrow(RuntimeException::new);
+	}
 
+	public String createJwt(String uuid, TokenType tokenType) {
 		String jwtToken = Jwts
 				.builder()
+				.claim("tokenType", tokenType.getName())
 				.claim("uuid", uuid)
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + accessExpireTime))
+				.expiration(new Date(System.currentTimeMillis() + tokenType.getExpireTime()))
 				.signWith(secretKey)
 				.compact();
-		return "Bearer " + jwtToken;
+		return TOKEN_PREFIX + jwtToken;
 	}
 
 	private JwtParser getJwtParser() {
-
 		return Jwts
 				.parser()
 				.verifyWith(secretKey)
