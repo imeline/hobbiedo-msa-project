@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:test;MODE=MySQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:test;
     driver-class-name: org.h2.Driver
     username: sa
     password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
 
   data:
     redis:
