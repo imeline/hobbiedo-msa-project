@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,6 +35,10 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 		super(Config.class);
 	}
 
+	private static final String NO_AUTHORIZATION_HEADER = "No Authorization header";
+	private static final String INVALID_JWT_TOKEN = "Invalid JWT token";
+	private static final String EXPIRED_JWT_TOKEN = "Expired JWT token";
+
 	@Value("${jwt.secret}")
 	private String secret;
 
@@ -49,25 +52,28 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 			ServerHttpRequest request = exchange.getRequest();
 
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-				return onError(exchange, "No Authorization header", HttpStatus.UNAUTHORIZED,
-						new ExampleHandler(ErrorStatus.NOT_FOUND_TOKEN));
+
+				return onError(exchange, NO_AUTHORIZATION_HEADER, HttpStatus.UNAUTHORIZED,
+						new ExampleHandler(
+								ErrorStatus.NOT_FOUND_TOKEN));
+
 			} // 헤더에 토큰이 있는지 없는지 확인하고 없으면 에러를 발생시킨다.
 
 			String authorizationHeader = request.getHeaders()
 					.get(HttpHeaders.AUTHORIZATION)
 					.get(0); // 헤더의 0번째 값인 토큰을 가져온다.
 
-			String jwt = authorizationHeader.replace("Bearer", ""); // 헤더에서 Bearer를 제거하고 토큰만 가져온다.
+			String jwt = authorizationHeader.replace("Bearer ", ""); // 헤더에서 Bearer 를 제거하고 토큰만 가져온다.
 
-			if (isJwtValid(jwt).equals("402")) {
+			if (isJwtValid(jwt).equals(INVALID_JWT_TOKEN)) {
 
-				return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED,
+				return onError(exchange, INVALID_JWT_TOKEN, HttpStatus.UNAUTHORIZED,
 						new ExampleHandler(
 								ErrorStatus.INVALID_TOKEN)); // 토큰이 유효한지 확인하고 유효하지 않으면 에러를 발생시킨다.
 
-			} else if (isJwtValid(jwt).equals("403")) {
+			} else if (isJwtValid(jwt).equals(EXPIRED_JWT_TOKEN)) {
 
-				return onError(exchange, "JWT token is expired", HttpStatus.UNAUTHORIZED,
+				return onError(exchange, EXPIRED_JWT_TOKEN, HttpStatus.UNAUTHORIZED,
 						new ExampleHandler(
 								ErrorStatus.EXPIRED_TOKEN)); // 토큰의 만료 여부를 확인하고 만료되었으면 에러를 발생시킨다.
 
@@ -94,12 +100,14 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 		} catch (MalformedJwtException | SignatureException ex) {
 
 			log.error("Error while parsing JWT: ", ex);
-			returnValue = "402";
+
+			returnValue = INVALID_JWT_TOKEN;
 
 		} catch (ExpiredJwtException ex) {
 
 			log.error("Error while parsing JWT: ", ex);
-			returnValue = "403";
+
+			returnValue = EXPIRED_JWT_TOKEN;
 
 		}
 
