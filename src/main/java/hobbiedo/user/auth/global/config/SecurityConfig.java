@@ -56,7 +56,6 @@ public class SecurityConfig {
 				.formLogin(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
 						.anyRequest().permitAll())
-
 				/* JWT 토큰 방식을 위해 Session 방식 차단 */
 				.sessionManagement(session -> session
 						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
