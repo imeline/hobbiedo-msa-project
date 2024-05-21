@@ -59,6 +59,9 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'com.h2database:h2'
 }
+test {
+    systemProperty 'spring.profiles.active', project.findProperty('profile') ?: 'default'
+}
 
 tasks.named('test') {
     useJUnitPlatform()
