@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 import hobbiedo.user.auth.global.api.ApiResponse;
 import hobbiedo.user.auth.global.api.code.status.SuccessStatus;
 import hobbiedo.user.auth.user.application.AuthService;
-import hobbiedo.user.auth.user.converter.LoginConverter;
+import hobbiedo.user.auth.user.converter.AuthConverter;
 import hobbiedo.user.auth.user.vo.request.LoginRequestVO;
+import hobbiedo.user.auth.user.vo.request.ReIssueRequestVO;
 import hobbiedo.user.auth.user.vo.response.LoginResponseVO;
+import hobbiedo.user.auth.user.vo.response.ReIssueResponseVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +33,17 @@ public class AuthController {
 	public ApiResponse<LoginResponseVO> loginApi(@RequestBody LoginRequestVO loginVO) {
 		return ApiResponse.onSuccess(
 				SuccessStatus.USER_INTEGRATED_LOGIN_SUCCESS.getMessage(),
-				authService.login(LoginConverter.toRequestDTO(loginVO))
+				authService.login(AuthConverter.toRequestDTO(loginVO))
+		);
+	}
+
+	@PostMapping("/re-issue")
+	@Operation(summary = "Access Token 재발급",
+			description = "Refresh Token이 만료되지 않았다면, Access Token과 Refresh Token을 재발급합니다.")
+	public ApiResponse<ReIssueResponseVO> reIssueApi(@RequestBody @Valid ReIssueRequestVO reIssueVO) {
+		return ApiResponse.onSuccess(
+				SuccessStatus.REISSUE_TOKEN_SUCCESS.getMessage(),
+				authService.reIssueToken(AuthConverter.toRequestDTO(reIssueVO))
 		);
 	}
 }

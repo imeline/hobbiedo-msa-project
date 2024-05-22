@@ -5,17 +5,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.user.auth.global.api.code.status.ErrorStatus;
-import hobbiedo.user.auth.global.api.exception.handler.MemberExceptionHandler;
 import hobbiedo.user.auth.global.config.jwt.JwtUtil;
 import hobbiedo.user.auth.global.config.jwt.TokenType;
+import hobbiedo.user.auth.global.exception.MemberExceptionHandler;
 import hobbiedo.user.auth.user.domain.RefreshToken;
 import hobbiedo.user.auth.user.dto.request.LoginRequestDTO;
+import hobbiedo.user.auth.user.dto.request.ReIssueRequestDTO;
 import hobbiedo.user.auth.user.dto.response.LoginResponseDTO;
 import hobbiedo.user.auth.user.infrastructure.MemberRepository;
 import hobbiedo.user.auth.user.infrastructure.RefreshTokenRepository;
 import hobbiedo.user.auth.user.vo.response.LoginResponseVO;
+import hobbiedo.user.auth.user.vo.response.ReIssueResponseVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,9 +29,10 @@ public class AuthService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
 
-	public LoginResponseVO login(LoginRequestDTO loginRequestDTO) {
-		LoginResponseDTO user = getUuidByLoginId(loginRequestDTO.getLoginId());
-		validatePassword(loginRequestDTO.getPassword(), user.getPassword());
+	@Transactional
+	public LoginResponseVO login(LoginRequestDTO loginDTO) {
+		LoginResponseDTO user = getUuidByLoginId(loginDTO.getLoginId());
+		validatePassword(loginDTO.getPassword(), user.getPassword());
 
 		String accessToken = jwtUtil.createJwt(user.getUuid(), TokenType.ACCESS_TOKEN);
 		String refreshToken = jwtUtil.createJwt(user.getUuid(), TokenType.REFRESH_TOKEN);
@@ -47,6 +52,34 @@ public class AuthService {
 				.expiration(System.currentTimeMillis() + tokenType.getExpireTime())
 				.id(uuid)
 				.build());
+	}
+
+	@Transactional
+	public ReIssueResponseVO reIssueToken(ReIssueRequestDTO reIssueDTO) {
+		validateRefreshToken(reIssueDTO.getRefreshToken());
+
+		String receivedRefreshToken = reIssueDTO.getRefreshToken();
+		String uuid = jwtUtil.getUuid(receivedRefreshToken);
+		String newAccessToken = jwtUtil.createJwt(uuid, TokenType.ACCESS_TOKEN);
+		String newRefreshToken = jwtUtil.createJwt(uuid, TokenType.REFRESH_TOKEN);
+
+		return ReIssueResponseVO
+				.builder()
+				.accessToken(newAccessToken)
+				.refreshToken(newRefreshToken)
+				.build();
+	}
+
+	private void validateRefreshToken(String receivedRefreshToken) {
+		if (jwtUtil.isExpired(receivedRefreshToken)) {
+			log.error("RefreshToken is Expired {}", receivedRefreshToken);
+			throw new MemberExceptionHandler(ErrorStatus.USER_REFRESH_EXPIRED);
+		}
+		if (jwtUtil.getTokenType(receivedRefreshToken) != TokenType.REFRESH_TOKEN) {
+			log.error("token isn't Refresh Type {}", receivedRefreshToken);
+
+			throw new MemberExceptionHandler(ErrorStatus.NOT_REFRESH_TOKEN_TYPE);
+		}
 	}
 
 	private LoginResponseDTO getUuidByLoginId(String loginId) {

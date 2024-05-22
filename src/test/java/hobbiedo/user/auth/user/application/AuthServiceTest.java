@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import hobbiedo.user.auth.global.api.exception.handler.MemberExceptionHandler;
+import hobbiedo.user.auth.global.exception.MemberExceptionHandler;
 import hobbiedo.user.auth.user.dto.request.LoginRequestDTO;
 import hobbiedo.user.auth.user.infrastructure.MemberRepository;
 import hobbiedo.user.auth.user.infrastructure.RefreshTokenRepository;

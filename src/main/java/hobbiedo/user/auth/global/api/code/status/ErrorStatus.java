@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorStatus implements BaseErrorCode {
 	VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "GLOBAL400", "데이터베이스 유효성 에러"),
 
-	USER_INTEGRATED_LOGIN_FAIL(HttpStatus.BAD_REQUEST, "USER401", "아이디 혹은 비밀번호가 일치하지 않습니다.");
+	USER_INTEGRATED_LOGIN_FAIL(HttpStatus.BAD_REQUEST, "USER401", "아이디 혹은 비밀번호가 일치하지 않습니다."),
+	USER_REFRESH_EXPIRED(HttpStatus.UNAUTHORIZED, "USER402", "리프레시 토큰의 유효기간이 만료되었습니다."),
+	NOT_REFRESH_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "USER403", "해당 토큰은 리프레시 토큰 타입이 아닙니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

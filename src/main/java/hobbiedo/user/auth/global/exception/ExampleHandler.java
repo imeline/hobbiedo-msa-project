@@ -1,4 +1,4 @@
-package hobbiedo.user.auth.global.api.exception.handler;
+package hobbiedo.user.auth.global.exception;
 
 import hobbiedo.user.auth.global.api.code.BaseErrorCode;
 import hobbiedo.user.auth.global.api.exception.GeneralException;
