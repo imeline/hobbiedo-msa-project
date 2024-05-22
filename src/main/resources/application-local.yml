@@ -1,7 +1,7 @@
 spring:
   jpa:
     database: mysql
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     show-sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -33,6 +33,6 @@ springdoc:
     disabled: true
 
 jwt:
-  secret-key: thisIsTestKeyWillBeChangeSoonCommingSoon
+  secret-key: ba223661e3ddf6a551e8a586e221069222f41c702923ce8f0b2bd313ac97c9884ae78275e3c571767d50fbfbb16f62848f4690c167ed45c81eff6af0dc1025a2
   access-expire-time: 60000 #10분
   refresh-expire-time: 86400000 #1일

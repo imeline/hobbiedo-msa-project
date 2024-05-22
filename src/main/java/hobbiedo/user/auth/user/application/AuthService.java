@@ -48,9 +48,9 @@ public class AuthService {
 	private void saveToRedis(String refreshToken, TokenType tokenType, String uuid) {
 		refreshTokenRepository.save(RefreshToken
 				.builder()
+				.id(uuid)
 				.refresh(refreshToken)
 				.expiration(System.currentTimeMillis() + tokenType.getExpireTime())
-				.id(uuid)
 				.build());
 	}
 
@@ -63,6 +63,10 @@ public class AuthService {
 		String newAccessToken = jwtUtil.createJwt(uuid, TokenType.ACCESS_TOKEN);
 		String newRefreshToken = jwtUtil.createJwt(uuid, TokenType.REFRESH_TOKEN);
 
+		/* 기존 Refresh Token 삭제 후, 새로 생성된 값을 저장*/
+		refreshTokenRepository.deleteByRefresh(receivedRefreshToken);
+		saveToRedis(newRefreshToken, TokenType.REFRESH_TOKEN, uuid);
+
 		return ReIssueResponseVO
 				.builder()
 				.accessToken(newAccessToken)
@@ -71,15 +75,16 @@ public class AuthService {
 	}
 
 	private void validateRefreshToken(String receivedRefreshToken) {
+		if (!refreshTokenRepository.existsByRefresh(receivedRefreshToken)) {
+			throw new MemberExceptionHandler(ErrorStatus.NOT_EXIST_TOKEN);
+		}
 		if (jwtUtil.isExpired(receivedRefreshToken)) {
-			log.error("RefreshToken is Expired {}", receivedRefreshToken);
 			throw new MemberExceptionHandler(ErrorStatus.USER_REFRESH_EXPIRED);
 		}
 		if (jwtUtil.getTokenType(receivedRefreshToken) != TokenType.REFRESH_TOKEN) {
-			log.error("token isn't Refresh Type {}", receivedRefreshToken);
-
 			throw new MemberExceptionHandler(ErrorStatus.NOT_REFRESH_TOKEN_TYPE);
 		}
+
 	}
 
 	private LoginResponseDTO getUuidByLoginId(String loginId) {

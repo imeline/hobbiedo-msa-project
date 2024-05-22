@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ import lombok.Getter;
 public class RefreshToken {
 	@Id
 	private String id;
+	@Indexed
 	private String refresh;
 	@TimeToLive(unit = TimeUnit.MILLISECONDS)
 	private Long expiration;
