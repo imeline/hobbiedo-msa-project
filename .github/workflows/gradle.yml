@@ -1,11 +1,8 @@
 name: Java CI with Gradle
 
-# on:
-#   pull_request:
-#     types: [closed]
-#     branches: [ "develop" ]
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches: [ "develop" ]
 
 jobs:
