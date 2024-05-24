@@ -20,33 +20,24 @@ spring:
     gateway:
       routes:
 
-        - id: user-service
-          uri: lb://USER-SERVICE
+        - id: auth-service-need-not-token
+          uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/user-service/users/login
+            - Path=/auth-service/v1/**
             - Method=POST
           filters:
             #- StripPrefix=1
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - StripPrefix=1
 
-        - id: user-service
-          uri: lb://USER-SERVICE
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/user-service/users/signup
-            - Method=POST
+            - Path=/member-service/v1/**
+            - Method=GET, POST, PUT, DELETE, PATCH
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user-service/**
-            - Method=GET
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - StripPrefix=1
             - JwtTokenFilter
 
 jwt:

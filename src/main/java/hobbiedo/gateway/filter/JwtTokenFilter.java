@@ -65,6 +65,8 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 			String jwt = authorizationHeader.replace("Bearer ", ""); // 헤더에서 Bearer 를 제거하고 토큰만 가져온다.
 
+			log.info("JWT: " + jwt);
+
 			if (isJwtValid(jwt).equals(INVALID_JWT_TOKEN)) {
 
 				return onError(exchange, INVALID_JWT_TOKEN, HttpStatus.UNAUTHORIZED,
@@ -79,7 +81,17 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 			}
 
-			return chain.filter(exchange);
+			String uuid = extractUuidFromToken(jwt);
+
+			// uuid 로그 출력
+			log.info("UUID: " + uuid);
+
+			// 헤더에 uuid 를 추가한 request 생성
+			ServerHttpRequest modifiedRequest = request.mutate()
+					.header("uuid", uuid)
+					.build();
+
+			return chain.filter(exchange.mutate().request(modifiedRequest).build());
 		};
 	}
 
@@ -112,6 +124,18 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 		}
 
 		return returnValue;
+	}
+
+	private String extractUuidFromToken(String jwt) {
+
+		String uuid = Jwts.parserBuilder()
+				.setSigningKey(secret)
+				.build()
+				.parseClaimsJws(jwt)
+				.getBody()
+				.get("uuid", String.class);
+
+		return uuid;
 	}
 
 	// Mono 타입은 비동기로 작업을 처리할 때 사용하는 리액티브 타입
