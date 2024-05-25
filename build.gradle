@@ -43,6 +43,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     //redis
     implementation('org.springframework.boot:spring-boot-starter-data-redis')
@@ -59,8 +60,17 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'com.h2database:h2'
 }
+ext {
+    set('springCloudVersion', "2023.0.1")
+}
+
 test {
     systemProperty 'spring.profiles.active', project.findProperty('profile') ?: 'default'
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {
