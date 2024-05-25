@@ -120,4 +120,5 @@ modules.xml
 /.idea/codeStyles/codeStyleConfig.xml
 /src/main/generated/spharos/msg/
 /src/main/resources/application.yml
+/src/main/resources/application-prod.yml
 /.idea/inspectionProfiles/Project_Default.xml
