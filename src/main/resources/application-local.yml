@@ -18,27 +18,121 @@ spring:
 
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          "[/**]":
+            allowedOrigins:
+              - "http://localhost:3000"
+              - "https://nukfra.site"
+              - "http://nukfra.site"
+            allow-credentials: true
+            allowedHeaders: "*"
+            allowedMethods: # 허용하려는 HTTP 메서드
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - PATCH
+              - OPTIONS
+            maxAge: 3600
+
+      
       routes:
+        - id: auth-service-swagger
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth-service/v3/api-docs
 
         - id: auth-service-need-not-token
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth-service/v1/**
+            - Method=POST, GET
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+
+        - id: member-service-need-not-token
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/v1/sign-up/**
             - Method=POST
           filters:
-            #- StripPrefix=1
-            - RemoveRequestHeader=Cookie
             - StripPrefix=1
+            - RemoveRequestHeader=Cookie
 
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member-service/v1/**
-            - Method=GET, POST, PUT, DELETE, PATCH
+            - Path=/member-service/v1/member/**
+            - Method=POST, GET, PUT, DELETE, PATCH
           filters:
-            - RemoveRequestHeader=Cookie
             - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+            - JwtTokenFilter
+
+        - id: survey-service
+          uri: lb://SURVEY-SERVICE
+          predicates:
+            - Path=/survey-service/v1/**
+            - Method=POST, GET, PUT, DELETE, PATCH
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+            - JwtTokenFilter
+
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/chat-service/v1/**
+            - Method=POST, GET, PUT, DELETE, PATCH
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+            - JwtTokenFilter
+
+        - id: point-service
+          uri: lb://POINT-SERVICE
+          predicates:
+            - Path=/point-service/v1/**
+            - Method=POST, GET, PUT, DELETE, PATCH
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+            - JwtTokenFilter
+
+        - id: crew-service
+          uri: lb://CREW-SERVICE
+          predicates:
+            - Path=/crew-service/v1/**
+            - Method=POST, GET, PUT, DELETE, PATCH
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
             - JwtTokenFilter
 
 jwt:
   secret: 25c4798333e340171ef525ff3729fd89880331acf2bc899656d27802f56768b03f6cd6fc835725f7796f88040eeac6be2af212f124ee5f44a68a61aeda87e789
+
+springdoc:
+  swagger-ui:
+    urls[0]:
+      name: 인증 서비스
+      url: /auth-service/v3/api-docs
+    urls[1]:
+      name: 회원 서비스
+      url: /member-service/v3/api-docs
+    urls[2]:
+      name: 설문 서비스
+      url: /survey-service/v3/api-docs
+    urls[3]:
+      name: 채팅 서비스
+      url: /chat-service/v3/api-docs
+    urls[4]:
+      name: 포인트 서비스
+      url: /point-service/v3/api-docs
+    urls[5]:
+      name: 크루 서비스
+      url: /crew-service/v3/api-docs
+
+    use_root_path: true
