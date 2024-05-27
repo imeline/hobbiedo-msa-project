@@ -39,8 +39,6 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 	public JwtTokenFilter(@Value("${jwt.secret}") String secret) {
 		super(Config.class);
-		// byte[] keyBytes = StandardCharsets.UTF_8.encode(secret).array();
-		// this.secret = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
 		byte[] keyBytes = secret.getBytes(
 			StandardCharsets.UTF_8); // 환경 변수에서 가져온 키를 UTF-8로 바이트 배열로 변환
 		String algorithm = SignatureAlgorithm.HS256.getJcaName(); // HS256 알고리즘 이름 가져오기
