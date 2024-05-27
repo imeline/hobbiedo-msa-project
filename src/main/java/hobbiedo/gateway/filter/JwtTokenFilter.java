@@ -2,6 +2,9 @@ package hobbiedo.gateway.filter;
 
 import java.nio.charset.StandardCharsets;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -23,6 +26,7 @@ import hobbiedo.gateway.global.exception.handler.ExampleHandler;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -31,16 +35,21 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.Config> {
 
-	public JwtTokenFilter() {
+	private final SecretKey secret;
+
+	public JwtTokenFilter(@Value("${jwt.secret}") String secret) {
 		super(Config.class);
+		// byte[] keyBytes = StandardCharsets.UTF_8.encode(secret).array();
+		// this.secret = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
+		byte[] keyBytes = secret.getBytes(
+			StandardCharsets.UTF_8); // 환경 변수에서 가져온 키를 UTF-8로 바이트 배열로 변환
+		String algorithm = SignatureAlgorithm.HS256.getJcaName(); // HS256 알고리즘 이름 가져오기
+		this.secret = new SecretKeySpec(keyBytes, algorithm);
 	}
 
 	private static final String NO_AUTHORIZATION_HEADER = "No Authorization header";
 	private static final String INVALID_JWT_TOKEN = "Invalid JWT token";
 	private static final String EXPIRED_JWT_TOKEN = "Expired JWT token";
-
-	@Value("${jwt.secret}")
-	private String secret;
 
 	public static class Config {
 	}
@@ -54,14 +63,14 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
 
 				return onError(exchange, NO_AUTHORIZATION_HEADER, HttpStatus.UNAUTHORIZED,
-						new ExampleHandler(
-								ErrorStatus.NOT_FOUND_TOKEN));
+					new ExampleHandler(
+						ErrorStatus.NOT_FOUND_TOKEN));
 
 			} // 헤더에 토큰이 있는지 없는지 확인하고 없으면 에러를 발생시킨다.
 
 			String authorizationHeader = request.getHeaders()
-					.get(HttpHeaders.AUTHORIZATION)
-					.get(0); // 헤더의 0번째 값인 토큰을 가져온다.
+				.get(HttpHeaders.AUTHORIZATION)
+				.get(0); // 헤더의 0번째 값인 토큰을 가져온다.
 
 			String jwt = authorizationHeader.replace("Bearer ", ""); // 헤더에서 Bearer 를 제거하고 토큰만 가져온다.
 
@@ -70,14 +79,14 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 			if (isJwtValid(jwt).equals(INVALID_JWT_TOKEN)) {
 
 				return onError(exchange, INVALID_JWT_TOKEN, HttpStatus.UNAUTHORIZED,
-						new ExampleHandler(
-								ErrorStatus.INVALID_TOKEN)); // 토큰이 유효한지 확인하고 유효하지 않으면 에러를 발생시킨다.
+					new ExampleHandler(
+						ErrorStatus.INVALID_TOKEN)); // 토큰이 유효한지 확인하고 유효하지 않으면 에러를 발생시킨다.
 
 			} else if (isJwtValid(jwt).equals(EXPIRED_JWT_TOKEN)) {
 
 				return onError(exchange, EXPIRED_JWT_TOKEN, HttpStatus.UNAUTHORIZED,
-						new ExampleHandler(
-								ErrorStatus.EXPIRED_TOKEN)); // 토큰의 만료 여부를 확인하고 만료되었으면 에러를 발생시킨다.
+					new ExampleHandler(
+						ErrorStatus.EXPIRED_TOKEN)); // 토큰의 만료 여부를 확인하고 만료되었으면 에러를 발생시킨다.
 
 			}
 
@@ -88,8 +97,8 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 			// 헤더에 uuid 를 추가한 request 생성
 			ServerHttpRequest modifiedRequest = request.mutate()
-					.header("uuid", uuid)
-					.build();
+				.header("uuid", uuid)
+				.build();
 
 			return chain.filter(exchange.mutate().request(modifiedRequest).build());
 		};
@@ -103,12 +112,12 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 		try {
 			subject = Jwts
-					.parserBuilder() // 토큰을 파싱한다.
-					.setSigningKey(secret)
-					.build()
-					.parseClaimsJws(jwt)
-					.getBody()
-					.getSubject();
+				.parserBuilder() // 토큰을 파싱한다.
+				.setSigningKey(secret)
+				.build()
+				.parseClaimsJws(jwt)
+				.getBody()
+				.getSubject();
 		} catch (MalformedJwtException | SignatureException ex) {
 
 			log.error("Error while parsing JWT: ", ex);
@@ -129,18 +138,18 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 	private String extractUuidFromToken(String jwt) {
 
 		String uuid = Jwts.parserBuilder()
-				.setSigningKey(secret)
-				.build()
-				.parseClaimsJws(jwt)
-				.getBody()
-				.get("uuid", String.class);
+			.setSigningKey(secret)
+			.build()
+			.parseClaimsJws(jwt)
+			.getBody()
+			.get("uuid", String.class);
 
 		return uuid;
 	}
 
 	// Mono 타입은 비동기로 작업을 처리할 때 사용하는 리액티브 타입
 	private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus,
-			ExampleHandler handler) {
+		ExampleHandler handler) {
 
 		ServerHttpResponse response = exchange.getResponse();
 
@@ -148,9 +157,9 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 		// ApiResponse 객체 생성
 		ApiResponse<String> apiResponse = ApiResponse.onFailure(
-				handler.getErrorCode().getReasonHttpStatus().getCode(),
-				handler.getErrorCode().getReasonHttpStatus().getMessage(),
-				null); // 에러 메시지를 ApiResponse 객체로 생성
+			handler.getErrorCode().getReasonHttpStatus().getCode(),
+			handler.getErrorCode().getReasonHttpStatus().getMessage(),
+			null); // 에러 메시지를 ApiResponse 객체로 생성
 
 		try {
 			// ApiResponse 객체를 JSON 문자열로 변환
