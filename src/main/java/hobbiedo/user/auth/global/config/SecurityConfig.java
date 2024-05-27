@@ -51,17 +51,17 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-				.csrf(AbstractHttpConfigurer::disable)
-				.httpBasic(AbstractHttpConfigurer::disable)
-				.formLogin(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth
-						.anyRequest().permitAll())
-				/* JWT 토큰 방식을 위해 Session 방식 차단 */
-				.sessionManagement(session -> session
-						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				/* CORS 설정 */
-				.cors(cors ->
-						cors.configurationSource(getCorsConfigurationSource()));
+			.csrf(AbstractHttpConfigurer::disable)
+			.httpBasic(AbstractHttpConfigurer::disable)
+			.formLogin(AbstractHttpConfigurer::disable)
+			.authorizeHttpRequests(auth -> auth
+				.anyRequest().permitAll())
+			/* JWT 토큰 방식을 위해 Session 방식 차단 */
+			.sessionManagement(session -> session
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		/* CORS 설정 */
+		// .cors(cors ->
+		// 		cors.configurationSource(getCorsConfigurationSource()));
 
 		return http.build();
 	}
