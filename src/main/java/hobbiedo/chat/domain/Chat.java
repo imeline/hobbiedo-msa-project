@@ -1,5 +1,7 @@
 package hobbiedo.chat.domain;
 
+import java.time.Instant;
+import java.time.InstantSource;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -11,25 +13,25 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Document(collection = "chat")
+@Document(collection = "Chat")
 @Getter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Chat {
 	@Id
 	private String id;
-	private String crewId;
+	private Long crewId;
 	private String uuid;
 	private String text;
 	private String imageUrl;
 	private String videoUrl;
 	private String entryExitNotice;
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 
 	@Builder
-	public Chat(String id, String crewId, String uuid, String text, String imageUrl,
+	public Chat(String id, Long crewId, String uuid, String text, String imageUrl,
 		String videoUrl,
-		String entryExitNotice, LocalDateTime createdAt) {
+		String entryExitNotice, Instant createdAt) {
 		this.id = id;
 		this.crewId = crewId;
 		this.uuid = uuid;

@@ -1,5 +1,6 @@
 package hobbiedo.chat.application;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -8,11 +9,13 @@ import hobbiedo.chat.domain.Chat;
 import hobbiedo.chat.infrastructure.ChatRepository;
 import hobbiedo.chat.vo.request.ChatSendVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChatServiceImp implements ChatService {
 	private final ChatRepository chatRepository;
 
@@ -26,13 +29,18 @@ public class ChatServiceImp implements ChatService {
 			.imageUrl(chatSendVo.getImageUrl())
 			.videoUrl(chatSendVo.getVideoUrl())
 			.entryExitNotice(chatSendVo.getEntryExitNotice())
-			.createdAt(LocalDateTime.now())
+			.createdAt(Instant.now())
 			.build());
 	}
 
 	@Override
-	public Flux<Chat> getChatByCrewIdAfterDateTime(String crewId, LocalDateTime since) {
-
+	public Flux<Chat> getChatByCrewIdAfterDateTime(Long crewId, Instant since) {
 		return chatRepository.findChatByCrewIdAndCreatedAtAfter(crewId, since);
 	}
+
+	// @Override
+	// public Flux<Chat> getStreamChatByCrewId(Long crewId) {
+	//
+	// 	return chatRepository.streamChatByCrewId(crewId);
+	// }
 }

@@ -1,6 +1,6 @@
 package hobbiedo.chat.application;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import hobbiedo.chat.domain.Chat;
 import hobbiedo.chat.vo.request.ChatSendVo;
@@ -11,5 +11,8 @@ public interface ChatService {
 
 	Mono<Chat> sendChat(ChatSendVo chatSendVo, String uuid);
 
-	Flux<Chat> getChatByCrewIdAfterDateTime(String crewId, LocalDateTime since);
+	//Flux<Chat> getChatByCrewIdAfterDateTime(Long crewId, LocalDateTime since);
+	//Flux<Chat> getStreamChatByCrewId(Long crewId);
+
+	Flux<Chat> getChatByCrewIdAfterDateTime(Long crewId, Instant since);
 }
