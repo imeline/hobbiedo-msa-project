@@ -1,7 +1,6 @@
 package hobbiedo.chat.application;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 

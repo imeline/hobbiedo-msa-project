@@ -41,7 +41,7 @@ public class ChatController {
 			.map(chat -> ApiResponse.onSuccess(SuccessStatus.CREATE_CHAT, chat));
 	}
 
-	@Operation(summary = "(특정 소모임의) 실시간 채팅 내역 조회", description = "특정 채팅 id 이후의 채팅 내역을 실시간으로 조회한다.")
+	@Operation(summary = "(특정 소모임의) 실시간 채팅 내역 조회", description = "특정 시간(Instant) 이후의 채팅 내역을 실시간으로 조회한다.")
 	@GetMapping(value = "/{crewId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<ApiResponse<Chat>> getChatByRoomId(@PathVariable Long crewId, @RequestParam Instant since) {
 		return chatService.getChatByCrewIdAfterDateTime(crewId, since)

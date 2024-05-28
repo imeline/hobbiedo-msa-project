@@ -1,7 +1,6 @@
 package hobbiedo.chat.infrastructure;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
@@ -15,7 +14,7 @@ public interface ChatRepository extends ReactiveMongoRepository<Chat, String> {
 	@Query(value = "{ 'crewId' : ?0, 'createdAt' : { $gt: ?1 } }", fields = "{ 'id': 0, 'crewId': 0 }")
 	Flux<Chat> findChatByCrewIdAndCreatedAtAfter(Long crewId, Instant since);
 
-	@Tailable
-	@Query(value = "{ 'crewId' : ?0 }", fields = "{ 'id': 0, 'crewId': 0 }")
-	Flux<Chat> streamChatByCrewId(Long crewId);
+	// @Tailable
+	// @Query(value = "{ 'crewId' : ?0 }", fields = "{ 'id': 0, 'crewId': 0 }")
+	// Flux<Chat> streamChatByCrewId(Long crewId);
 }
