@@ -13,8 +13,8 @@ import hobbiedo.user.auth.member.dto.response.LoginResponseDTO;
 
 @Repository
 public interface MemberRepository extends JpaRepository<IntegrateAuth, Long> {
-	@Query("SELECT new hobbiedo.user.auth.member.dto.response.LoginResponseDTO(m.uuid, u.password) "
-		   + "FROM IntegrateAuth u JOIN Member m WHERE u.loginId = :loginId")
+	@Query("SELECT new hobbiedo.user.auth.member.dto.response.LoginResponseDTO(u.member.uuid, u.password) "
+		   + "FROM IntegrateAuth u WHERE u.loginId = :loginId")
 	Optional<LoginResponseDTO> findByLoginId(@Param("loginId") String loginId);
 
 	@Query("SELECT i.loginId FROM IntegrateAuth i JOIN i.member m WHERE m.name = :name AND m.email = :email")
