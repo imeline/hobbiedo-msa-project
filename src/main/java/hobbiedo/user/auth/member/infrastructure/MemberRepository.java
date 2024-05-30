@@ -16,6 +16,9 @@ public interface MemberRepository extends JpaRepository<IntegrateAuth, Long> {
 		   + "FROM IntegrateAuth u JOIN Member m WHERE u.loginId = :loginId")
 	Optional<LoginResponseDTO> findByLoginId(@Param("loginId") String loginId);
 
+	@Query("SELECT i.loginId FROM IntegrateAuth i JOIN i.member m WHERE m.name = :name AND m.email = :email")
+	Optional<String> findLoginIdByNameAndEmail(@Param("name") String name, @Param("email") String email);
+
 	Boolean existsByMember_Email(String email);
 
 	Boolean existsByMember_PhoneNumber(String phoneNumber);

@@ -6,6 +6,15 @@ eureka:
       defaultZone: http://172.18.0.4:8761/eureka/
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tjdvy17539@gmail.com
+    password: jftx rmdh hbzb tezi
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.timeout: 5000
+      mail.smtp.starttls.enable: true
   application:
     name: auth-service
 
