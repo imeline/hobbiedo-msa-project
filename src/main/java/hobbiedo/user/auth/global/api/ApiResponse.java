@@ -26,17 +26,17 @@ public class ApiResponse<T> {
 
 	public static <T> ApiResponse<T> onSuccess(String message, T data) {
 		return new ApiResponse<>(
-				true,
-				String.valueOf(HttpStatus.OK.value()),
-				message, data);
+			true,
+			String.valueOf(HttpStatus.OK.value()),
+			message, data);
 	}
 
-	public static <T> ApiResponse<T> of(BaseCode code, T data) {
+	public static <T> ApiResponse<T> onSuccess(BaseCode code, T data) {
 		return new ApiResponse<>(
-				true,
-				code.getReasonHttpStatus().getCode(),
-				code.getReasonHttpStatus().getMessage(),
-				data);
+			true,
+			code.getReasonHttpStatus().getCode(),
+			code.getReasonHttpStatus().getMessage(),
+			data);
 	}
 
 	public static <T> ApiResponse<T> onFailure(String status, String message, T data) {
@@ -45,10 +45,10 @@ public class ApiResponse<T> {
 
 	public static <T> ApiResponse<T> onFailure(BaseErrorCode errorCode, T data) {
 		return new ApiResponse<>(
-				false,
-				errorCode.getReasonHttpStatus().getCode(),
-				errorCode.getReasonHttpStatus().getMessage(),
-				data);
+			false,
+			errorCode.getReasonHttpStatus().getCode(),
+			errorCode.getReasonHttpStatus().getMessage(),
+			data);
 	}
 
 }

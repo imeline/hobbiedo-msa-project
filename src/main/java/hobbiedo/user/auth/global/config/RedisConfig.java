@@ -6,7 +6,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
-import hobbiedo.user.auth.user.domain.RefreshToken;
+import hobbiedo.user.auth.member.domain.RefreshToken;
 
 @Configuration
 @EnableRedisRepositories

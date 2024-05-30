@@ -22,6 +22,7 @@ public class SwaggerConfig {
 			.components(new Components())
 			.addSecurityItem(new SecurityRequirement().addList(BEARER_TOKEN))
 			.addServersItem(new Server().url("/auth-service"))
+			.addServersItem(new Server().url("/"))
 			.components(new io.swagger.v3.oas.models.Components()
 				.addSecuritySchemes(BEARER_TOKEN, new SecurityScheme()
 					.name(BEARER_TOKEN)
