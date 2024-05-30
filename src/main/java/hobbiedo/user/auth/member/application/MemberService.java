@@ -13,6 +13,7 @@ import hobbiedo.user.auth.member.domain.Member;
 import hobbiedo.user.auth.member.dto.request.IntegrateSignUpDTO;
 import hobbiedo.user.auth.member.dto.request.ResetPasswordDTO;
 import hobbiedo.user.auth.member.infrastructure.MemberRepository;
+import hobbiedo.user.auth.member.vo.response.CheckLoginIdVO;
 import hobbiedo.user.auth.member.vo.response.SignUpVO;
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +47,16 @@ public class MemberService {
 		return hobbiedo.user.auth.member.dto.response.ResetPasswordDTO.builder()
 			.email(resetPasswordDTO.getEmail())
 			.tempPassword(updatePassword(resetPasswordDTO))
+			.build();
+	}
+
+	public CheckLoginIdVO isDuplicated(String loginId) {
+		if (memberRepository.existsByLoginId(loginId)) {
+			throw new MemberExceptionHandler(ErrorStatus.ALREADY_USE_LOGIN_ID);
+		}
+
+		return CheckLoginIdVO.builder()
+			.isPossible(true)
 			.build();
 	}
 
