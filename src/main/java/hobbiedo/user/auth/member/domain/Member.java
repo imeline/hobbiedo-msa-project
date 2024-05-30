@@ -14,10 +14,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 	public static final String BLANK = "";
 
@@ -42,17 +45,4 @@ public class Member extends BaseEntity {
 
 	@Builder.Default
 	private String profileMessage = BLANK;
-
-	@Builder
-	public Member(String name, String uuid, String email, String phoneNumber, Boolean active, GenderType gender,
-		LocalDate birth, String profileMessage) {
-		this.name = name;
-		this.uuid = uuid;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.active = active;
-		this.gender = gender;
-		this.birth = birth;
-		this.profileMessage = profileMessage;
-	}
 }
