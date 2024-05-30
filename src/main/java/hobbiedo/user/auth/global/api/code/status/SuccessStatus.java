@@ -15,6 +15,7 @@ public enum SuccessStatus implements BaseCode {
 	FIND_LOGIN_ID_SUCCESS(HttpStatus.OK, "MEMBER200", "회원 아이디를 이메일로 전송했습니다."),
 	RESET_PASSWORD_SUCCESS(HttpStatus.OK, "MEMBER200", "임시 비밀번호를 이메일로 전송했습니다."),
 	SEND_AUTH_MAIL_SUCCESS(HttpStatus.OK, "MEMBER200", "이메일 인증 코드 전송에 성공했습니다"),
+	EMAIL_AUTH_MATCH(HttpStatus.OK, "MEMBER200", "이메일 인증 코드가 일치합니다."),
 	REISSUE_TOKEN_SUCCESS(HttpStatus.OK, "MEMBER200", "액세스/리프레시 토큰 재발급에 성공했습니다");
 	private final HttpStatus httpStatus;
 	private final String status;
