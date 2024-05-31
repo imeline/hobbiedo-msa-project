@@ -36,7 +36,8 @@ public class Member extends BaseEntity {
 
 	private String phoneNumber;
 
-	private Boolean active;
+	@Builder.Default
+	private Boolean active = true;
 
 	@Enumerated(EnumType.STRING)
 	private GenderType gender;
@@ -45,4 +46,8 @@ public class Member extends BaseEntity {
 
 	@Builder.Default
 	private String profileMessage = BLANK;
+
+	@Builder.Default
+	private String imageUrl = BLANK;
+
 }
