@@ -48,7 +48,7 @@ public class AuthService {
 	private void saveToRedis(String refreshToken, TokenType tokenType, String uuid) {
 		refreshTokenRepository.save(RefreshToken
 			.builder()
-			.id(uuid)
+			.uuid(uuid)
 			.refresh(refreshToken)
 			.expiration(System.currentTimeMillis() + tokenType.getExpireTime())
 			.build());
@@ -72,6 +72,14 @@ public class AuthService {
 			.accessToken(newAccessToken)
 			.refreshToken(newRefreshToken)
 			.build();
+	}
+
+	@Transactional
+	public void logout(String uuid) {
+		RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
+			.orElseThrow(() -> new MemberExceptionHandler(ErrorStatus.LOGOUT_FAIL));
+		
+		refreshTokenRepository.delete(refreshToken);
 	}
 
 	private void validateRefreshToken(String receivedRefreshToken) {
