@@ -34,5 +34,12 @@ public interface MemberRepository extends JpaRepository<IntegrateAuth, Long> {
 	@Query("UPDATE IntegrateAuth i SET i.password = :password WHERE i.loginId = :loginId")
 	void updatePasswordByLoginId(@Param("password") String password, @Param("loginId") String loginId);
 
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE IntegrateAuth i SET i.password = :password WHERE i.member.uuid = :uuid")
+	void updatePasswordByUuid(@Param("password") String password, @Param("uuid") String uuid);
+
+	@Query("SELECT i.password FROM IntegrateAuth i WHERE i.member.uuid = :uuid")
+	String findPasswordByUuid(@Param("uuid") String uuid);
+
 }
 
