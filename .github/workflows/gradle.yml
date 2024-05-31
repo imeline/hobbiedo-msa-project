@@ -1,13 +1,15 @@
 name: Java CI with Gradle
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [ "develop" ]
+#  pull_request:
+#    types: [closed]
+#    branches: [ "develop" ]
 
 jobs:
   build:
-
+#    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: read
