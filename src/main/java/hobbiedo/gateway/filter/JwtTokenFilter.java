@@ -95,7 +95,7 @@ public class JwtTokenFilter extends AbstractGatewayFilterFactory<JwtTokenFilter.
 
 			// 헤더에 uuid 를 추가한 request 생성
 			ServerHttpRequest modifiedRequest = request.mutate()
-				.header("uuid", uuid)
+				.header("Uuid", uuid)
 				.build();
 
 			return chain.filter(exchange.mutate().request(modifiedRequest).build());
