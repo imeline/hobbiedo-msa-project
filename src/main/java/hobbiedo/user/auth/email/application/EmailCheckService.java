@@ -14,12 +14,19 @@ import lombok.RequiredArgsConstructor;
 public class EmailCheckService {
 	private final EmailRepository emailRepository;
 
-	public Boolean checkAuthCode(EmailCheckDTO emailCheckDTO) {
+	public void checkAuthCode(EmailCheckDTO emailCheckDTO) {
 		EmailCode emailCode = emailRepository
 			.findByEmail(emailCheckDTO.getEmail())
-			.orElseThrow(() -> new MemberExceptionHandler(ErrorStatus.EMAIL_AUTH_NOT_MATCH));
+			.orElseThrow(() -> new MemberExceptionHandler(ErrorStatus.EMAIL_NOT_FOUND));
 
-		return emailCode.getAuthCode()
+		if (isDifferent(emailCheckDTO, emailCode)) {
+			throw new MemberExceptionHandler(ErrorStatus.EMAIL_AUTH_NOT_MATCH);
+		}
+	}
+
+	private Boolean isDifferent(EmailCheckDTO emailCheckDTO, EmailCode emailCode) {
+		boolean isMatch = emailCode.getAuthCode()
 			.equals(emailCheckDTO.getAuthCode());
+		return !isMatch;
 	}
 }

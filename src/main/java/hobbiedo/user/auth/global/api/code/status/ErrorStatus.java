@@ -18,9 +18,10 @@ public enum ErrorStatus implements BaseErrorCode {
 	ALREADY_USE_EMAIL(HttpStatus.BAD_REQUEST, "MEMBER402", "이미 사용 중인 이메일입니다."),
 	ALREADY_USE_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "MEMBER403", "이미 사용 중인 전화번호입니다."),
 	NOT_EXIST_TOKEN(HttpStatus.NOT_FOUND, "USER404", "존재하지 않는 리프레시 토큰입니다."),
-	EMAIL_AUTH_NOT_MATCH(HttpStatus.OK, "MEMBER405", "이메일 인증 코드가 일치하지 않습니다"),
+	EMAIL_AUTH_NOT_MATCH(HttpStatus.BAD_REQUEST, "MEMBER405", "이메일 인증 코드가 일치하지 않습니다"),
 	FIND_LOGIN_ID_FAIL(HttpStatus.BAD_REQUEST, "MEMBER406", "회원 아이디 찾기에 실패했습니다"),
-	RESET_PASSWORD_FAIL(HttpStatus.BAD_REQUEST, "MEMBER407", "회원 비밀번호 찾기에 실패했습니다");
+	RESET_PASSWORD_FAIL(HttpStatus.BAD_REQUEST, "MEMBER407", "회원 비밀번호 찾기에 실패했습니다"),
+	EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER408", "이메일을 찾을 수 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

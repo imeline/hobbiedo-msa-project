@@ -35,9 +35,8 @@ spring:
 
   data:
     redis:
-      host: 172.18.0.3
+      host: localhost
       port: 6379
-      password: 403403
 
 hobbie-do:
   front-url: https://hobbie-do.site

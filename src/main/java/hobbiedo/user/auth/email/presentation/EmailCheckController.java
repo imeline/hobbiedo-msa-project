@@ -24,10 +24,10 @@ public class EmailCheckController {
 	@PostMapping("/email/check")
 	@Operation(summary = "이메일 인증 코드 일치 확인",
 		description = "인증 코드가 일치하는지 확인합니다.")
-	public ApiResponse<Boolean> checkEmailCode(@RequestBody EmailCheckVO emailCheckVO) {
+	public ApiResponse<Void> checkEmailCode(@RequestBody EmailCheckVO emailCheckVO) {
+		emailCheckService.checkAuthCode(EmailCheckConverter.toDTO(emailCheckVO));
 		return ApiResponse.onSuccess(
 			SuccessStatus.EMAIL_AUTH_MATCH,
-			emailCheckService.checkAuthCode(EmailCheckConverter.toDTO(emailCheckVO))
-		);
+			null);
 	}
 }
