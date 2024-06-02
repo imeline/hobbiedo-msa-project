@@ -2,12 +2,14 @@ package hobbiedo.crew.application;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,5 +60,19 @@ public class ChatServiceImp implements ChatService {
 				return ChatHistoryListDTO.toDto(entry.getKey(), chatHistoryDTOList);
 			})
 			.toList();
+	}
+
+
+
+	@Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+	@Transactional
+	@Override
+	public void deleteOldChatsWithImageUrl() {
+		// 6개월 전 시각 계산
+		LocalDateTime expiryDateTime = LocalDateTime.now().minusMonths(6);
+
+		// LocalDateTime을 Instant로 변환
+		Instant expiryDate = expiryDateTime.atZone(ZoneId.systemDefault()).toInstant();
+		chatRepository.deleteByImageUrlExistsAndCreatedAtBefore(expiryDate);
 	}
 }

@@ -11,4 +11,7 @@ import hobbiedo.crew.domain.Chat;
 public interface ChatRepository extends MongoRepository<Chat, String> {
 	@Query("{ 'crewId': ?0, 'createdAt': { '$gt': ?1, '$lt': ?2 } }")
 	List<Chat> findByCrewIdAndCreatedAtBetween(Long crewId, Instant start, Instant end);
+
+	@Query(value = "{ 'imageUrl': { '$exists': true }, 'createdAt': { '$lt': ?0 } }", delete = true)
+	void deleteByImageUrlExistsAndCreatedAtBefore(Instant expiryDate);
 }
