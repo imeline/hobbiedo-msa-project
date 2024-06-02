@@ -69,7 +69,7 @@ public class ChatServiceImp implements ChatService {
 	@Override
 	public void deleteOldChatsWithImageUrl() {
 		// 6개월 전 시각 계산
-		LocalDateTime expiryDateTime = LocalDateTime.now().minusMonths(6);
+		LocalDateTime expiryDateTime = LocalDateTime.now().minusMonths(3);
 
 		// LocalDateTime을 Instant로 변환
 		Instant expiryDate = expiryDateTime.atZone(ZoneId.systemDefault()).toInstant();
