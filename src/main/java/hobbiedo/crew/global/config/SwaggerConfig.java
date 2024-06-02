@@ -1,4 +1,4 @@
-package hobbiedo.crew.global.config;
+package hobbiedo.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,14 +18,11 @@ public class SwaggerConfig {
 
 	@Bean
 	public OpenAPI openApi() {
-		return new OpenAPI()
-			.components(new Components())
+		return new OpenAPI().components(new Components())
 			.addSecurityItem(new SecurityRequirement().addList(BEARER_TOKEN))
-			.addServersItem(new Server().url("/"))
-			.addServersItem(new Server().url("/chat-service"))
-			.components(new io.swagger.v3.oas.models.Components()
-				.addSecuritySchemes(BEARER_TOKEN, new SecurityScheme()
-					.name(BEARER_TOKEN)
+			.addServersItem(new Server().url("/crew-service"))
+			.components(new Components().addSecuritySchemes(BEARER_TOKEN,
+				new SecurityScheme().name(BEARER_TOKEN)
 					.type(SecurityScheme.Type.HTTP)
 					.scheme(BEARER_SCHEME)
 					.bearerFormat(BEARER_FORMAT)))
