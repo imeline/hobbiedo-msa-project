@@ -12,6 +12,9 @@ public interface ChatRepository extends MongoRepository<Chat, String> {
 	@Query("{ 'crewId': ?0, 'createdAt': { '$gt': ?1, '$lt': ?2 } }")
 	List<Chat> findByCrewIdAndCreatedAtBetween(Long crewId, Instant start, Instant end);
 
+	@Query("{ 'crewId': ?0, 'imageUrl': { '$exists': true } }")
+	List<Chat> findByCrewIdAndImageUrlExists(Long crewId);
+
 	@Query(value = "{ 'imageUrl': { '$exists': true }, 'createdAt': { '$lt': ?0 } }", delete = true)
 	void deleteByImageUrlExistsAndCreatedAtBefore(Instant expiryDate);
 }

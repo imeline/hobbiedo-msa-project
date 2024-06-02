@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import hobbiedo.crew.domain.Chat;
 import hobbiedo.crew.dto.response.ChatHistoryDTO;
 import hobbiedo.crew.dto.response.ChatHistoryListDTO;
+import hobbiedo.crew.dto.response.ChatImageDTO;
+import hobbiedo.crew.dto.response.ChatImageListDTO;
+import hobbiedo.crew.global.exception.GlobalException;
+import hobbiedo.crew.global.status.ErrorStatus;
 import hobbiedo.crew.infrastructure.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,19 +33,28 @@ public class ChatServiceImp implements ChatService {
 
 	@Override
 	public List<ChatHistoryListDTO> getChatHistorySince(Long crewId, Instant since) {
-		// since 날짜 기준 8일 후 정각을 계산
-		// since 날짜 기준 8일 후 정각을 계산
 		Instant end = since.plus(8, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
-		log.info("Fetching chat history for crewId: {} from {} to {}", crewId, since, end);
 
-		// crewId와 since ~ end 사이의 데이터를 조회
 		List<Chat> chatList = chatRepository.findByCrewIdAndCreatedAtBetween(crewId, since, end);
-		log.info("Number of chats found: {}", chatList.size());
+		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
+			.collect(Collectors.groupingBy(
+				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
 
+		return groupedByDate.entrySet().stream()
+			.map(entry -> {
+				List<ChatHistoryDTO> chatHistoryDTOList = entry.getValue().stream()
+					.map(ChatHistoryDTO::toDto)
+					.toList();
+				return ChatHistoryListDTO.toDto(entry.getKey(), chatHistoryDTOList);
+			})
+			.toList();
+	}
+
+	@Override
+	public List<ChatImageListDTO> getChatsWithImageUrl(Long crewId) {
+		List<Chat> chatList = chatRepository.findByCrewIdAndImageUrlExists(crewId);
 		if (chatList.isEmpty()) {
-			log.warn("No chats found for the given period.");
-		} else {
-			chatList.forEach(chat -> log.info("Chat found: {}", chat));
+			throw new GlobalException(ErrorStatus.NO_EXIST_IMAGE_CHAT);
 		}
 
 		// 데이터를 날짜별로 그룹화
@@ -49,20 +62,15 @@ public class ChatServiceImp implements ChatService {
 			.collect(Collectors.groupingBy(
 				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
 
-		groupedByDate.forEach((date, chats) -> log.info("Date: {}, Number of chats: {}", date, chats.size()));
-
-		// 그룹화된 데이터를 DTO로 변환
 		return groupedByDate.entrySet().stream()
 			.map(entry -> {
-				List<ChatHistoryDTO> chatHistoryDTOList = entry.getValue().stream()
-					.map(ChatHistoryDTO::toDto)
+				List<ChatImageDTO> chatImageDTOList = entry.getValue().stream()
+					.map(ChatImageDTO::toDto)
 					.collect(Collectors.toList());
-				return ChatHistoryListDTO.toDto(entry.getKey(), chatHistoryDTOList);
+				return ChatImageListDTO.toDto(entry.getKey(), chatImageDTOList);
 			})
 			.toList();
 	}
-
-
 
 	@Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
 	@Transactional

@@ -13,8 +13,8 @@ public class ChatImageDTO {
 	private String imageUrl;
 	private Instant createdAt;
 
-	public static ChatHistoryDTO toDto(Chat chat) {
-		return ChatHistoryDTO.builder()
+	public static ChatImageDTO toDto(Chat chat) {
+		return ChatImageDTO.builder()
 			.uuid(chat.getUuid())
 			.imageUrl(chat.getImageUrl())
 			.createdAt(chat.getCreatedAt())
