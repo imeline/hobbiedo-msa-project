@@ -18,6 +18,7 @@ public enum SuccessStatus implements BaseCode {
 	EMAIL_AUTH_MATCH(HttpStatus.OK, "MEMBER200", "이메일 인증 코드가 일치합니다."),
 	CAN_USE_LOGIN_ID(HttpStatus.OK, "MEMBER200", "사용할 수 있는 아이디입니다."),
 	LOGOUT_SUCCESS(HttpStatus.OK, "MEMBER200", "로그아웃 성공"),
+	UPDATE_PASSWORD_SUCCESS(HttpStatus.OK, "MEMBER200", "비밀번호 변경 성공"),
 	REISSUE_TOKEN_SUCCESS(HttpStatus.OK, "MEMBER200", "액세스/리프레시 토큰 재발급에 성공했습니다");
 	private final HttpStatus httpStatus;
 	private final String status;
