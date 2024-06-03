@@ -20,7 +20,7 @@ import hobbiedo.crew.dto.response.ChatImageDTO;
 import hobbiedo.crew.dto.response.ChatImageListDTO;
 import hobbiedo.crew.global.exception.GlobalException;
 import hobbiedo.crew.global.status.ErrorStatus;
-import hobbiedo.crew.infrastructure.ChatRepository;
+import hobbiedo.crew.mongoInfrastructure.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,4 +1,4 @@
-package hobbiedo.crew.infrastructure;
+package hobbiedo.crew.mongoInfrastructure;
 
 import java.time.Instant;
 import java.util.List;
