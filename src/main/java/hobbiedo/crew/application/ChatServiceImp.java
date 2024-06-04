@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,6 +69,7 @@ public class ChatServiceImp implements ChatService {
 			.map(entry -> {
 				List<ChatImageDTO> chatImageDTOList = entry.getValue().stream()
 					.map(ChatImageDTO::toDto)
+					.sorted(Comparator.comparing(ChatImageDTO::getCreatedAt).reversed())
 					.toList();
 				return ChatImageListDTO.toDto(entry.getKey(), chatImageDTOList);
 			})
