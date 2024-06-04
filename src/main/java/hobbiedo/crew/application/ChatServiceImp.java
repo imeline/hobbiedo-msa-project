@@ -32,15 +32,17 @@ public class ChatServiceImp implements ChatService {
 	private final ChatRepository chatRepository;
 
 	@Override
-	public List<ChatHistoryListDTO> getChatHistorySince(Long crewId, Instant since) {
-		Instant end = since.plus(8, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
+	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, Instant oldestChatTime) {
+		Instant start = oldestChatTime.minus(8, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
 
-		List<Chat> chatList = chatRepository.findByCrewIdAndCreatedAtBetween(crewId, since, end);
+		List<Chat> chatList = chatRepository.findByCrewIdAndCreatedAtBetween(crewId, start,
+			oldestChatTime);
 		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
 			.collect(Collectors.groupingBy(
 				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
 
 		return groupedByDate.entrySet().stream()
+			.sorted(Map.Entry.comparingByKey())
 			.map(entry -> {
 				List<ChatHistoryDTO> chatHistoryDTOList = entry.getValue().stream()
 					.map(ChatHistoryDTO::toDto)
@@ -66,7 +68,7 @@ public class ChatServiceImp implements ChatService {
 			.map(entry -> {
 				List<ChatImageDTO> chatImageDTOList = entry.getValue().stream()
 					.map(ChatImageDTO::toDto)
-					.collect(Collectors.toList());
+					.toList();
 				return ChatImageListDTO.toDto(entry.getKey(), chatImageDTOList);
 			})
 			.toList();
