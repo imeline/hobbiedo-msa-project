@@ -33,8 +33,8 @@ public class GetUserHobbyVo {
 
 		for (GetUserHobbyDto userHobbyDto : subList) {
 			getUserHobbyVoList.add(new GetUserHobbyVo(
-				userHobbyDto.getId(),
-				userHobbyDto.getName()
+				userHobbyDto.getHobbyId(),
+				userHobbyDto.getHobbyName()
 			));
 		}
 

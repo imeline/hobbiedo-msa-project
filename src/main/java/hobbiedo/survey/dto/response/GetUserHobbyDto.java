@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetUserHobbyDto {
 
-	private Long id;
-	private String name;
+	private Long hobbyId;
+	private String hobbyName;
 	private String description;
 	private String imageUrl;
 	private Integer fitRate;
 
 	public static GetUserHobbyDto userHobbyToDto(UserHobby userHobby) {
 		return GetUserHobbyDto.builder()
-			.id(userHobby.getHobby().getId())
-			.name(userHobby.getHobby().getName())
+			.hobbyId(userHobby.getHobby().getId()) // UserHobby 객체의 Hobby 객체의 id 를 가져온다.
+			.hobbyName(userHobby.getHobby().getName()) // UserHobby 객체의 Hobby 객체의 nam 을 가져온다.
 			.description(userHobby.getHobby().getDescription())
 			.imageUrl(userHobby.getHobby().getImageUrl())
-			.fitRate(userHobby.getFitRate())
+			.fitRate(userHobby.getFitRate()) // UserHobby 객체의 fitRate 를 가져온다.
 			.build();
 	}
 }

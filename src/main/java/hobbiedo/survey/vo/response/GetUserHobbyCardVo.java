@@ -13,16 +13,16 @@ import lombok.NoArgsConstructor;
 @Schema(description = "저장된 회원의 취미 카드 정보")
 public class GetUserHobbyCardVo {
 
-	private Long id;
-	private String name;
+	private Long hobbyId;
+	private String hobbyName;
 	private String description;
 	private String imageUrl;
 	private Integer fitRate;
 
-	public GetUserHobbyCardVo(Long id, String name, String description, String imageUrl,
+	public GetUserHobbyCardVo(Long hobbyId, String hobbyName, String description, String imageUrl,
 		Integer fitRate) {
-		this.id = id;
-		this.name = name;
+		this.hobbyId = hobbyId;
+		this.hobbyName = hobbyName;
 		this.description = description;
 		this.imageUrl = imageUrl;
 		this.fitRate = fitRate;
@@ -41,8 +41,8 @@ public class GetUserHobbyCardVo {
 
 		for (GetUserHobbyDto userHobbyDto : subList) {
 			getUserHobbyCardVoList.add(new GetUserHobbyCardVo(
-				userHobbyDto.getId(),
-				userHobbyDto.getName(),
+				userHobbyDto.getHobbyId(),
+				userHobbyDto.getHobbyName(),
 				userHobbyDto.getDescription(),
 				userHobbyDto.getImageUrl(),
 				userHobbyDto.getFitRate()

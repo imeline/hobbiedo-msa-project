@@ -14,7 +14,8 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
 
 	// 회원 별 취미 데이터가 존재하지 않음
-	GET_USER_HOBBIES_NOT_FOUND(HttpStatus.NOT_FOUND, "HOBBIES401", "해당 회원의 취미 리스트가 존재하지 않습니다.");
+	GET_USER_HOBBIES_NOT_FOUND(HttpStatus.NOT_FOUND, "HOBBIES401",
+		"해당 회원의 취미 리스트가 존재하지 않습니다. 취미 조사 후 이용해주세요.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
