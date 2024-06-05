@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hobbiedo.global.api.exception.handler.BobbyExceptionHandler;
+import hobbiedo.global.api.exception.handler.HobbyExceptionHandler;
 import hobbiedo.survey.domain.UserHobby;
 import hobbiedo.survey.dto.response.GetUserHobbyDto;
 import hobbiedo.survey.infrastructure.UserHobbyRepository;
@@ -29,7 +29,7 @@ public class HobbyServiceImpl implements HobbyService {
 
 		List<UserHobby> userHobbies = Optional.ofNullable(userHobbyRepository.findByUuid(uuid))
 			.filter(list -> !list.isEmpty())
-			.orElseThrow(() -> new BobbyExceptionHandler(GET_USER_HOBBIES_NOT_FOUND));
+			.orElseThrow(() -> new HobbyExceptionHandler(GET_USER_HOBBIES_NOT_FOUND));
 
 		List<GetUserHobbyDto> getUserHobbyDtoList = new ArrayList<>();
 
