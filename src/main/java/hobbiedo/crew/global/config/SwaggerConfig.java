@@ -20,8 +20,8 @@ public class SwaggerConfig {
 	public OpenAPI openApi() {
 		return new OpenAPI().components(new Components())
 			.addSecurityItem(new SecurityRequirement().addList(BEARER_TOKEN))
-			.addServersItem(new Server().url("/"))
 			.addServersItem(new Server().url("/crew-service"))
+			.addServersItem(new Server().url("/"))
 			.components(new Components().addSecuritySchemes(BEARER_TOKEN,
 				new SecurityScheme().name(BEARER_TOKEN)
 					.type(SecurityScheme.Type.HTTP)

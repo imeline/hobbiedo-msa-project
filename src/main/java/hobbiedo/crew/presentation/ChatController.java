@@ -1,6 +1,5 @@
 package hobbiedo.crew.presentation;
 
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +24,12 @@ import lombok.RequiredArgsConstructor;
 public class ChatController {
 	private final ChatService chatService;
 
-	@Operation(summary = "(특정 소모임의) 이전 채팅 내역 조회", description = "특정 시간 다음날 0시부터 7일간의 채팅 내역을 조회한다.")
+	@Operation(summary = "(특정 소모임의) 이전 채팅 내역 조회", description = "페이지에 따른 10개의 이전 채팅 내역을 조회한다.")
 	@GetMapping("/history/{crewId}")
-	public BaseResponse<List<ChatHistoryListDTO>> getChatHistorySince(@PathVariable Long crewId,
-		@RequestParam Instant since) {
+	public BaseResponse<List<ChatHistoryListDTO>> getChatHistoryBefore(@PathVariable Long crewId,
+		@RequestParam int page) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CHAT_HISTORY,
-			chatService.getChatHistorySince(crewId, since));
+			chatService.getChatHistoryBefore(crewId, page));
 	}
 
 	@Operation(summary = "(특정 소모임) 사진 모아보기", description = "특정 소모임의 이미지 URL이 있는 채팅 내역을 조회한다.")

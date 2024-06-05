@@ -4,11 +4,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +35,19 @@ public class ChatServiceImp implements ChatService {
 	private final ChatRepository chatRepository;
 
 	@Override
-	public List<ChatHistoryListDTO> getChatHistorySince(Long crewId, Instant since) {
-		Instant end = since.plus(8, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
-
-		List<Chat> chatList = chatRepository.findByCrewIdAndCreatedAtBetween(crewId, since, end);
+	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, int page) {
+		int size = 10; // 페이지 당 데이터 개수
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdAt")));
+		List<Chat> chatList = chatRepository.findByCrewId(crewId, pageable);
+		if (chatList.isEmpty()) {
+			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
+		}
 		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
 			.collect(Collectors.groupingBy(
 				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
 
 		return groupedByDate.entrySet().stream()
+			.sorted(Map.Entry.comparingByKey())
 			.map(entry -> {
 				List<ChatHistoryDTO> chatHistoryDTOList = entry.getValue().stream()
 					.map(ChatHistoryDTO::toDto)
@@ -52,7 +59,7 @@ public class ChatServiceImp implements ChatService {
 
 	@Override
 	public List<ChatImageListDTO> getChatsWithImageUrl(Long crewId) {
-		List<Chat> chatList = chatRepository.findByCrewIdAndImageUrlExists(crewId);
+		List<Chat> chatList = chatRepository.findByCrewIdAndImageUrl(crewId);
 		if (chatList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_IMAGE_CHAT);
 		}
@@ -66,7 +73,8 @@ public class ChatServiceImp implements ChatService {
 			.map(entry -> {
 				List<ChatImageDTO> chatImageDTOList = entry.getValue().stream()
 					.map(ChatImageDTO::toDto)
-					.collect(Collectors.toList());
+					.sorted(Comparator.comparing(ChatImageDTO::getCreatedAt).reversed())
+					.toList();
 				return ChatImageListDTO.toDto(entry.getKey(), chatImageDTOList);
 			})
 			.toList();
