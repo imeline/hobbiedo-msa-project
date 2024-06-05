@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
 	VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "GLOBAL400", "데이터베이스 유효성 에러"),
-	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다");
+	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
+
+	// 회원 별 취미 데이터가 존재하지 않음
+	GET_USER_HOBBIES_NOT_FOUND(HttpStatus.NOT_FOUND, "HOBBIES401", "해당 회원의 취미 리스트가 존재하지 않습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
@@ -28,19 +31,19 @@ public enum ErrorStatus implements BaseErrorCode {
 	@Override
 	public ErrorReasonDto getReason() {
 		return ErrorReasonDto
-				.builder()
-				.code(status)
-				.message(message)
-				.build();
+			.builder()
+			.code(status)
+			.message(message)
+			.build();
 	}
 
 	@Override
 	public ErrorReasonDto getReasonHttpStatus() {
 		return ErrorReasonDto
-				.builder()
-				.httpStatus(httpStatus)
-				.code(status)
-				.message(message)
-				.build();
+			.builder()
+			.httpStatus(httpStatus)
+			.code(status)
+			.message(message)
+			.build();
 	}
 }
