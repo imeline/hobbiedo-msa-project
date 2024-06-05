@@ -4,12 +4,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +35,13 @@ public class ChatServiceImp implements ChatService {
 	private final ChatRepository chatRepository;
 
 	@Override
-	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, Instant oldestChatTime) {
-		Instant start = oldestChatTime.minus(8, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
-
-		List<Chat> chatList = chatRepository.findByCrewIdAndCreatedAtBetween(crewId, start,
-			oldestChatTime);
+	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, int page) {
+		int size = 10; // 페이지 당 데이터 개수
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdAt")));
+		List<Chat> chatList = chatRepository.findByCrewId(crewId, pageable);
+		if (chatList.isEmpty()) {
+			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
+		}
 		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
 			.collect(Collectors.groupingBy(
 				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
@@ -55,7 +59,7 @@ public class ChatServiceImp implements ChatService {
 
 	@Override
 	public List<ChatImageListDTO> getChatsWithImageUrl(Long crewId) {
-		List<Chat> chatList = chatRepository.findByCrewIdAndImageUrlExists(crewId);
+		List<Chat> chatList = chatRepository.findByCrewIdAndImageUrl(crewId);
 		if (chatList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_IMAGE_CHAT);
 		}
