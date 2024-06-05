@@ -15,7 +15,10 @@ public enum SuccessStatus implements BaseCode {
 	// 회원 별 취미 조회 성공
 	GET_USER_HOBBIES_SUCCESS(HttpStatus.OK, "200", "해당 회원의 취미 리스트 조회를 성공하였습니다."),
 	// 회원 별 취미 카드 리스트 조회 성공
-	GET_USER_HOBBY_CARDS_SUCCESS(HttpStatus.OK, "200", "해당 회원의 취미 카드 리스트 조회를 성공하였습니다.");
+	GET_USER_HOBBY_CARDS_SUCCESS(HttpStatus.OK, "200", "해당 회원의 취미 카드 리스트 조회를 성공하였습니다."),
+
+	// 취미 추천 설문 조회 성공
+	GET_HOBBY_SURVEY_SUCCESS(HttpStatus.OK, "200", "취미 추천 설문 조회를 성공하였습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
