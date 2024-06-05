@@ -22,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
-@Tag(name = "Hobbies", description = "취미 서비스")
-public class HobbiesController {
+@Tag(name = "Hobby", description = "취미 서비스")
+public class HobbyController {
 
 	private final HobbyService hobbyService;
 
