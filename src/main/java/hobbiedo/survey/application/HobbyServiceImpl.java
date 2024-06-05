@@ -2,14 +2,13 @@ package hobbiedo.survey.application;
 
 import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hobbiedo.global.api.exception.handler.HobbyExceptionHandler;
+import hobbiedo.global.api.exception.handler.SurveyExceptionHandler;
 import hobbiedo.survey.domain.UserHobby;
 import hobbiedo.survey.dto.response.GetUserHobbyDto;
 import hobbiedo.survey.infrastructure.UserHobbyRepository;
@@ -29,15 +28,11 @@ public class HobbyServiceImpl implements HobbyService {
 
 		List<UserHobby> userHobbies = Optional.ofNullable(userHobbyRepository.findByUuid(uuid))
 			.filter(list -> !list.isEmpty())
-			.orElseThrow(() -> new HobbyExceptionHandler(GET_USER_HOBBIES_NOT_FOUND));
+			.orElseThrow(() -> new SurveyExceptionHandler(GET_USER_HOBBIES_NOT_FOUND));
 
-		List<GetUserHobbyDto> getUserHobbyDtoList = new ArrayList<>();
-
-		for (UserHobby userHobby : userHobbies) {
-			getUserHobbyDtoList.add(
-				GetUserHobbyDto.userHobbyToDto(userHobby)
-			);
-		}
+		List<GetUserHobbyDto> getUserHobbyDtoList = userHobbies.stream()
+			.map(GetUserHobbyDto::userHobbyToDto)
+			.toList();
 
 		return getUserHobbyDtoList;
 	}

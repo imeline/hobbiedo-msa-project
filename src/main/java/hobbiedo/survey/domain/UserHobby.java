@@ -23,15 +23,14 @@ public class UserHobby extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
-	@Column(length = 255)
+	@Column(nullable = false, length = 255)
 	private String uuid;
 
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Hobby hobby;
 
-	@NotNull
+	@Column(nullable = false)
 	private Integer fitRate; // 취미 적합도
 
 	@Builder

@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,16 +20,13 @@ public class Hobby extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
-	@Column(length = 50)
+	@Column(nullable = false, length = 50)
 	private String name;
 
-	@NotNull
-	@Column(length = 1000)
+	@Column(nullable = false, length = 1000)
 	private String description;
 
-	@NotNull
-	@Column(length = 255)
+	@Column(nullable = false, length = 255)
 	private String imageUrl;
 
 	@Builder
