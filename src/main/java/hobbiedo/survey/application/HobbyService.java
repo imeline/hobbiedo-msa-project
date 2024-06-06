@@ -2,9 +2,9 @@ package hobbiedo.survey.application;
 
 import java.util.List;
 
-import hobbiedo.survey.dto.response.GetUserHobbyDto;
+import hobbiedo.survey.dto.response.UserHobbyResponseDto;
 
 public interface HobbyService {
 
-	List<GetUserHobbyDto> getUserHobbies(String uuid);
+	List<UserHobbyResponseDto> getUserHobbies(String uuid);
 }

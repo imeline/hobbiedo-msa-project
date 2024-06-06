@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.global.api.exception.handler.SurveyExceptionHandler;
 import hobbiedo.survey.domain.HobbySurvey;
-import hobbiedo.survey.dto.response.GetHobbySurveyDto;
+import hobbiedo.survey.dto.response.HobbySurveyResponseDto;
 import hobbiedo.survey.infrastructure.HobbySurveyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class SurveyServiceImpl implements SurveyService {
 	private final HobbySurveyRepository hobbySurveyRepository;
 
 	@Override
-	public List<GetHobbySurveyDto> getHobbySurveyQuestions() {
+	public List<HobbySurveyResponseDto> getHobbySurveyQuestions() {
 
 		List<HobbySurvey> randomQuestions = Optional.ofNullable(
 				hobbySurveyRepository.findRandomQuestions())
@@ -38,8 +38,8 @@ public class SurveyServiceImpl implements SurveyService {
 			throw new SurveyExceptionHandler(GET_HOBBY_SURVEY_QUESTIONS_LESS);
 		}
 
-		List<GetHobbySurveyDto> getHobbySurveyDtoList = randomQuestions.stream()
-			.map(GetHobbySurveyDto::hobbySurveyToDto)
+		List<HobbySurveyResponseDto> getHobbySurveyDtoList = randomQuestions.stream()
+			.map(HobbySurveyResponseDto::hobbySurveyToDto)
 			.toList();
 
 		return getHobbySurveyDtoList;

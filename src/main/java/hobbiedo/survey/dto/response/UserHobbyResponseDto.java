@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetUserHobbyDto {
+public class UserHobbyResponseDto {
 
 	private Long hobbyId;
 	private String hobbyName;
@@ -18,8 +18,8 @@ public class GetUserHobbyDto {
 	private String imageUrl;
 	private Integer fitRate;
 
-	public static GetUserHobbyDto userHobbyToDto(UserHobby userHobby) {
-		return GetUserHobbyDto.builder()
+	public static UserHobbyResponseDto userHobbyToDto(UserHobby userHobby) {
+		return UserHobbyResponseDto.builder()
 			.hobbyId(userHobby.getHobby().getId()) // UserHobby 객체의 Hobby 객체의 id 를 가져온다.
 			.hobbyName(userHobby.getHobby().getName()) // UserHobby 객체의 Hobby 객체의 nam 을 가져온다.
 			.description(userHobby.getHobby().getDescription())

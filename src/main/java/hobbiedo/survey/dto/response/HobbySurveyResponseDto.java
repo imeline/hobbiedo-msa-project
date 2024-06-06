@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetHobbySurveyDto {
+public class HobbySurveyResponseDto {
 
 	private Long questionId;
 	private String question;
 	private QuestionType questionType;
 
-	public static GetHobbySurveyDto hobbySurveyToDto(HobbySurvey hobbySurvey) {
-		return GetHobbySurveyDto.builder()
+	public static HobbySurveyResponseDto hobbySurveyToDto(HobbySurvey hobbySurvey) {
+		return HobbySurveyResponseDto.builder()
 			.questionId(hobbySurvey.getId())
 			.question(hobbySurvey.getQuestion())
 			.questionType(hobbySurvey.getQuestionType())
