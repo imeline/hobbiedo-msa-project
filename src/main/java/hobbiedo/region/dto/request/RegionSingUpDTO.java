@@ -6,14 +6,15 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class RegionDetailDTO {
+public class RegionSingUpDTO {
+	private String uuid;
 	private String addressName;
 	private String legalCode;
 	private double latitude;
 	private double longitude;
 	private int currentSelectedRange;
 
-	public Region toCreateRegion(String uuid) {
+	public Region toEntity() {
 		return Region.builder()
 			.uuid(uuid)
 			.currentSelectedRange(currentSelectedRange)
@@ -21,21 +22,7 @@ public class RegionDetailDTO {
 			.longitude(longitude)
 			.addressName(addressName)
 			.legalCode(legalCode)
-			.isBaseRegion(false)
+			.isBaseRegion(true) // 회원가입 시라 무조건 base 로 설정
 			.build();
 	}
-
-	public Region toModifyRegion(Region region) {
-		return Region.builder()
-			.id(region.getId())
-			.uuid(region.getUuid())
-			.currentSelectedRange(currentSelectedRange)
-			.latitude(latitude)
-			.longitude(longitude)
-			.addressName(addressName)
-			.legalCode(legalCode)
-			.isBaseRegion(region.isBaseRegion())
-			.build();
-	}
-
 }

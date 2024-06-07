@@ -1,5 +1,6 @@
 package hobbiedo.region.application;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import hobbiedo.region.domain.Region;
 import hobbiedo.region.dto.request.RegionDetailDTO;
+import hobbiedo.region.dto.request.RegionSingUpDTO;
 import hobbiedo.region.dto.response.RegionAddressNameDTO;
 import hobbiedo.region.dto.response.RegionGetDetailDTO;
 import hobbiedo.region.dto.response.RegionXyDTO;
@@ -26,7 +28,7 @@ public class RegionServiceImp implements RegionService {
 	@Override
 	@Transactional
 	public void addRegion(RegionDetailDTO regionDetailDto, String uuid) {
-		if (regionDetailDto.isInvalidRange()) {
+		if (isInvalidRange(regionDetailDto.getCurrentSelectedRange())) {
 			throw new GlobalException(ErrorStatus.INVALID_RANGE);
 		}
 		regionRepository.save(regionDetailDto.toCreateRegion(uuid));
@@ -58,7 +60,7 @@ public class RegionServiceImp implements RegionService {
 	@Override
 	@Transactional
 	public void modifyRegion(Long regionId, RegionDetailDTO regionDetailDto) {
-		if (regionDetailDto.isInvalidRange()) {
+		if (isInvalidRange(regionDetailDto.getCurrentSelectedRange())) {
 			throw new GlobalException(ErrorStatus.INVALID_RANGE);
 		}
 		regionRepository.save(
@@ -107,8 +109,22 @@ public class RegionServiceImp implements RegionService {
 			.toList();
 	}
 
+	@Override
+	@Transactional
+	public void singUpRegion(RegionSingUpDTO regionSingUpDTO) {
+		if (isInvalidRange(regionSingUpDTO.getCurrentSelectedRange())) {
+			throw new GlobalException(ErrorStatus.INVALID_RANGE);
+		}
+		regionRepository.save(regionSingUpDTO.toEntity());
+	}
+
 	private Region getRegion(Long regionId) {
 		return regionRepository.findById(regionId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_MEMBER_REGION));
+	}
+
+	private boolean isInvalidRange(int currentSelectedRange) {
+		List<Integer> validRanges = Arrays.asList(3, 5, 7, 10);
+		return !validRanges.contains(currentSelectedRange);
 	}
 }

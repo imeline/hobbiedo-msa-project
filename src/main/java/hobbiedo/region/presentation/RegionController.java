@@ -41,7 +41,8 @@ public class RegionController {
 
 	@Operation(summary = "활동 지역 이름명 리스트 조회", description = "한 회원에 대한 활동 지역(1~3개)의 이름명(읍동면) 리스트를 조회한다.")
 	@GetMapping("/address-names")
-	public BaseResponse<List<RegionAddressNameDTO>> getAddressNameList(@RequestHeader(name = "Uuid") String uuid) {
+	public BaseResponse<List<RegionAddressNameDTO>> getAddressNameList(
+		@RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_ADDRESS_NAME_LIST,
 			regionService.getAddressNames(uuid));
 	}
@@ -56,7 +57,8 @@ public class RegionController {
 
 	@Operation(summary = "기본 활동 지역 이름명 조회", description = "회원이 현재 기본으로 선택해놓은 활동 지역의 id,이름을 조회한다.")
 	@GetMapping("/base-address-name")
-	public BaseResponse<RegionAddressNameDTO> getBaseAddressName(@RequestHeader(name = "Uuid") String uuid) {
+	public BaseResponse<RegionAddressNameDTO> getBaseAddressName(
+		@RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_BASE_ADDRESS_NAME,
 			regionService.getBaseAddressName(uuid));
 	}
@@ -93,4 +95,5 @@ public class RegionController {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_REGION_XY,
 			regionService.getRegionXY(uuid));
 	}
+
 }
