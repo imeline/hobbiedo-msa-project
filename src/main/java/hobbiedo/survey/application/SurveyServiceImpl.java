@@ -62,7 +62,7 @@ public class SurveyServiceImpl implements SurveyService {
 	public void saveOrUpdateHobbyData(String uuid,
 		List<HobbySurveyRequestDto> hobbySurveyRequestDtoList) {
 
-		// 취미 설문 문항이 비어있거나 20개가 아닐 경우 예외 처리
+		// 취미 설문에 대한 응답이 20개가 아니거나 비어있을 경우 예외 처리
 		if (hobbySurveyRequestDtoList.isEmpty()) {
 
 			throw new SurveyExceptionHandler(HOBBY_SURVEY_QUESTIONS_EMPTY);

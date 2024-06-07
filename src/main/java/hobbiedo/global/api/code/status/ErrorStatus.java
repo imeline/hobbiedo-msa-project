@@ -33,12 +33,12 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 취미 추천 설문 질문 리스트가 20개 미만
 	GET_HOBBY_SURVEY_QUESTIONS_LESS(HttpStatus.NOT_FOUND, "SURVEY402",
 		"취미 추천 설문 질문 리스트가 20개 미만입니다. 취미 추천 더 질문을 등록해주세요."),
-	// 취미 추천 설문 질문 리스트가 비워있을 때
+	// 취미 추천 설문 응답 리스트가 비어있음
 	HOBBY_SURVEY_QUESTIONS_EMPTY(HttpStatus.BAD_REQUEST, "SURVEY403",
-		"취미 추천 설문 질문 리스트가 비어있습니다."),
-	// 취미 추천 설문 질문 리스트가 20개 미만이거나 초과
+		"취미 추천 설문 응답 리스트가 비어있습니다."),
+	// 취미 추천 설문 응답 리스트가 20개 미만이거나 초과
 	HOBBY_SURVEY_QUESTIONS_SIZE_LESS_OR_OVER(HttpStatus.BAD_REQUEST, "SURVEY405",
-		"취미 추천 설문 질문 리스트가 20개 미만이거나 초과되었습니다.");
+		"취미 추천 설문 응답 리스트가 20개 미만이거나 20개를 초과했습니다. 취미 추천 설문 응답을 20개로 맞춰주세요.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
