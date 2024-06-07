@@ -11,6 +11,6 @@ import hobbiedo.survey.domain.Hobby;
 @Repository
 public interface HobbyRepository extends JpaRepository<Hobby, Long> {
 
-	@Query(nativeQuery = true, value = "SELECT * FROM Hobby ORDER BY RAND() LIMIT 10")
+	@Query(nativeQuery = true, value = "SELECT * FROM hobby ORDER BY RAND() LIMIT 10")
 	List<Hobby> findRandomHobbies();
 }
