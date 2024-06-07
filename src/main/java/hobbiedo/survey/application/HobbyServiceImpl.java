@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.global.api.exception.handler.SurveyExceptionHandler;
 import hobbiedo.survey.domain.UserHobby;
-import hobbiedo.survey.dto.response.GetUserHobbyDto;
+import hobbiedo.survey.dto.response.UserHobbyResponseDto;
 import hobbiedo.survey.infrastructure.UserHobbyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +24,14 @@ public class HobbyServiceImpl implements HobbyService {
 	private final UserHobbyRepository userHobbyRepository;
 
 	@Override
-	public List<GetUserHobbyDto> getUserHobbies(String uuid) {
+	public List<UserHobbyResponseDto> getUserHobbies(String uuid) {
 
 		List<UserHobby> userHobbies = Optional.ofNullable(userHobbyRepository.findByUuid(uuid))
 			.filter(list -> !list.isEmpty())
 			.orElseThrow(() -> new SurveyExceptionHandler(GET_USER_HOBBIES_NOT_FOUND));
 
-		List<GetUserHobbyDto> getUserHobbyDtoList = userHobbies.stream()
-			.map(GetUserHobbyDto::userHobbyToDto)
+		List<UserHobbyResponseDto> getUserHobbyDtoList = userHobbies.stream()
+			.map(UserHobbyResponseDto::userHobbyToDto)
 			.toList();
 
 		return getUserHobbyDtoList;

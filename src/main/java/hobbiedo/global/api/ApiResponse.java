@@ -41,6 +41,14 @@ public class ApiResponse<T> {
 			data);
 	}
 
+	public static <T> ApiResponse<T> onSuccess(BaseCode code) {
+		return new ApiResponse<>(
+			true,
+			code.getReasonHttpStatus().getCode(),
+			code.getReasonHttpStatus().getMessage(),
+			null);
+	}
+
 	public static <T> ApiResponse<T> onFailure(String status, String message, T data) {
 		return new ApiResponse<>(false, status, message, data);
 	}
