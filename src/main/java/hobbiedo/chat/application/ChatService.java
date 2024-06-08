@@ -7,7 +7,7 @@ import hobbiedo.chat.dto.response.ChatImageListDTO;
 
 public interface ChatService {
 
-	List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, int page);
+	List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, String uuid, int page);
 
 	List<ChatImageListDTO> getChatsWithImageUrl(Long crewId);
 

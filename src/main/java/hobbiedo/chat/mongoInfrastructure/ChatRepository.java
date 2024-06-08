@@ -10,7 +10,8 @@ import org.springframework.data.mongodb.repository.Query;
 import hobbiedo.chat.domain.Chat;
 
 public interface ChatRepository extends MongoRepository<Chat, String> {
-	List<Chat> findByCrewId(Long crewId, Pageable pageable);
+	@Query("{ 'crewId': ?0, 'createdAt': { '$lt': ?1 } }")
+	List<Chat> findByCrewIdAndCreatedAtAfter(Long crewId, Instant lastReadAt, Pageable pageable);
 
 	@Query("{ 'crewId': ?0, 'imageUrl': { '$exists': true } }")
 	List<Chat> findByCrewIdAndImageUrl(Long crewId);
