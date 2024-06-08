@@ -34,9 +34,11 @@ public class ChatController {
 			chatService.getChatHistoryBefore(crewId, uuid, page));
 	}
 
-	@Operation(summary = "(채팅방 리스트에서) 마지막 채팅과 안읽음 개수 리스트 조회 (처음)", description = "처음 소모임 리스트를 띄울 때, 한 유저에 해당하는 전체 소모임 리스트의 마지막 채팅과 안읽음 개수를 조회한다.")
+	@Operation(summary = "(채팅방 리스트에서) 마지막 채팅과 안읽음 개수 리스트 조회 (처음)",
+		description = "처음 소모임 리스트를 띄울 때, 한 유저에 해당하는 전체 소모임 리스트의 마지막 채팅과 안읽음 개수를 조회한다.")
 	@GetMapping("/latest/list")
-	public BaseResponse<List<ChatListDTO>> getLatestChatList(@RequestHeader(name = "Uuid") String uuid) {
+	public BaseResponse<List<ChatListDTO>> getLatestChatList(
+		@RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_LAST_CHAT_LIST,
 			chatService.getChatList(uuid));
 	}

@@ -17,16 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.chat.domain.Chat;
-import hobbiedo.chat.domain.ChatStatus;
-import hobbiedo.chat.domain.UnReadCount;
+import hobbiedo.chat.domain.ChatLastStatus;
 import hobbiedo.chat.dto.response.ChatHistoryDTO;
 import hobbiedo.chat.dto.response.ChatHistoryListDTO;
 import hobbiedo.chat.dto.response.ChatImageDTO;
 import hobbiedo.chat.dto.response.ChatImageListDTO;
 import hobbiedo.chat.dto.response.ChatListDTO;
+import hobbiedo.chat.mongoInfrastructure.ChatLastStatusRepository;
 import hobbiedo.chat.mongoInfrastructure.ChatRepository;
-import hobbiedo.chat.mongoInfrastructure.ChatStatusRepository;
-import hobbiedo.chat.mongoInfrastructure.UnReadCountRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -36,20 +34,15 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class ChatServiceImp implements ChatService {
 	private final ChatRepository chatRepository;
-	private final ChatStatusRepository chatStatusRepository;
-	private final UnReadCountRepository unReadCountRepository;
+	private final ChatLastStatusRepository chatStatusRepository;
 
 	@Override
 	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, String uuid, int page) {
 		int size = 10; // 페이지 당 데이터 개수
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
 
-		Instant lastReadAt = chatStatusRepository.findByUuidAndCrewId(uuid, crewId)
-			.map(ChatStatus::getLastReadAt)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS));
-
-		List<Chat> chatList = chatRepository.findByCrewIdAndCreatedAtAfter(crewId, lastReadAt,
-			pageable);
+		List<Chat> chatList = chatRepository.findLastChatByCrewId(crewId,
+			getLastReadAt(uuid, crewId), pageable);
 		if (chatList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
 		}
@@ -69,7 +62,7 @@ public class ChatServiceImp implements ChatService {
 
 	@Override
 	public List<ChatListDTO> getChatList(String uuid) {
-		List<ChatStatus> crewIdList = chatStatusRepository.findByUuid(uuid);
+		List<ChatLastStatus> crewIdList = chatStatusRepository.findByUuid(uuid);
 		if (crewIdList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS);
 		}
@@ -77,43 +70,25 @@ public class ChatServiceImp implements ChatService {
 		return crewIdList.stream()
 			.map(chatStatus -> {
 				Long crewId = chatStatus.getCrewId();
-				// 읽지 않은 메시지 개수 업데이트
-				UnReadCount unReadCount = modifyUnReadCount(crewId, uuid);
 				// 채팅방의 마지막 메시지 조회
-				Chat lastChat = chatRepository.findLatestChatByCrewId(
-						crewId, Sort.by(Sort.Direction.DESC, "createdAt")).stream()
-					.findFirst()
+				Chat lastChat = chatRepository.findLastChatByCrewId(crewId)
 					.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT));
 				String content = lastChat.getImageUrl() != null ? "사진을 보냈습니다." : lastChat.getText();
+				// 안 읽은 메시지 개수 조회
+				long count = chatRepository.countByCrewIdAndCreatedAtAfter(crewId,
+					getLastReadAt(uuid, crewId));
+				int cnt = count > 999 ? 999 : (int)count;
 
-				return ChatListDTO.toDto(crewId, content, unReadCount.getUnreadCount(),
-					lastChat.getCreatedAt());
+				return ChatListDTO.toDto(crewId, content, cnt, lastChat.getCreatedAt());
 			})
 			.sorted(Comparator.comparing(ChatListDTO::getCreatedAt).reversed())
 			.toList();
 	}
 
-	private UnReadCount modifyUnReadCount(Long crewId, String uuid) {
-		int cnt = 0;
-		ChatStatus chatStatus = chatStatusRepository.findByUuidAndCrewId(uuid, crewId)
+	private Instant getLastReadAt(String uuid, Long crewId) {
+		return chatStatusRepository.findByUuidAndCrewId(crewId, uuid)
+			.map(ChatLastStatus::getLastReadAt)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS));
-
-		if (!chatStatus.getConnectionStatus()) { // 채팅방 안에 접속해 있지 않은 경우
-			Instant lastReadAt = chatStatusRepository.findByUuidAndCrewId(uuid, crewId)
-				.map(ChatStatus::getLastReadAt)
-				.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS));
-
-			long count = chatRepository.countByCrewIdAndCreatedAtAfter(crewId, lastReadAt);
-			cnt = count > 999 ? 999 : (int)count;
-		}
-		UnReadCount unReadCount = unReadCountRepository.findByCrewIdAndUuid(crewId, uuid)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_UNREAD_COUNT));
-		return unReadCountRepository.save(UnReadCount.builder()
-			.id(unReadCount.getId())
-			.uuid(unReadCount.getUuid())
-			.crewId(unReadCount.getCrewId())
-			.unreadCount(cnt)
-			.build());
 	}
 
 	@Override

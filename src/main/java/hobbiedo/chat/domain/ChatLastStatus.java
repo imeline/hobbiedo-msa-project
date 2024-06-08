@@ -1,5 +1,7 @@
 package hobbiedo.chat.domain;
 
+import java.time.Instant;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,23 +13,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Document(collection = "UnReadCount")
+@Document(collection = "ChatLastStatus")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @CompoundIndex(name = "uuid_crewId_idx", def = "{'uuid': 1, 'crewId': 1}")
-public class UnReadCount {
+public class ChatLastStatus {
 	@Id
 	private String id;
 	private String uuid;
 	private Long crewId;
-	private Integer unreadCount;
+	private boolean connectionStatus;
+	private Instant lastReadAt;
 
 	@Builder
-	public UnReadCount(String id, String uuid, Long crewId, Integer unreadCount) {
+	public ChatLastStatus(String id, String uuid, Long crewId, boolean connectionStatus,
+		Instant lastReadAt) {
 		this.id = id;
 		this.uuid = uuid;
 		this.crewId = crewId;
-		this.unreadCount = unreadCount;
+		this.connectionStatus = connectionStatus;
+		this.lastReadAt = lastReadAt;
 	}
 }
