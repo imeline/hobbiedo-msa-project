@@ -1,4 +1,4 @@
-package hobbiedo.crew.application;
+package hobbiedo.chat.application;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -16,26 +16,28 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hobbiedo.chat.domain.Chat;
 import hobbiedo.chat.domain.ChatStatus;
+import hobbiedo.chat.domain.UnReadCount;
+import hobbiedo.chat.dto.response.ChatHistoryDTO;
+import hobbiedo.chat.dto.response.ChatHistoryListDTO;
+import hobbiedo.chat.dto.response.ChatImageDTO;
+import hobbiedo.chat.dto.response.ChatImageListDTO;
+import hobbiedo.chat.dto.response.ChatListDTO;
+import hobbiedo.chat.mongoInfrastructure.ChatRepository;
 import hobbiedo.chat.mongoInfrastructure.ChatStatusRepository;
-import hobbiedo.crew.domain.Chat;
-import hobbiedo.crew.dto.response.ChatHistoryDTO;
-import hobbiedo.crew.dto.response.ChatHistoryListDTO;
-import hobbiedo.crew.dto.response.ChatImageDTO;
-import hobbiedo.crew.dto.response.ChatImageListDTO;
-import hobbiedo.crew.global.exception.GlobalException;
-import hobbiedo.crew.global.status.ErrorStatus;
-import hobbiedo.crew.mongoInfrastructure.ChatRepository;
+import hobbiedo.chat.mongoInfrastructure.UnReadCountRepository;
+import hobbiedo.global.exception.GlobalException;
+import hobbiedo.global.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class ChatServiceImp implements ChatService {
 	private final ChatRepository chatRepository;
 	private final ChatStatusRepository chatStatusRepository;
+	private final UnReadCountRepository unReadCountRepository;
 
 	@Override
 	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, String uuid, int page) {
@@ -65,6 +67,33 @@ public class ChatServiceImp implements ChatService {
 					.toList();
 				return ChatHistoryListDTO.toDto(entry.getKey(), chatHistoryDTOList);
 			})
+			.toList();
+	}
+
+	@Override
+	public List<ChatListDTO> getChatList(String uuid) {
+		List<ChatStatus> crewIdList = chatStatusRepository.findByUuid(uuid);
+		if (crewIdList.isEmpty()) {
+			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS);
+		}
+
+		return crewIdList.stream()
+			.map(chatStatus -> {
+				Long crewId = chatStatus.getCrewId();
+				List<Chat> chatList = chatRepository.findLatestChatByCrewId(
+					crewId, Sort.by(Sort.Direction.DESC, "createdAt"));
+				if (chatList.isEmpty()) {
+					throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
+				}
+				Chat lastChat = chatList.get(0);
+				int unreadCount = unReadCountRepository.findByCrewIdAndUuid(crewId, uuid)
+					.map(UnReadCount::getUnreadCount)
+					.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_UNREAD_COUNT));
+
+				String content = lastChat.getImageUrl() != null ? "사진을 보냈습니다." : lastChat.getText();
+				return ChatListDTO.toDto(crewId, content, unreadCount, lastChat.getCreatedAt());
+			})
+			.sorted(Comparator.comparing(ChatListDTO::getCreatedAt).reversed())
 			.toList();
 	}
 

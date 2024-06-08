@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import hobbiedo.chat.application.ChatService;
 import hobbiedo.chat.dto.response.ChatHistoryListDTO;
 import hobbiedo.chat.dto.response.ChatImageListDTO;
+import hobbiedo.chat.dto.response.ChatListDTO;
 import hobbiedo.global.base.BaseResponse;
 import hobbiedo.global.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,13 @@ public class ChatController {
 		@RequestParam int page, @RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CHAT_HISTORY,
 			chatService.getChatHistoryBefore(crewId, uuid, page));
+	}
+
+	@Operation(summary = "(채팅방 리스트에서) 마지막 채팅과 안읽음 개수 리스트 조회 (처음)", description = "처음 소모임 리스트를 띄울 때, 한 유저에 해당하는 전체 소모임 리스트의 마지막 채팅과 안읽음 개수를 조회한다.")
+	@GetMapping("/latest/list")
+	public BaseResponse<List<ChatListDTO>> getLatestChatList(@RequestHeader(name = "Uuid") String uuid) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_LAST_CHAT_LIST,
+			chatService.getChatList(uuid));
 	}
 
 	@Operation(summary = "(특정 소모임) 사진 모아보기", description = "특정 소모임의 이미지 URL이 있는 채팅 내역을 조회한다.")
