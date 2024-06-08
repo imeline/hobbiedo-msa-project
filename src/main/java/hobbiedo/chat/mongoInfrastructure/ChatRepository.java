@@ -2,7 +2,6 @@ package hobbiedo.chat.mongoInfrastructure;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,6 +16,9 @@ public interface ChatRepository extends MongoRepository<Chat, String> {
 
 	@Query(value = "{ 'crewId': ?0, 'entryExitNotice': { '$exists': false } }")
 	List<Chat> findLatestChatByCrewId(Long crewId, Sort sort);
+
+	@Query(value = "{ 'crewId': ?0, 'createdAt': { '$gt': ?1 } }", count = true)
+	long countByCrewIdAndCreatedAtAfter(Long crewId, Instant lastReadAt);
 
 	@Query("{ 'crewId': ?0, 'imageUrl': { '$exists': true } }")
 	List<Chat> findByCrewIdAndImageUrl(Long crewId);

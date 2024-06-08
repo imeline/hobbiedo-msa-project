@@ -44,29 +44,26 @@ public class ChatServiceImp implements ChatService {
 		int size = 10; // 페이지 당 데이터 개수
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
 
-		ChatStatus chatUnReadStatus = chatStatusRepository.findByUuidAndCrewId(uuid, crewId)
+		Instant lastReadAt = chatStatusRepository.findByUuidAndCrewId(uuid, crewId)
+			.map(ChatStatus::getLastReadAt)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS));
-
-		Instant lastReadAt = chatUnReadStatus.getLastReadAt();
 
 		List<Chat> chatList = chatRepository.findByCrewIdAndCreatedAtAfter(crewId, lastReadAt,
 			pageable);
 		if (chatList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
 		}
-		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
+		return chatList.stream()
 			.collect(Collectors.groupingBy(
-				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
-
-		return groupedByDate.entrySet().stream()
+				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())))
+			.entrySet().stream()
 			.sorted(Map.Entry.comparingByKey())
-			.map(entry -> {
-				List<ChatHistoryDTO> chatHistoryDTOList = entry.getValue().stream()
+			.map(entry -> ChatHistoryListDTO.toDto(
+				entry.getKey(),
+				entry.getValue().stream()
 					.sorted(Comparator.comparing(Chat::getCreatedAt))
 					.map(ChatHistoryDTO::toDto)
-					.toList();
-				return ChatHistoryListDTO.toDto(entry.getKey(), chatHistoryDTOList);
-			})
+					.toList()))
 			.toList();
 	}
 
@@ -80,21 +77,43 @@ public class ChatServiceImp implements ChatService {
 		return crewIdList.stream()
 			.map(chatStatus -> {
 				Long crewId = chatStatus.getCrewId();
-				List<Chat> chatList = chatRepository.findLatestChatByCrewId(
-					crewId, Sort.by(Sort.Direction.DESC, "createdAt"));
-				if (chatList.isEmpty()) {
-					throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
-				}
-				Chat lastChat = chatList.get(0);
-				int unreadCount = unReadCountRepository.findByCrewIdAndUuid(crewId, uuid)
-					.map(UnReadCount::getUnreadCount)
-					.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_UNREAD_COUNT));
-
+				// 읽지 않은 메시지 개수 업데이트
+				UnReadCount unReadCount = modifyUnReadCount(crewId, uuid);
+				// 채팅방의 마지막 메시지 조회
+				Chat lastChat = chatRepository.findLatestChatByCrewId(
+						crewId, Sort.by(Sort.Direction.DESC, "createdAt")).stream()
+					.findFirst()
+					.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT));
 				String content = lastChat.getImageUrl() != null ? "사진을 보냈습니다." : lastChat.getText();
-				return ChatListDTO.toDto(crewId, content, unreadCount, lastChat.getCreatedAt());
+
+				return ChatListDTO.toDto(crewId, content, unReadCount.getUnreadCount(),
+					lastChat.getCreatedAt());
 			})
 			.sorted(Comparator.comparing(ChatListDTO::getCreatedAt).reversed())
 			.toList();
+	}
+
+	private UnReadCount modifyUnReadCount(Long crewId, String uuid) {
+		int cnt = 0;
+		ChatStatus chatStatus = chatStatusRepository.findByUuidAndCrewId(uuid, crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS));
+
+		if (!chatStatus.getConnectionStatus()) { // 채팅방 안에 접속해 있지 않은 경우
+			Instant lastReadAt = chatStatusRepository.findByUuidAndCrewId(uuid, crewId)
+				.map(ChatStatus::getLastReadAt)
+				.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS));
+
+			long count = chatRepository.countByCrewIdAndCreatedAtAfter(crewId, lastReadAt);
+			cnt = count > 999 ? 999 : (int)count;
+		}
+		UnReadCount unReadCount = unReadCountRepository.findByCrewIdAndUuid(crewId, uuid)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_UNREAD_COUNT));
+		return unReadCountRepository.save(UnReadCount.builder()
+			.id(unReadCount.getId())
+			.uuid(unReadCount.getUuid())
+			.crewId(unReadCount.getCrewId())
+			.unreadCount(cnt)
+			.build());
 	}
 
 	@Override
@@ -104,20 +123,16 @@ public class ChatServiceImp implements ChatService {
 			throw new GlobalException(ErrorStatus.NO_EXIST_IMAGE_CHAT);
 		}
 
-		// 데이터를 날짜별로 그룹화
-		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
+		return chatList.stream()
 			.collect(Collectors.groupingBy(
-				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
-
-		return groupedByDate.entrySet().stream()
+				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())))
+			.entrySet().stream()
 			.sorted(Map.Entry.<LocalDate, List<Chat>>comparingByKey().reversed())
-			.map(entry -> {
-				List<ChatImageDTO> chatImageDTOList = entry.getValue().stream()
+			.map(entry -> ChatImageListDTO.toDto(entry.getKey(),
+				entry.getValue().stream()
 					.map(ChatImageDTO::toDto)
 					.sorted(Comparator.comparing(ChatImageDTO::getCreatedAt).reversed())
-					.toList();
-				return ChatImageListDTO.toDto(entry.getKey(), chatImageDTOList);
-			})
+					.toList()))
 			.toList();
 	}
 
