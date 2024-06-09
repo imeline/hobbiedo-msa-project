@@ -1,30 +1,20 @@
 package hobbiedo.chat.dto.response;
 
-import java.time.Instant;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import hobbiedo.chat.domain.Chat;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatHistoryDTO {
-	private String uuid;
-	private String text;
-	private String imageUrl;
-	private String entryExitNotice;
-	private Instant createdAt;
+	private int lastPage;
+	private List<ChatListDTO> chatList;
 
-	public static ChatHistoryDTO toDto(Chat chat) {
+	public static ChatHistoryDTO toDto(int lastPage, List<ChatListDTO> chatList) {
 		return ChatHistoryDTO.builder()
-			.uuid(chat.getUuid())
-			.text(chat.getText())
-			.imageUrl(chat.getImageUrl())
-			.entryExitNotice(chat.getEntryExitNotice())
-			.createdAt(chat.getCreatedAt())
+			.lastPage(lastPage)
+			.chatList(chatList)
 			.build();
 	}
 }

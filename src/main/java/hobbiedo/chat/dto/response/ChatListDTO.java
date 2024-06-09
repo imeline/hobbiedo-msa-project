@@ -8,12 +8,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ChatHistoryListDTO {
+public class ChatListDTO {
 	private LocalDate date;
-	private List<ChatHistoryDTO> chats;
+	private List<ChatDTO> chats;
 
-	public static ChatHistoryListDTO toDto(LocalDate date, List<ChatHistoryDTO> chats) {
-		return ChatHistoryListDTO.builder()
+	public static ChatListDTO toDto(LocalDate date, List<ChatDTO> chats) {
+		return ChatListDTO.builder()
 			.date(date)
 			.chats(chats)
 			.build();

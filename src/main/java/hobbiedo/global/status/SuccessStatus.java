@@ -9,6 +9,7 @@ public enum SuccessStatus { //메시지를 중앙에서 관리하는 것이 유�
 	// 채팅
 	FIND_CHAT_HISTORY("이전 채팅 내용 조회에 성공하였습니다."),
 	FIND_IMAGE_CHAT("사진 모아보기 조회에 성공하였습니다."),
+	FIND_LAST_CHAT_LIST("처음 채팅방 리스트 조회에 성공하였습니다."),
 
 	// 활동지역
 	CREATE_REGION("활동 지역을 등록에 성공하였습니다."),

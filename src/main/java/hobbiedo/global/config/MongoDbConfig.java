@@ -22,7 +22,7 @@ public class MongoDbConfig extends AbstractMongoClientConfiguration {
 	}
 
 	@Bean
-	public MongoTemplate mongoTemplate() throws Exception {
+	public MongoTemplate mongoTemplate() {
 		return new MongoTemplate(mongoDbFactory());
 	}
 

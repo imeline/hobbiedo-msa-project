@@ -17,44 +17,86 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.chat.domain.Chat;
+import hobbiedo.chat.domain.ChatLastStatus;
+import hobbiedo.chat.dto.response.ChatDTO;
 import hobbiedo.chat.dto.response.ChatHistoryDTO;
-import hobbiedo.chat.dto.response.ChatHistoryListDTO;
 import hobbiedo.chat.dto.response.ChatImageDTO;
 import hobbiedo.chat.dto.response.ChatImageListDTO;
+import hobbiedo.chat.dto.response.ChatListDTO;
+import hobbiedo.chat.dto.response.LastChatDTO;
+import hobbiedo.chat.mongoInfrastructure.ChatLastStatusRepository;
 import hobbiedo.chat.mongoInfrastructure.ChatRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class ChatServiceImp implements ChatService {
 	private final ChatRepository chatRepository;
+	private final ChatLastStatusRepository chatStatusRepository;
 
 	@Override
-	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, int page) {
+	public ChatHistoryDTO getChatHistoryBefore(Long crewId, String uuid, int page) {
 		int size = 10; // 페이지 당 데이터 개수
-		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("createdAt")));
-		List<Chat> chatList = chatRepository.findByCrewId(crewId, pageable);
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+		Instant lastReadAt = getLastReadAt(uuid, crewId);
+
+		List<Chat> chatList = chatRepository.findLastChatByCrewId(crewId, lastReadAt, pageable);
 		if (chatList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
 		}
-		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
-			.collect(Collectors.groupingBy(
-				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
 
-		return groupedByDate.entrySet().stream()
+		// 전체 페이지 수 계산 (위에서 채팅이 없을 경우 에러처리 했으니, Long 말고 long 사용)
+		int totalChats = chatRepository.countByCrewIdAndCreatedAtBefore(crewId, lastReadAt);
+		int lastPage = (int)Math.ceil((double)totalChats / size);
+
+		List<ChatListDTO> chatListDtos = chatList.stream()
+			.collect(Collectors.groupingBy(
+				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())))
+			.entrySet().stream()
 			.sorted(Map.Entry.comparingByKey())
-			.map(entry -> {
-				List<ChatHistoryDTO> chatHistoryDTOList = entry.getValue().stream()
-					.map(ChatHistoryDTO::toDto)
-					.toList();
-				return ChatHistoryListDTO.toDto(entry.getKey(), chatHistoryDTOList);
-			})
+			.map(entry -> ChatListDTO.toDto(
+				entry.getKey(),
+				entry.getValue().stream()
+					.sorted(Comparator.comparing(Chat::getCreatedAt))
+					.map(ChatDTO::toDto)
+					.toList()))
 			.toList();
+
+		return ChatHistoryDTO.toDto(lastPage, chatListDtos);
+	}
+
+	@Override
+	public List<LastChatDTO> getChatList(String uuid) { // true 값을 때 0으로 보낼지 변경 후처리
+		List<ChatLastStatus> crewIdList = chatStatusRepository.findByUuid(uuid);
+		if (crewIdList.isEmpty()) {
+			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS);
+		}
+
+		return crewIdList.stream()
+			.map(chatStatus -> {
+				Long crewId = chatStatus.getCrewId();
+				// 채팅방의 마지막 메시지 조회
+				Chat lastChat = chatRepository.findLastChatByCrewId(crewId)
+					.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT));
+				String content = lastChat.getImageUrl() != null ? "사진을 보냈습니다." : lastChat.getText();
+				// 안 읽은 메시지 개수 조회
+				long count = chatRepository.countByCrewIdAndCreatedAtAfter(crewId,
+					getLastReadAt(uuid, crewId));
+				int cnt = count > 999 ? 999 : (int)count;
+
+				return LastChatDTO.toDto(crewId, content, cnt, lastChat.getCreatedAt());
+			})
+			.sorted(Comparator.comparing(LastChatDTO::getCreatedAt).reversed())
+			.toList();
+	}
+
+	private Instant getLastReadAt(String uuid, Long crewId) {
+		return chatStatusRepository.findByUuidAndCrewId(crewId, uuid)
+			.map(ChatLastStatus::getLastReadAt)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS));
 	}
 
 	@Override
@@ -64,19 +106,16 @@ public class ChatServiceImp implements ChatService {
 			throw new GlobalException(ErrorStatus.NO_EXIST_IMAGE_CHAT);
 		}
 
-		// 데이터를 날짜별로 그룹화
-		Map<LocalDate, List<Chat>> groupedByDate = chatList.stream()
+		return chatList.stream()
 			.collect(Collectors.groupingBy(
-				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())));
-
-		return groupedByDate.entrySet().stream()
-			.map(entry -> {
-				List<ChatImageDTO> chatImageDTOList = entry.getValue().stream()
+				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())))
+			.entrySet().stream()
+			.sorted(Map.Entry.<LocalDate, List<Chat>>comparingByKey().reversed())
+			.map(entry -> ChatImageListDTO.toDto(entry.getKey(),
+				entry.getValue().stream()
 					.map(ChatImageDTO::toDto)
 					.sorted(Comparator.comparing(ChatImageDTO::getCreatedAt).reversed())
-					.toList();
-				return ChatImageListDTO.toDto(entry.getKey(), chatImageDTOList);
-			})
+					.toList()))
 			.toList();
 	}
 
