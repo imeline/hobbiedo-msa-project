@@ -22,20 +22,17 @@ public class RemainingUserHobbyResponseVo {
 	}
 
 	public static List<RemainingUserHobbyResponseVo> userHobbyDtoToRemainingVo(
-		List<UserHobbyResponseDto> userHobbyDtoList) {
+			List<UserHobbyResponseDto> userHobbyDtoList) {
 
 		List<RemainingUserHobbyResponseVo> getRemainingUserHobbyVoList = new ArrayList<>();
 
-		// 리스트의 크기가 5보다 작은 경우, fromIndex 에는 0이 들어간다.
-		int fromIndex = Math.max(0, userHobbyDtoList.size() - 5);
-
 		// 5번째 요소부터 마지막 요소까지만 가져오기
-		List<UserHobbyResponseDto> subList = userHobbyDtoList.subList(fromIndex, userHobbyDtoList.size());
+		List<UserHobbyResponseDto> subList = userHobbyDtoList.subList(5, userHobbyDtoList.size());
 
 		for (UserHobbyResponseDto userHobbyDto : subList) {
 			getRemainingUserHobbyVoList.add(new RemainingUserHobbyResponseVo(
-				userHobbyDto.getHobbyId(),
-				userHobbyDto.getHobbyName()
+					userHobbyDto.getHobbyId(),
+					userHobbyDto.getHobbyName()
 			));
 		}
 
