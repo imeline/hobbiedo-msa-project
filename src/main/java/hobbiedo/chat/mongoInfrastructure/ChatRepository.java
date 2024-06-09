@@ -15,6 +15,9 @@ public interface ChatRepository extends MongoRepository<Chat, String> {
 	@Query("{ 'crewId': ?0, 'createdAt': { '$lt': ?1 } }")
 	List<Chat> findLastChatByCrewId(Long crewId, Instant lastReadAt, Pageable pageable);
 
+	@Query(value = "{ 'crewId': ?0, 'createdAt': { '$lt': ?1 } }", count = true)
+	int countByCrewIdAndCreatedAtBefore(Long crewId, Instant lastReadAt);
+
 	@Aggregation(pipeline = {
 		"{ '$match': { 'crewId': ?0, 'entryExitNotice': null } }",
 		"{ '$sort': { 'createdAt': -1 } }",

@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hobbiedo.chat.application.ChatService;
-import hobbiedo.chat.dto.response.ChatHistoryListDTO;
+import hobbiedo.chat.dto.response.ChatHistoryDTO;
 import hobbiedo.chat.dto.response.ChatImageListDTO;
-import hobbiedo.chat.dto.response.ChatListDTO;
+import hobbiedo.chat.dto.response.LastChatDTO;
 import hobbiedo.global.base.BaseResponse;
 import hobbiedo.global.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ public class ChatController {
 
 	@Operation(summary = "(특정 소모임의) 이전 채팅 내역 조회", description = "페이지에 따른 10개의 이전 채팅 내역을 조회한다.")
 	@GetMapping("/history/{crewId}")
-	public BaseResponse<List<ChatHistoryListDTO>> getChatHistoryBefore(@PathVariable Long crewId,
+	public BaseResponse<ChatHistoryDTO> getChatHistoryBefore(@PathVariable Long crewId,
 		@RequestParam int page, @RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CHAT_HISTORY,
 			chatService.getChatHistoryBefore(crewId, uuid, page));
@@ -37,7 +37,7 @@ public class ChatController {
 	@Operation(summary = "(채팅방 리스트에서) 마지막 채팅과 안읽음 개수 리스트 조회 (처음)",
 		description = "처음 소모임 리스트를 띄울 때, 한 유저에 해당하는 전체 소모임 리스트의 마지막 채팅과 안읽음 개수를 조회한다.")
 	@GetMapping("/latest/list")
-	public BaseResponse<List<ChatListDTO>> getLatestChatList(
+	public BaseResponse<List<LastChatDTO>> getLatestChatList(
 		@RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_LAST_CHAT_LIST,
 			chatService.getChatList(uuid));

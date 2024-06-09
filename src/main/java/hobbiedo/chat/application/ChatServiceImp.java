@@ -18,11 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.chat.domain.Chat;
 import hobbiedo.chat.domain.ChatLastStatus;
+import hobbiedo.chat.dto.response.ChatDTO;
 import hobbiedo.chat.dto.response.ChatHistoryDTO;
-import hobbiedo.chat.dto.response.ChatHistoryListDTO;
 import hobbiedo.chat.dto.response.ChatImageDTO;
 import hobbiedo.chat.dto.response.ChatImageListDTO;
 import hobbiedo.chat.dto.response.ChatListDTO;
+import hobbiedo.chat.dto.response.LastChatDTO;
 import hobbiedo.chat.mongoInfrastructure.ChatLastStatusRepository;
 import hobbiedo.chat.mongoInfrastructure.ChatRepository;
 import hobbiedo.global.exception.GlobalException;
@@ -37,31 +38,38 @@ public class ChatServiceImp implements ChatService {
 	private final ChatLastStatusRepository chatStatusRepository;
 
 	@Override
-	public List<ChatHistoryListDTO> getChatHistoryBefore(Long crewId, String uuid, int page) {
+	public ChatHistoryDTO getChatHistoryBefore(Long crewId, String uuid, int page) {
 		int size = 10; // 페이지 당 데이터 개수
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+		Instant lastReadAt = getLastReadAt(uuid, crewId);
 
-		List<Chat> chatList = chatRepository.findLastChatByCrewId(crewId,
-			getLastReadAt(uuid, crewId), pageable);
+		List<Chat> chatList = chatRepository.findLastChatByCrewId(crewId, lastReadAt, pageable);
 		if (chatList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT);
 		}
-		return chatList.stream()
+
+		// 전체 페이지 수 계산 (위에서 채팅이 없을 경우 에러처리 했으니, Long 말고 long 사용)
+		int totalChats = chatRepository.countByCrewIdAndCreatedAtBefore(crewId, lastReadAt);
+		int lastPage = (int)Math.ceil((double)totalChats / size);
+
+		List<ChatListDTO> chatListDtos = chatList.stream()
 			.collect(Collectors.groupingBy(
 				chat -> LocalDate.ofInstant(chat.getCreatedAt(), ZoneId.systemDefault())))
 			.entrySet().stream()
 			.sorted(Map.Entry.comparingByKey())
-			.map(entry -> ChatHistoryListDTO.toDto(
+			.map(entry -> ChatListDTO.toDto(
 				entry.getKey(),
 				entry.getValue().stream()
 					.sorted(Comparator.comparing(Chat::getCreatedAt))
-					.map(ChatHistoryDTO::toDto)
+					.map(ChatDTO::toDto)
 					.toList()))
 			.toList();
+
+		return ChatHistoryDTO.toDto(lastPage, chatListDtos);
 	}
 
 	@Override
-	public List<ChatListDTO> getChatList(String uuid) {
+	public List<LastChatDTO> getChatList(String uuid) { // true 값을 때 0으로 보낼지 변경 후처리
 		List<ChatLastStatus> crewIdList = chatStatusRepository.findByUuid(uuid);
 		if (crewIdList.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_CHAT_UNREAD_STATUS);
@@ -79,9 +87,9 @@ public class ChatServiceImp implements ChatService {
 					getLastReadAt(uuid, crewId));
 				int cnt = count > 999 ? 999 : (int)count;
 
-				return ChatListDTO.toDto(crewId, content, cnt, lastChat.getCreatedAt());
+				return LastChatDTO.toDto(crewId, content, cnt, lastChat.getCreatedAt());
 			})
-			.sorted(Comparator.comparing(ChatListDTO::getCreatedAt).reversed())
+			.sorted(Comparator.comparing(LastChatDTO::getCreatedAt).reversed())
 			.toList();
 	}
 

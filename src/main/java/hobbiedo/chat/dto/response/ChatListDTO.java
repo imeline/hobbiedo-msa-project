@@ -1,6 +1,7 @@
 package hobbiedo.chat.dto.response;
 
-import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,17 +9,13 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ChatListDTO {
-	private Long crewId;
-	private String lastChatContent;
-	private Integer unreadCount;
-	private Instant createdAt;
+	private LocalDate date;
+	private List<ChatDTO> chats;
 
-	public static ChatListDTO toDto(Long crewId, String lastChatContent, Integer unreadCount, Instant createdAt) {
+	public static ChatListDTO toDto(LocalDate date, List<ChatDTO> chats) {
 		return ChatListDTO.builder()
-			.crewId(crewId)
-			.lastChatContent(lastChatContent)
-			.unreadCount(unreadCount)
-			.createdAt(createdAt)
+			.date(date)
+			.chats(chats)
 			.build();
 	}
 }
