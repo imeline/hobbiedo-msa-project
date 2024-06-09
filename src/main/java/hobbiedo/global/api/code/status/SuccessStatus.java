@@ -14,6 +14,8 @@ public enum SuccessStatus implements BaseCode {
 
 	// 회원 별 취미 조회 성공
 	GET_USER_HOBBIES_SUCCESS(HttpStatus.OK, "200", "해당 회원의 취미 리스트 조회를 성공하였습니다."),
+	// 나머지 회원 취미 추천 조회 성공
+	GET_REMAINING_USER_HOBBIES_SUCCESS(HttpStatus.OK, "200", "해당 회원의 나머지 취미 추천 리스트 조회를 성공하였습니다."),
 	// 회원 별 취미 카드 리스트 조회 성공
 	GET_USER_HOBBY_CARDS_SUCCESS(HttpStatus.OK, "200", "해당 회원의 취미 카드 리스트 조회를 성공하였습니다."),
 
@@ -38,19 +40,19 @@ public enum SuccessStatus implements BaseCode {
 	@Override
 	public ReasonDto getReason() {
 		return ReasonDto
-			.builder()
-			.code(status)
-			.message(message)
-			.build();
+				.builder()
+				.code(status)
+				.message(message)
+				.build();
 	}
 
 	@Override
 	public ReasonDto getReasonHttpStatus() {
 		return ReasonDto
-			.builder()
-			.httpStatus(httpStatus)
-			.code(status)
-			.message(message)
-			.build();
+				.builder()
+				.httpStatus(httpStatus)
+				.code(status)
+				.message(message)
+				.build();
 	}
 }

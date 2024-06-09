@@ -14,31 +14,34 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
 
 	// 회원 별 취미 데이터가 존재하지 않음
-	GET_USER_HOBBIES_NOT_FOUND(HttpStatus.NOT_FOUND, "HOBBIES401",
-		"해당 회원의 취미 리스트가 존재하지 않습니다. 취미 조사 후 이용해주세요."),
+	GET_USER_HOBBIES_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_HOBBIES401",
+			"해당 회원의 취미 리스트가 존재하지 않습니다. 취미 조사 후 이용해주세요."),
+	// 회원 별 취미 데이터가 10개 미만
+	GET_USER_HOBBIES_LESS(HttpStatus.NOT_FOUND, "USER_HOBBIES402",
+			"회원 별 취미 데이터가 10개 미만입니다. 해당 회원의 취미를 더 추가해주세요."),
 
 	// 취미 데이터가 존재하지 않음
 	GET_HOBBY_NOT_FOUND(HttpStatus.NOT_FOUND, "HOBBY401",
-		"해당 취미가 존재하지 않습니다. 취미를 다시 확인해주세요."),
+			"해당 취미가 존재하지 않습니다. 취미를 다시 확인해주세요."),
 	// 취미 데이터가 10개 미만
 	GET_HOBBY_SIZE_LESS(HttpStatus.NOT_FOUND, "HOBBY402",
-		"취미 데이터가 10개 미만입니다. 취미를 더 추가해주세요."),
+			"취미 데이터가 10개 미만입니다. 취미를 더 추가해주세요."),
 	// 취미 데이터가 다 삭제되지 않음
 	DELETE_HOBBY_NOT_ALL(HttpStatus.NOT_FOUND, "HOBBY403",
-		"취미 데이터가 모두 삭제되지 않았습니다. 다시 시도해주세요."),
+			"취미 데이터가 모두 삭제되지 않았습니다. 다시 시도해주세요."),
 
 	// 취미 추천 설문 질문 리스트가 비어있음
 	GET_HOBBY_SURVEY_QUESTIONS_EMPTY(HttpStatus.NOT_FOUND, "SURVEY401",
-		"취미 추천 설문 질문 리스트가 비어있습니다."),
+			"취미 추천 설문 질문 리스트가 비어있습니다."),
 	// 취미 추천 설문 질문 리스트가 20개 미만
 	GET_HOBBY_SURVEY_QUESTIONS_LESS(HttpStatus.NOT_FOUND, "SURVEY402",
-		"취미 추천 설문 질문 리스트가 20개 미만입니다. 취미 추천 더 질문을 등록해주세요."),
+			"취미 추천 설문 질문 리스트가 20개 미만입니다. 취미 추천 더 질문을 등록해주세요."),
 	// 취미 추천 설문 응답 리스트가 비어있음
 	HOBBY_SURVEY_QUESTIONS_EMPTY(HttpStatus.BAD_REQUEST, "SURVEY403",
-		"취미 추천 설문 응답 리스트가 비어있습니다."),
+			"취미 추천 설문 응답 리스트가 비어있습니다."),
 	// 취미 추천 설문 응답 리스트가 20개 미만이거나 초과
 	HOBBY_SURVEY_QUESTIONS_SIZE_LESS_OR_OVER(HttpStatus.BAD_REQUEST, "SURVEY405",
-		"취미 추천 설문 응답 리스트가 20개 미만이거나 20개를 초과했습니다. 취미 추천 설문 응답을 20개로 맞춰주세요.");
+			"취미 추천 설문 응답 리스트가 20개 미만이거나 20개를 초과했습니다. 취미 추천 설문 응답을 20개로 맞춰주세요.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
@@ -55,19 +58,19 @@ public enum ErrorStatus implements BaseErrorCode {
 	@Override
 	public ErrorReasonDto getReason() {
 		return ErrorReasonDto
-			.builder()
-			.code(status)
-			.message(message)
-			.build();
+				.builder()
+				.code(status)
+				.message(message)
+				.build();
 	}
 
 	@Override
 	public ErrorReasonDto getReasonHttpStatus() {
 		return ErrorReasonDto
-			.builder()
-			.httpStatus(httpStatus)
-			.code(status)
-			.message(message)
-			.build();
+				.builder()
+				.httpStatus(httpStatus)
+				.code(status)
+				.message(message)
+				.build();
 	}
 }
