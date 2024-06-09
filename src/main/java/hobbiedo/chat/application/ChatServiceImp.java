@@ -50,7 +50,7 @@ public class ChatServiceImp implements ChatService {
 
 		// 전체 페이지 수 계산 (위에서 채팅이 없을 경우 에러처리 했으니, Long 말고 long 사용)
 		int totalChats = chatRepository.countByCrewIdAndCreatedAtBefore(crewId, lastReadAt);
-		int lastPage = (int)Math.ceil((double)totalChats / size);
+		int lastPage = (int)Math.ceil((double)totalChats / size) - 1;
 
 		List<ChatListDTO> chatListDtos = chatList.stream()
 			.collect(Collectors.groupingBy(
@@ -123,7 +123,7 @@ public class ChatServiceImp implements ChatService {
 	@Transactional
 	@Override
 	public void deleteOldChatsWithImageUrl() {
-		// 6개월 전 시각 계산
+		// 3개월 전 시각 계산
 		LocalDateTime expiryDateTime = LocalDateTime.now().minusMonths(3);
 
 		// LocalDateTime을 Instant로 변환
