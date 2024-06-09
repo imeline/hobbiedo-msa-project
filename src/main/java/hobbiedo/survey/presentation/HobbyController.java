@@ -11,6 +11,7 @@ import hobbiedo.global.api.ApiResponse;
 import hobbiedo.global.api.code.status.SuccessStatus;
 import hobbiedo.survey.application.HobbyService;
 import hobbiedo.survey.dto.response.UserHobbyResponseDto;
+import hobbiedo.survey.vo.response.RemainingUserHobbyResponseVo;
 import hobbiedo.survey.vo.response.UserHobbyCardResponseVo;
 import hobbiedo.survey.vo.response.UserHobbyResponseVo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,26 +31,39 @@ public class HobbyController {
 	@GetMapping("/hobbies")
 	@Operation(summary = "회원 취미 조회", description = "회원의 취미 리스트를 조회합니다.")
 	public ApiResponse<List<UserHobbyResponseVo>> getUserHobbies(
-		@RequestHeader(name = "Uuid") String uuid) {
+			@RequestHeader(name = "Uuid") String uuid) {
 
 		List<UserHobbyResponseDto> userHobbies = hobbyService.getUserHobbies(uuid);
 
 		return ApiResponse.onSuccess(
-			SuccessStatus.GET_USER_HOBBIES_SUCCESS,
-			UserHobbyResponseVo.userHobbyDtoToVo(userHobbies)
+				SuccessStatus.GET_USER_HOBBIES_SUCCESS,
+				UserHobbyResponseVo.userHobbyDtoToVo(userHobbies)
 		);
 	}
 
 	@GetMapping("/hobby-cards")
 	@Operation(summary = "회원 취미 카드 조회", description = "회원의 취미 카드 리스트를 조회합니다.")
 	public ApiResponse<List<UserHobbyCardResponseVo>> getUserHobbyCards(
-		@RequestHeader(name = "Uuid") String uuid) {
+			@RequestHeader(name = "Uuid") String uuid) {
 
 		List<UserHobbyResponseDto> userHobbies = hobbyService.getUserHobbies(uuid);
 
 		return ApiResponse.onSuccess(
-			SuccessStatus.GET_USER_HOBBY_CARDS_SUCCESS,
-			UserHobbyCardResponseVo.userHobbyDtoToCardVo(userHobbies)
+				SuccessStatus.GET_USER_HOBBY_CARDS_SUCCESS,
+				UserHobbyCardResponseVo.userHobbyDtoToCardVo(userHobbies)
+		);
+	}
+
+	@GetMapping("/remaining-hobbies")
+	@Operation(summary = "나머지 회원 취미 추천", description = "회원의 나머지 취미 id 리스트를 조회합니다. [나머지 취미 소모임 추천용]")
+	public ApiResponse<List<RemainingUserHobbyResponseVo>> getRemainingUserHobbies(
+			@RequestHeader(name = "Uuid") String uuid) {
+
+		List<UserHobbyResponseDto> userHobbies = hobbyService.getUserHobbies(uuid);
+
+		return ApiResponse.onSuccess(
+				SuccessStatus.GET_REMAINING_USER_HOBBIES_SUCCESS,
+				RemainingUserHobbyResponseVo.userHobbyDtoToRemainingVo(userHobbies)
 		);
 	}
 }
