@@ -50,7 +50,7 @@ public class ChatServiceImp implements ChatService {
 
 		// 전체 페이지 수 계산 (위에서 채팅이 없을 경우 에러처리 했으니, Long 말고 long 사용)
 		int totalChats = chatRepository.countByCrewIdAndCreatedAtBefore(crewId, lastReadAt);
-		int lastPage = (int)Math.ceil((double)totalChats / size);
+		int lastPage = (int)Math.ceil((double)totalChats / size) - 1;
 
 		List<ChatListDTO> chatListDtos = chatList.stream()
 			.collect(Collectors.groupingBy(
