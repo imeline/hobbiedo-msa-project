@@ -42,6 +42,12 @@ public class BoardServiceImpl implements BoardService {
 		// 이미지 업로드 기능
 		List<String> imageUrls = boardUploadRequestDto.getImageUrls();
 
+		// 이미지 url 리스트가 5개를 초과할 경우 예외 처리
+		if (imageUrls.size() > 5) {
+			throw new BoardExceptionHandler(CREATE_POST_IMAGE_SIZE_EXCEED);
+		}
+
+		// 이미지 url 리스트가 null 이 아니고 비어있지 않을 경우 이미지 엔티티 생성
 		if (imageUrls != null && !imageUrls.isEmpty()) {
 
 			for (int i = 0; i < imageUrls.size(); i++) {

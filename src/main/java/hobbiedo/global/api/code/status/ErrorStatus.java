@@ -14,7 +14,8 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
 
 	CREATE_POST_TITLE_EMPTY(HttpStatus.BAD_REQUEST, "BOARD401", "게시글 제목이 비어있습니다."),
-	CREATE_POST_CONTENT_EMPTY(HttpStatus.BAD_REQUEST, "BOARD402", "게시글 내용이 비어있습니다.");
+	CREATE_POST_CONTENT_EMPTY(HttpStatus.BAD_REQUEST, "BOARD402", "게시글 내용이 비어있습니다."),
+	CREATE_POST_IMAGE_SIZE_EXCEED(HttpStatus.BAD_REQUEST, "BOARD403", "이미지 업로드는 최대 5개까지 가능합니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

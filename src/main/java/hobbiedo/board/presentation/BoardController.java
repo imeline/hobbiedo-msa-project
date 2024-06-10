@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/users/crews/{crew-id}/board")
+@RequestMapping("/v1/users/crew/{crew-id}/board")
 @Tag(name = "Board", description = "소모임 게시판 서비스")
 public class BoardController {
 

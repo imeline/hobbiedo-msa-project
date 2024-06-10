@@ -27,7 +27,7 @@ public class Board extends BaseEntity {
 
 	// 게시글 내용
 	@Column(nullable = false, length = 3000)
-	@Size(max = 1001, message = "반드시 1000자 이내여야 합니다")
+	@Size(max = 1001, message = "게시글 내용은 반드시 1000자 이내여야 합니다")
 	private String content;
 
 	// 작성자
