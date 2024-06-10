@@ -78,7 +78,7 @@ public class AuthService {
 	public void logout(String uuid) {
 		RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
 			.orElseThrow(() -> new MemberExceptionHandler(ErrorStatus.LOGOUT_FAIL));
-		
+
 		refreshTokenRepository.delete(refreshToken);
 	}
 
