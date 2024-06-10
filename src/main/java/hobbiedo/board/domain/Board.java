@@ -40,25 +40,25 @@ public class Board extends BaseEntity {
 
 	// 좋아요 개수, default = 0
 	@Column(nullable = false)
-	private int likeCount;
+	private Long likeCount;
 
 	// 댓글 개수, default = 0
 	@Column(nullable = false)
-	private int commentCount;
+	private Long commentCount;
 
 	// 고정 여부, default = false
 	@Column(nullable = false)
 	private boolean isPinned;
 
 	@Builder
-	public Board(String title, String content, String writerUuid, Long crewId, int likeCount,
-			int commentCount, boolean isPinned) {
+	public Board(String title, String content, String writerUuid, Long crewId, Long likeCount,
+			Long commentCount, boolean isPinned) {
 		this.title = title;
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.crewId = crewId;
-		this.likeCount = 0; // 좋아요 개수는 0으로 초기화
-		this.commentCount = 0; // 댓글 개수는 0으로 초기화
-		this.isPinned = false; // 고정 여부는 false 로 초기화
+		this.likeCount = likeCount;
+		this.commentCount = commentCount;
+		this.isPinned = isPinned;
 	}
 }
