@@ -15,16 +15,19 @@ import hobbiedo.user.auth.member.dto.response.LoginResponseDTO;
 public interface MemberRepository extends JpaRepository<IntegrateAuth, Long> {
 	Boolean existsByLoginId(String loginId);
 
-	@Query("SELECT new hobbiedo.user.auth.member.dto.response.LoginResponseDTO(u.member.uuid, u.password) "
-		   + "FROM IntegrateAuth u WHERE u.loginId = :loginId")
+	@Query(
+		"SELECT new hobbiedo.user.auth.member.dto.response.LoginResponseDTO(u.member.uuid, u.password) "
+			+ "FROM IntegrateAuth u WHERE u.loginId = :loginId")
 	Optional<LoginResponseDTO> findByLoginId(@Param("loginId") String loginId);
 
 	@Query("SELECT i.loginId FROM IntegrateAuth i JOIN i.member m WHERE m.name = :name AND m.email = :email")
-	Optional<String> findLoginIdByNameAndEmail(@Param("name") String name, @Param("email") String email);
+	Optional<String> findLoginIdByNameAndEmail(@Param("name") String name,
+		@Param("email") String email);
 
 	@Query("SELECT COUNT(i) > 0 FROM IntegrateAuth i JOIN i.member m "
-		   + "WHERE m.name = :name AND m.email = :email AND i.loginId = :loginId")
-	Boolean existPasswordBy(@Param("name") String name, @Param("email") String email, @Param("loginId") String loginId);
+		+ "WHERE m.name = :name AND m.email = :email AND i.loginId = :loginId")
+	Boolean existPasswordBy(@Param("name") String name, @Param("email") String email,
+		@Param("loginId") String loginId);
 
 	Boolean existsByMember_Email(String email);
 
@@ -32,7 +35,8 @@ public interface MemberRepository extends JpaRepository<IntegrateAuth, Long> {
 
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE IntegrateAuth i SET i.password = :password WHERE i.loginId = :loginId")
-	void updatePasswordByLoginId(@Param("password") String password, @Param("loginId") String loginId);
+	void updatePasswordByLoginId(@Param("password") String password,
+		@Param("loginId") String loginId);
 
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE IntegrateAuth i SET i.password = :password WHERE i.member.uuid = :uuid")

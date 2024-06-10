@@ -24,14 +24,14 @@ spring:
 
   jpa:
     database: mysql
-    hibernate.ddl-auto: create # 처음 배포할 때는 create 이후에는 update 또는 none
+    hibernate.ddl-auto: update # 처음 배포할 때는 create 이후에는 update 또는 none
     show-sql: true
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost/test?serverTimezone=Asia/Seoul
-    username: root
-    password: 123
+    url: jdbc:mysql://localhost:3306/member_local?serverTimezone=Asia/Seoul
+    username: do_local
+    password: 1234
 
   data:
     redis:
