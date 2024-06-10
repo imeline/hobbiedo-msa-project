@@ -50,15 +50,20 @@ public class Board extends BaseEntity {
 	@Column(nullable = false)
 	private boolean isPinned;
 
+	// 수정 여부, default = false
+	@Column(nullable = false)
+	private boolean isUpdated;
+
 	@Builder
 	public Board(String title, String content, String writerUuid, Long crewId, Long likeCount,
-			Long commentCount, boolean isPinned) {
+			Long commentCount, boolean isPinned, boolean isUpdated) {
 		this.title = title;
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.crewId = crewId;
-		this.likeCount = likeCount;
-		this.commentCount = commentCount;
-		this.isPinned = isPinned;
+		this.likeCount = 0L;
+		this.commentCount = 0L;
+		this.isPinned = false;
+		this.isUpdated = false;
 	}
 }
