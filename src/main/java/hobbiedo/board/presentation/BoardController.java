@@ -27,13 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/users")
+@RequestMapping("/v1/users/crew")
 @Tag(name = "Board", description = "소모임 게시판 서비스")
 public class BoardController {
 
 	private final BoardService boardService;
 
-	@PostMapping("/crew/{crew-id}/board/create-post")
+	@PostMapping("/{crew-id}/board/create-post")
 	@Operation(summary = "게시글 생성", description = "게시글을 생성합니다.")
 	public ApiResponse<Void> createPost(
 			@PathVariable("crew-id") Long crewId,
@@ -63,7 +63,7 @@ public class BoardController {
 		);
 	}
 
-	@GetMapping("/crew/board/{board-id}")
+	@GetMapping("/board/{board-id}")
 	@Operation(summary = "게시글 조회", description = "게시글을 조회합니다.")
 	public ApiResponse<BoardDetailsResponseVo> getPost(
 			@PathVariable("board-id") Long boardId) {

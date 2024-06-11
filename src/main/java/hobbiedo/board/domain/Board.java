@@ -40,14 +40,6 @@ public class Board extends BaseEntity {
 	@Column(nullable = false)
 	private Long crewId;
 
-	// 좋아요 개수, default = 0
-	@Column(nullable = false)
-	private Long likeCount;
-
-	// 댓글 개수, default = 0
-	@Column(nullable = false)
-	private Long commentCount;
-
 	// 고정 여부, default = false
 	@Column(nullable = false)
 	@ColumnDefault("false")
@@ -59,14 +51,12 @@ public class Board extends BaseEntity {
 	private boolean isUpdated;
 
 	@Builder
-	public Board(String title, String content, String writerUuid, Long crewId, Long likeCount,
-			Long commentCount, boolean isPinned, boolean isUpdated) {
+	public Board(String title, String content, String writerUuid, Long crewId,
+			boolean isPinned, boolean isUpdated) {
 		this.title = title;
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.crewId = crewId;
-		this.likeCount = 0L;
-		this.commentCount = 0L;
 		this.isPinned = isPinned;
 		this.isUpdated = isUpdated;
 	}

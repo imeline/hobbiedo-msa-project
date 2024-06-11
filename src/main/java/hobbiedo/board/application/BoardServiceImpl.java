@@ -98,8 +98,6 @@ public class BoardServiceImpl implements BoardService {
 				.title(board.getTitle())
 				.content(board.getContent())
 				.writerUuid(board.getWriterUuid())
-				.likeCount(board.getLikeCount())
-				.commentCount(board.getCommentCount())
 				.pinned(board.isPinned())
 				.updatedAt(board.getUpdatedAt())
 				.updated(board.isUpdated())

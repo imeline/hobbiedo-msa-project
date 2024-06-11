@@ -18,23 +18,17 @@ public class BoardDetailsResponseVo {
 	private String title;
 	private String content;
 	private String writerUuid;
-	private Long likeCount;
-	private Long commentCount;
 	private boolean pinned; // 고정 여부
 	private String updatedAt; // 수정일
 	private boolean updated; // 수정 여부
 	private List<String> imageUrls;
 
 	public BoardDetailsResponseVo(Long boardId, String title, String content, String writerUuid,
-			Long likeCount,
-			Long commentCount, boolean pinned, LocalDateTime updatedAt, boolean updated,
-			List<String> imageUrls) {
+			boolean pinned, LocalDateTime updatedAt, boolean updated, List<String> imageUrls) {
 		this.boardId = boardId;
 		this.title = title;
 		this.content = content;
 		this.writerUuid = writerUuid;
-		this.likeCount = likeCount;
-		this.commentCount = commentCount;
 		this.pinned = pinned;
 
 		// 날짜, 시간 형식 지정
@@ -51,8 +45,6 @@ public class BoardDetailsResponseVo {
 				boardDto.getTitle(),
 				boardDto.getContent(),
 				boardDto.getWriterUuid(),
-				boardDto.getLikeCount(),
-				boardDto.getCommentCount(),
 				boardDto.isPinned(),
 				boardDto.getUpdatedAt(),
 				boardDto.isUpdated(),

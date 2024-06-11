@@ -18,8 +18,6 @@ public class BoardDetailsResponseDto {
 	private String title; // 제목
 	private String content; // 내용
 	private String writerUuid; // 작성자 uuid
-	private Long likeCount; // 좋아요 수
-	private Long commentCount; // 댓글 수
 	private boolean pinned; // 고정 여부
 	private LocalDateTime updatedAt; // 수정일
 	private boolean updated; // 수정 여부
