@@ -99,7 +99,7 @@ public class BoardServiceImpl implements BoardService {
 				.content(board.getContent())
 				.writerUuid(board.getWriterUuid())
 				.pinned(board.isPinned())
-				.updatedAt(board.getUpdatedAt())
+				.createdAt(board.getCreatedAt())
 				.updated(board.isUpdated())
 				.imageUrls(imageUrls)
 				.build();
@@ -117,8 +117,8 @@ public class BoardServiceImpl implements BoardService {
 
 		return boards.stream()
 				.filter(board -> !board.isPinned()) // pinned 가 false 인 게시글만 포함
-				.sorted(Comparator.comparing(Board::getUpdatedAt)
-						.reversed()) // updatedAt 내림차순으로 정렬
+				.sorted(Comparator.comparing(Board::getCreatedAt)
+						.reversed()) // 최신순으로 정렬
 				.map(board -> BoardResponseDto.builder()
 						.boardId(board.getId())
 						.pinned(board.isPinned())
