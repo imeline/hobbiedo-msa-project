@@ -2,6 +2,7 @@ package hobbiedo.board.application;
 
 import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -117,6 +118,9 @@ public class BoardServiceImpl implements BoardService {
 		List<Board> boards = boardRepository.findByCrewId(crewId);
 
 		return boards.stream()
+				.filter(board -> !board.isPinned()) // pinned 가 false 인 게시글만 포함
+				.sorted(Comparator.comparing(Board::getUpdatedAt)
+						.reversed()) // updatedAt 내림차순으로 정렬
 				.map(board -> BoardResponseDto.builder()
 						.boardId(board.getId())
 						.pinned(board.isPinned())

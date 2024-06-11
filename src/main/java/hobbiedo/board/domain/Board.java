@@ -1,5 +1,7 @@
 package hobbiedo.board.domain;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import hobbiedo.global.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,10 +50,12 @@ public class Board extends BaseEntity {
 
 	// 고정 여부, default = false
 	@Column(nullable = false)
+	@ColumnDefault("false")
 	private boolean isPinned;
 
 	// 수정 여부, default = false
 	@Column(nullable = false)
+	@ColumnDefault("false")
 	private boolean isUpdated;
 
 	@Builder
@@ -63,7 +67,7 @@ public class Board extends BaseEntity {
 		this.crewId = crewId;
 		this.likeCount = 0L;
 		this.commentCount = 0L;
-		this.isPinned = false;
-		this.isUpdated = false;
+		this.isPinned = isPinned;
+		this.isUpdated = isUpdated;
 	}
 }
