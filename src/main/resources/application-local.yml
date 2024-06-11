@@ -1,0 +1,52 @@
+server:
+  port: 0
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: batch-service
+
+  output:
+    ansi:
+      enabled: always
+
+  jpa:
+    database: mysql
+    hibernate.ddl-auto: create # 처음 배포할 때는 create 이후에는 update 또는 none
+    show-sql: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hobbiedo-batch?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+
+hobbie-do:
+  front-url: https://hobbie-do.site
+
+springdoc:
+  packages-to-scan: hobbiedo
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    enabled: true
+    path: /batch-service/swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /batch-service/v3/api-docs
+    groups:
+      enabled: true
+  cache:
+    disabled: true
