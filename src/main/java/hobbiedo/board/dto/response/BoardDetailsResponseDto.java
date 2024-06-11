@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class BoardDetailsResponseDto {
 
 	private Long boardId; // 게시글 번호
-	private String title; // 제목
 	private String content; // 내용
 	private String writerUuid; // 작성자 uuid
 	private boolean pinned; // 고정 여부

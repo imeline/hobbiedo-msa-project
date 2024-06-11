@@ -11,12 +11,10 @@ import lombok.NoArgsConstructor;
 @Schema(description = "게시글 업로드 요청")
 public class BoardUploadRequestVo {
 
-	private String title;
 	private String content;
 	private List<String> imageUrls;
 
-	public BoardUploadRequestVo(String title, String content, List<String> imageUrls) {
-		this.title = title;
+	public BoardUploadRequestVo(String content, List<String> imageUrls) {
 		this.content = content;
 		this.imageUrls = imageUrls;
 	}

@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BoardUploadRequestDto {
 
-	private String title;
 	private String content;
 	private List<String> imageUrls; // 이미지 URL 필드 추가
 
@@ -23,7 +22,6 @@ public class BoardUploadRequestDto {
 			BoardUploadRequestVo boardUploadRequestVo) {
 
 		return BoardUploadRequestDto.builder()
-				.title(boardUploadRequestVo.getTitle())
 				.content(boardUploadRequestVo.getContent())
 				.imageUrls(boardUploadRequestVo.getImageUrls())
 				.build();

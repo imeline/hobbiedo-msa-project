@@ -95,7 +95,6 @@ public class BoardServiceImpl implements BoardService {
 
 		return BoardDetailsResponseDto.builder()
 				.boardId(board.getId())
-				.title(board.getTitle())
 				.content(board.getContent())
 				.writerUuid(board.getWriterUuid())
 				.pinned(board.isPinned())
@@ -130,14 +129,10 @@ public class BoardServiceImpl implements BoardService {
 	private Board createPost(Long crewId, String uuid,
 			BoardUploadRequestDto boardUploadRequestDto) {
 
-		String title = boardUploadRequestDto.getTitle();
 		String content = boardUploadRequestDto.getContent();
 
-		// 게시글 제목과 내용이 비어있을 경우 예외 처리
-		if (title == null || title.trim().isEmpty()) {
-
-			throw new BoardExceptionHandler(CREATE_POST_TITLE_EMPTY);
-		} else if (content == null || content.trim().isEmpty()) {
+		// 게시글 내용이 비어있을 경우 예외 처리
+		if (content == null || content.trim().isEmpty()) {
 
 			throw new BoardExceptionHandler(CREATE_POST_CONTENT_EMPTY);
 		}
@@ -146,7 +141,6 @@ public class BoardServiceImpl implements BoardService {
 				Board.builder()
 						.crewId(crewId)
 						.writerUuid(uuid)
-						.title(boardUploadRequestDto.getTitle())
 						.content(boardUploadRequestDto.getContent())
 						.build()
 		);

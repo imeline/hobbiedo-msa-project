@@ -23,10 +23,6 @@ public class Board extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	// 게시글 제목
-	@Column(nullable = false, length = 255)
-	private String title;
-
 	// 게시글 내용
 	@Column(nullable = false, length = 3000)
 	@Size(max = 1001, message = "게시글 내용은 반드시 1000자 이내여야 합니다")
@@ -51,9 +47,8 @@ public class Board extends BaseEntity {
 	private boolean isUpdated;
 
 	@Builder
-	public Board(String title, String content, String writerUuid, Long crewId,
-			boolean isPinned, boolean isUpdated) {
-		this.title = title;
+	public Board(String content, String writerUuid, Long crewId, boolean isPinned,
+			boolean isUpdated) {
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.crewId = crewId;

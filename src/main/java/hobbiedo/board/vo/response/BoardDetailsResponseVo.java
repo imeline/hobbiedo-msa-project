@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class BoardDetailsResponseVo {
 
 	private Long boardId;
-	private String title;
 	private String content;
 	private String writerUuid;
 	private boolean pinned; // 고정 여부
@@ -23,10 +22,9 @@ public class BoardDetailsResponseVo {
 	private boolean updated; // 수정 여부
 	private List<String> imageUrls;
 
-	public BoardDetailsResponseVo(Long boardId, String title, String content, String writerUuid,
+	public BoardDetailsResponseVo(Long boardId, String content, String writerUuid,
 			boolean pinned, LocalDateTime createdAt, boolean updated, List<String> imageUrls) {
 		this.boardId = boardId;
-		this.title = title;
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.pinned = pinned;
@@ -42,7 +40,6 @@ public class BoardDetailsResponseVo {
 	public static BoardDetailsResponseVo boardDtoToDetailsVo(BoardDetailsResponseDto boardDto) {
 		return new BoardDetailsResponseVo(
 				boardDto.getBoardId(),
-				boardDto.getTitle(),
 				boardDto.getContent(),
 				boardDto.getWriterUuid(),
 				boardDto.isPinned(),
