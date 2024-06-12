@@ -4,6 +4,7 @@ import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,18 +54,18 @@ public class BoardServiceImpl implements BoardService {
 		// 이미지 url 리스트가 null 이 아니고 비어있지 않을 경우 이미지 엔티티 생성
 		if (imageUrls != null && !imageUrls.isEmpty()) {
 
-			for (int i = 0; i < imageUrls.size(); i++) {
+			IntStream.range(0, imageUrls.size())
+				.forEach(i -> {
+					String imageUrl = imageUrls.get(i);
 
-				String imageUrl = imageUrls.get(i);
-
-				boardImageRepository.save(
+					boardImageRepository.save(
 						BoardImage.builder()
-								.board(createdBoard) // 게시글 엔티티를 설정
-								.imageUrl(imageUrl) // URL 사용
-								.orderIndex(i) // 리스트 순서를 이미지의 순서로 설정
-								.build()
-				);
-			}
+							.board(createdBoard) // 게시글 엔티티를 설정
+							.imageUrl(imageUrl) // URL 사용
+							.orderIndex(i) // 리스트 순서를 이미지의 순서로 설정
+							.build()
+					);
+				});
 		}
 	}
 
