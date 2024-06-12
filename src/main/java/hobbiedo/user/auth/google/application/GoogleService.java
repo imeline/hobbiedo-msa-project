@@ -4,17 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.user.auth.global.api.code.status.ErrorStatus;
-import hobbiedo.user.auth.global.config.jwt.JwtUtil;
-import hobbiedo.user.auth.global.config.jwt.TokenType;
 import hobbiedo.user.auth.global.exception.MemberExceptionHandler;
 import hobbiedo.user.auth.google.domain.SocialAuth;
 import hobbiedo.user.auth.google.dto.request.GoogleLoginDTO;
 import hobbiedo.user.auth.google.dto.request.GoogleSignUpDTO;
 import hobbiedo.user.auth.google.infrastructure.GoogleMemberRepository;
 import hobbiedo.user.auth.google.infrastructure.SocialAuthRepository;
+import hobbiedo.user.auth.member.application.AuthService;
 import hobbiedo.user.auth.member.domain.Member;
-import hobbiedo.user.auth.member.domain.RefreshToken;
-import hobbiedo.user.auth.member.infrastructure.RefreshTokenRepository;
 import hobbiedo.user.auth.member.vo.response.LoginResponseVO;
 import hobbiedo.user.auth.member.vo.response.SignUpVO;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +22,7 @@ public class GoogleService {
 
 	private final GoogleMemberRepository memberRepository;
 	private final SocialAuthRepository socialAuthRepository;
-	private final JwtUtil jwtUtil;
-	private final RefreshTokenRepository refreshTokenRepository;
+	private final AuthService authService;
 
 	@Transactional
 	public LoginResponseVO loginGoogle(GoogleLoginDTO googleLoginDTO) {
@@ -39,7 +35,7 @@ public class GoogleService {
 			createSocialAuth(member, googleLoginDTO.getExternalId(), "GOOGLE");
 		}
 
-		return login(member);
+		return authService.getLoginResponse(member.getUuid());
 	}
 
 	@Transactional
@@ -48,29 +44,6 @@ public class GoogleService {
 			.member(member)
 			.externalId(externalId)
 			.socialType(socialType)
-			.build());
-	}
-
-	@Transactional
-	protected LoginResponseVO login(Member member) {
-		String accessToken = jwtUtil.createJwt(member.getUuid(), TokenType.ACCESS_TOKEN);
-		String refreshToken = jwtUtil.createJwt(member.getUuid(), TokenType.REFRESH_TOKEN);
-
-		saveToRedis(refreshToken, TokenType.REFRESH_TOKEN, member.getUuid());
-		return LoginResponseVO
-			.builder()
-			.accessToken(accessToken)
-			.refreshToken(refreshToken)
-			.build();
-	}
-
-	@Transactional
-	protected void saveToRedis(String refreshToken, TokenType tokenType, String uuid) {
-		refreshTokenRepository.save(RefreshToken
-			.builder()
-			.uuid(uuid)
-			.refresh(refreshToken)
-			.expiration(System.currentTimeMillis() + tokenType.getExpireTime())
 			.build());
 	}
 
