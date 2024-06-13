@@ -119,6 +119,17 @@ public class ChatServiceImp implements ChatService {
 			.toList();
 	}
 
+	@Transactional
+	@Override
+	public void createChatStatus(Long crewId, String uuid) {
+		chatStatusRepository.save(ChatLastStatus.builder()
+			.uuid(uuid)
+			.crewId(crewId)
+			.connectionStatus(false)
+			.lastReadAt(Instant.now())
+			.build());
+	}
+
 	@Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
 	@Transactional
 	@Override

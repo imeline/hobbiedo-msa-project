@@ -1,6 +1,7 @@
 package hobbiedo.crew.domain;
 
 import hobbiedo.global.base.BaseCreateTime;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,7 +24,7 @@ public class CrewMember extends BaseCreateTime {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "crew_id", nullable = false)
 	private Crew crew;
 
