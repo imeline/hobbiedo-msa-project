@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = {"hobbiedo.chat.mysqlInfrastructure", "hobbiedo.region.infrastructure"})
+@EnableJpaRepositories(basePackages = {"hobbiedo.region.infrastructure",
+	"hobbiedo.crew.infrastructure"})
 public class JpaConfig {
 }

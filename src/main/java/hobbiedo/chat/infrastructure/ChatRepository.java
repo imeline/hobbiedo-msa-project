@@ -1,4 +1,4 @@
-package hobbiedo.chat.mongoInfrastructure;
+package hobbiedo.chat.infrastructure;
 
 import java.time.Instant;
 import java.util.List;
