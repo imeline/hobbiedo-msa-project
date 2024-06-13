@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "hobbiedo.chat.mongoInfrastructure")
+@EnableMongoRepositories(basePackages = "hobbiedo.chat.infrastructure")
 public class MongoDbConfig extends AbstractMongoClientConfiguration {
 
 	@Value("${spring.data.mongodb.uri}")
