@@ -28,20 +28,20 @@ public class Crew extends BaseTime {
 	@Column(nullable = false)
 	private Long hobbyId;
 
-	@Column(nullable = false, length = 20)
+	@Column(nullable = false, length = 20, unique = true)
 	private String name;
 
 	@Column(nullable = false, length = 250)
 	private String introduction;
 
 	@Column(nullable = false)
+	@ColumnDefault("1")
 	private int currentParticipant;
 
 	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	private int joinType;  // 0:자유, 1: 신청
 
 	@Column(nullable = false)
-	@ColumnDefault("")
 	private String profileUrl;
 
 	@Column(nullable = false)
