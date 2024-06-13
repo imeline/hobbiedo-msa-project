@@ -28,10 +28,10 @@ public class SocialAuth {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "member_id")
+	@JoinColumn(name = "member_id", nullable = false, unique = true)
 	private Member member;
 
-	@Column(length = 50, nullable = false)
+	@Column(length = 50, nullable = false, unique = true)
 	private String externalId;
 
 	@Column(length = 20, nullable = false)
