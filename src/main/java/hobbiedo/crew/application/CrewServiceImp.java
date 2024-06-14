@@ -13,6 +13,7 @@ import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
@@ -149,6 +150,7 @@ public class CrewServiceImp implements CrewService {
 		return crewIds;
 	}
 
+	@Transactional
 	@Override
 	public void addJoinForm(JoinFormDTO joinFormDTO, Long crewId, String uuid) {
 		Crew crew = crewRepository.findById(crewId)
@@ -160,4 +162,16 @@ public class CrewServiceImp implements CrewService {
 		}
 		joinFormRepository.save(joinFormDTO.toEntity(crewId, uuid));
 	}
+
+	@Override
+	public List<CrewProfileDTO> getCrewProfiles(String uuid) {
+		List<CrewMember> crewMembers = crewMemberRepository.findByUuidAndBannedIsFalse(uuid);
+		if (crewMembers.isEmpty()) {
+			throw new GlobalException(ErrorStatus.NO_EXIST_CREW);
+		}
+		return crewMembers.stream()
+			.map(crewMember -> CrewProfileDTO.toDto(crewMember.getCrew()))
+			.toList();
+	}
+
 }
