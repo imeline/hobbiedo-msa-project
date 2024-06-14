@@ -1,5 +1,7 @@
 package hobbiedo.crew.domain;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import hobbiedo.global.base.BaseTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,6 +37,7 @@ public class CrewMember extends BaseTime {
 	private int role;  // 0: 일반, 1: 방장
 
 	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	@ColumnDefault("0")
 	private boolean banned;  // 0: 정상, 1: 블랙리스트
 
 	@Builder

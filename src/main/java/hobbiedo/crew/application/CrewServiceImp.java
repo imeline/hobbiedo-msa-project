@@ -1,18 +1,22 @@
 package hobbiedo.crew.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
-import hobbiedo.crew.dto.request.CrewDTO;
+import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.infrastructure.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.CrewRepository;
 import hobbiedo.crew.infrastructure.HashTagRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
+import hobbiedo.region.infrastructure.RegionRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,10 +28,11 @@ public class CrewServiceImp implements CrewService {
 	private final CrewMemberRepository crewMemberRepository;
 	private final HashTagRepository hashTagRepository;
 	private final ChatService chatService;
+	private final RegionRepository regionRepository;
 
 	@Transactional
 	@Override
-	public CrewIdDTO createCrew(CrewDTO crewDTO, String uuid) {
+	public CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid) {
 		isVaildCreateCrew(crewDTO, uuid);
 		// Crew 생성
 		Crew crew = crewRepository.save(crewDTO.toCrewEntity());
@@ -44,7 +49,7 @@ public class CrewServiceImp implements CrewService {
 		return CrewIdDTO.toDto(crew.getId());
 	}
 
-	private void isVaildCreateCrew(CrewDTO crewDTO, String uuid) {
+	private void isVaildCreateCrew(CrewRequestDTO crewDTO, String uuid) {
 		// HashTag 개수 체크
 		if (crewDTO.getHashTagList().size() > 5) {
 			throw new GlobalException(ErrorStatus.INVALID_HASH_TAG_COUNT);
@@ -104,5 +109,17 @@ public class CrewServiceImp implements CrewService {
 		if (crew.getCurrentParticipant() >= 100) {
 			throw new GlobalException(ErrorStatus.INVALID_MAX_PARTICIPANT);
 		}
+	}
+
+	@Override
+	public CrewResponseDTO getCrewInfo(Long crewId) {
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+
+		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
+		String addressName = regionRepository.findAddressNameById(crew.getRegionId())
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
+
+		return CrewResponseDTO.toDto(crew, addressName, hashTagList);
 	}
 }

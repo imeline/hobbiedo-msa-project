@@ -17,8 +17,8 @@ public enum ErrorStatus {
 	NO_EXIST_UNREAD_COUNT("CHAT408", "조회 가능한 읽지 않은 체팅 개수가 존재하지 않습니다."),
 
 	// REGION 활동지역
-	NO_EXIST_MEMBER_REGION("REGION401", "활동 지역이 존재하지 않습니다."),
-	NO_EXIST_BASE_MEMBER_REGION("REGION402", "기본 활동 지역이 존재하지 않습니다."),
+	NO_EXIST_REGION("REGION401", "활동 지역이 존재하지 않습니다."),
+	NO_EXIST_BASE_REGION("REGION402", "기본 활동 지역이 존재하지 않습니다."),
 	INVALID_RANGE("REGION403", "활동 지역 범위 단위(3,5,7,10)에 맞지 않습니다."),
 
 	// CREW 소모임
