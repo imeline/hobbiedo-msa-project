@@ -14,6 +14,7 @@ import hobbiedo.crew.application.CrewService;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.global.base.BaseResponse;
 import hobbiedo.global.status.SuccessStatus;
@@ -69,4 +70,11 @@ public class CrewController {
 		return BaseResponse.onSuccess(SuccessStatus.SUBMISSION_JOIN_FORM, null);
 	}
 
+	@Operation(summary = "한 유저가 가입한 소모임 프로필 목록 조회", description = "한 유저가 가입한 소모임 프로필 목록을 조회한다.")
+	@GetMapping("/list/profile")
+	public BaseResponse<List<CrewProfileDTO>> getCrewProfileList(
+		@RequestHeader(name = "Uuid") String uuid) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_PROFILE_LIST,
+			crewService.getCrewProfiles(uuid));
+	}
 }
