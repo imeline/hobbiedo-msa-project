@@ -39,7 +39,7 @@ public class CrewRequestDTO {
 			.introduction(introduction)
 			.currentParticipant(1) // default 1 : 방장
 			.joinType(joinType)
-			.profileUrl(profileUrl == null ? "https://hobbiedo.s3.ap-northeast-2.amazonaws.com/default/crew_profile.png" :
+			.profileUrl(profileUrl == null ? "https://hobbiedo-bucket.s3.ap-northeast-2.amazonaws.com/image_1718327243910_crew.png" :
 				profileUrl)
 			.score(0) // default 0 : 초기 0점
 			.active(true) // default true : 활성화
