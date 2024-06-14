@@ -24,8 +24,8 @@ import hobbiedo.chat.dto.response.ChatImageDTO;
 import hobbiedo.chat.dto.response.ChatImageListDTO;
 import hobbiedo.chat.dto.response.ChatListDTO;
 import hobbiedo.chat.dto.response.LastChatDTO;
-import hobbiedo.chat.mongoInfrastructure.ChatLastStatusRepository;
-import hobbiedo.chat.mongoInfrastructure.ChatRepository;
+import hobbiedo.chat.infrastructure.ChatLastStatusRepository;
+import hobbiedo.chat.infrastructure.ChatRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -117,6 +117,17 @@ public class ChatServiceImp implements ChatService {
 					.sorted(Comparator.comparing(ChatImageDTO::getCreatedAt).reversed())
 					.toList()))
 			.toList();
+	}
+
+	@Transactional
+	@Override
+	public void createChatStatus(Long crewId, String uuid) {
+		chatStatusRepository.save(ChatLastStatus.builder()
+			.uuid(uuid)
+			.crewId(crewId)
+			.connectionStatus(false)
+			.lastReadAt(Instant.now())
+			.build());
 	}
 
 	@Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행

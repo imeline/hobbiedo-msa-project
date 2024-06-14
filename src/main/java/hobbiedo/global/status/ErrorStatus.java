@@ -17,9 +17,18 @@ public enum ErrorStatus {
 	NO_EXIST_UNREAD_COUNT("CHAT408", "조회 가능한 읽지 않은 체팅 개수가 존재하지 않습니다."),
 
 	// REGION 활동지역
-	NO_EXIST_MEMBER_REGION("REGION401", "활동 지역이 존재하지 않습니다."),
-	NO_EXIST_BASE_MEMBER_REGION("REGION402", "기본 활동 지역이 존재하지 않습니다."),
-	INVALID_RANGE("REGION403", "활동 지역 범위 단위(3,5,7,10)에 맞지 않습니다.");
+	NO_EXIST_REGION("REGION401", "활동 지역이 존재하지 않습니다."),
+	NO_EXIST_BASE_REGION("REGION402", "기본 활동 지역이 존재하지 않습니다."),
+	INVALID_RANGE("REGION403", "활동 지역 범위 단위(3,5,7,10)에 맞지 않습니다."),
+
+	// CREW 소모임
+	INVALID_HASH_TAG_COUNT("CREW401", "해시태그는 5개까지 등록 가능합니다."),
+	INVALID_JOIN_TYPE("CREW402", "가입 유형이 올바르지 않습니다."),
+	INVALID_MAX_HOST_COUNT("CREW403", "한 회원은 최대 5개 소모임 생성이 가능 합니다."),
+	NO_EXIST_CREW("CREW404", "해당 소모임이 존재하지 않습니다."),
+	ALREADY_JOINED_CREW("CREW405", "이미 가입된 소모임입니다."),
+	INVALID_BANNED("CREW406", "해당 소모임에 가입할 수 없는 회원입니다."),
+	INVALID_MAX_PARTICIPANT("CREW407", "현재 소모임은 최대 인원 100명을 충족한 상태입니다."),;
 
 	private final String status;
 	private final String message;

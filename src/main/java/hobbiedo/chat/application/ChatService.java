@@ -14,5 +14,7 @@ public interface ChatService {
 
 	List<ChatImageListDTO> getChatsWithImageUrl(Long crewId);
 
+	void createChatStatus(Long crewId, String uuid);
+
 	void deleteOldChatsWithImageUrl();
 }
