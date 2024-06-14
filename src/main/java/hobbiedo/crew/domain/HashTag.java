@@ -1,6 +1,9 @@
 package hobbiedo.crew.domain;
 
-import jakarta.persistence.CascadeType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.mongodb.core.index.Indexed;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,8 +26,10 @@ public class HashTag {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "crew_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@Indexed
 	private Crew crew;
 
 	@Column(nullable = false, length = 10)
