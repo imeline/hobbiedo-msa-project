@@ -10,6 +10,6 @@ import hobbiedo.region.domain.Region;
 public interface RegionRepository extends JpaRepository<Region, Long> {
 	List<Region> findByUuid(String uuid);
 
-	Optional<Region> findByUuidAndIsBaseRegion(String uuid, boolean isBaseRegion);
+	Optional<Region> findByUuidAndBaseRegion(String uuid, boolean baseRegion);
 
 }

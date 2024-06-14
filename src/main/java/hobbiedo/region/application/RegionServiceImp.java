@@ -51,7 +51,7 @@ public class RegionServiceImp implements RegionService {
 
 	@Override
 	public RegionAddressNameDTO getBaseAddressName(String uuid) {
-		Region region = regionRepository.findByUuidAndIsBaseRegion(uuid,
+		Region region = regionRepository.findByUuidAndBaseRegion(uuid,
 				true)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_MEMBER_REGION));
 		return RegionAddressNameDTO.toDto(region);
@@ -77,7 +77,7 @@ public class RegionServiceImp implements RegionService {
 	@Transactional
 	public void changeBaseRegion(Long newRegionId, String uuid) {
 		// 기존 활성화된 활동 지역 찾기
-		Region nowRegion = regionRepository.findByUuidAndIsBaseRegion(uuid,
+		Region nowRegion = regionRepository.findByUuidAndBaseRegion(uuid,
 				true)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_MEMBER_REGION));
 		// 기존 활성화된 활동 지역 비활성화
