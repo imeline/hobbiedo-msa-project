@@ -31,8 +31,7 @@ public class GoogleService {
 	@Transactional
 	public LoginResponseVO loginGoogle(GoogleLoginDTO googleLoginDTO) {
 		// 일반 회원인지 판별
-		Member member = googleMemberRepository.findByNameAndEmail(googleLoginDTO.getName(),
-				googleLoginDTO.getEmail())
+		Member member = googleMemberRepository.findByEmail(googleLoginDTO.getEmail())
 			.orElseThrow(() -> new MemberExceptionHandler(ErrorStatus.NO_EXIST_MEMBER));
 		// 구글 회원가입이 되어있지 않은 경우
 		if (!socialAuthRepository.existsByMember(member)) {
