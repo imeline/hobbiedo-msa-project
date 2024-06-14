@@ -1,5 +1,7 @@
 package hobbiedo.crew.presentation;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +49,14 @@ public class CrewController {
 	public BaseResponse<CrewResponseDTO> getCrewInfo(@PathVariable long crewId) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_INFO,
 			crewService.getCrewInfo(crewId));
+	}
+
+	@Operation(summary = "취미와 활동 지역에 해당하는 소모임 아이디 조회", description = "취미와 활동 지역에 해당하는 소모임 아이디 리스트를 조회한다.(순서 랜덤)")
+	@GetMapping("/list/{hobbyId}/{regionId}")
+	public BaseResponse<List<CrewIdDTO>> getCrewIdList(@PathVariable long hobbyId,
+		@PathVariable long regionId) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_CREWS_BY_HOBBY_AND_REGION,
+			crewService.getCrewsByHobbyAndRegion(hobbyId, regionId));
 	}
 
 }

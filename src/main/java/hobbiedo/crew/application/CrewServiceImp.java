@@ -1,5 +1,7 @@
 package hobbiedo.crew.application;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -121,5 +123,18 @@ public class CrewServiceImp implements CrewService {
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 
 		return CrewResponseDTO.toDto(crew, addressName, hashTagList);
+	}
+
+	@Override
+	public List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId) {
+		List<CrewIdDTO> crewIds = new ArrayList<>( // 아래에서 랜덤하게 섞기 때문에 가변 객체로
+			crewRepository.findIdsByHobbyAndRegion(hobbyId, regionId)
+				.stream()
+				.map(CrewIdDTO::toDto)
+				.toList());
+
+		Collections.shuffle(crewIds);
+
+		return crewIds;
 	}
 }
