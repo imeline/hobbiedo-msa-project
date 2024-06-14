@@ -39,12 +39,18 @@ public class GoogleSignUpDTO {
 	private GenderType gender;
 
 	@Schema(description = "가입 아이디, 8~20자리(영어+숫자), 특수문자 X")
+	@Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{8,20}$",
+		message = "아이디는 8~20자리의 영어+숫자로만 이뤄져야합니다.(특수 문자x)")
 	private String loginId;
 
 	@Schema(description = "가입 비밀번호, 8 ~ 20자리(영어+숫자+특수문자")
+	@Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}",
+		message = "비밀번호는 8~20자리 사이의 영어+숫자+특수문자로 이뤄져야합니다.")
 	private String password;
 
 	@Schema(description = "가입자 생년월일, YYYY-mm-dd 형식만 허용")
+	@Pattern(regexp = "^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",
+		message = "생일은 yyyy-MM-dd 형식으로 이뤄져야합니다.")
 	private LocalDate birth;
 
 	public Member toMemberEntity() {
