@@ -38,7 +38,7 @@ public class RegionServiceImp implements RegionService {
 	public List<RegionAddressNameDTO> getAddressNames(String uuid) {
 		return Optional.of(regionRepository.findByUuid(uuid))
 			.filter(regionList -> !regionList.isEmpty())
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_MEMBER_REGION))
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION))
 			.stream()
 			.map(RegionAddressNameDTO::toDto)
 			.toList();
@@ -53,7 +53,7 @@ public class RegionServiceImp implements RegionService {
 	public RegionAddressNameDTO getBaseAddressName(String uuid) {
 		Region region = regionRepository.findByUuidAndBaseRegion(uuid,
 				true)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_MEMBER_REGION));
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_REGION));
 		return RegionAddressNameDTO.toDto(region);
 	}
 
@@ -79,7 +79,7 @@ public class RegionServiceImp implements RegionService {
 		// 기존 활성화된 활동 지역 찾기
 		Region nowRegion = regionRepository.findByUuidAndBaseRegion(uuid,
 				true)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_MEMBER_REGION));
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_REGION));
 		// 기존 활성화된 활동 지역 비활성화
 		regionRepository.save(changeIsBaseRegion(nowRegion, false));
 		// 새로운 활동 지역 활성화
@@ -103,7 +103,7 @@ public class RegionServiceImp implements RegionService {
 	public List<RegionXyDTO> getRegionXY(String uuid) {
 		return Optional.of(regionRepository.findByUuid(uuid))
 			.filter(regionList -> !regionList.isEmpty())
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_MEMBER_REGION))
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION))
 			.stream()
 			.map(RegionXyDTO::toDto)
 			.toList();
@@ -120,7 +120,7 @@ public class RegionServiceImp implements RegionService {
 
 	private Region getRegion(Long regionId) {
 		return regionRepository.findById(regionId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_MEMBER_REGION));
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 	}
 
 	private boolean isInvalidRange(int currentSelectedRange) {

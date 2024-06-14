@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class CrewDTO {
+public class CrewRequestDTO {
 
 	private String profileUrl;
 
