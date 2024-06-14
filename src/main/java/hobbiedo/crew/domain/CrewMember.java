@@ -1,7 +1,10 @@
 package hobbiedo.crew.domain;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.mongodb.core.index.Indexed;
+
 import hobbiedo.global.base.BaseTime;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,11 +27,14 @@ public class CrewMember extends BaseTime {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "crew_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@Indexed
 	private Crew crew;
 
 	@Column(nullable = false, length = 50)
+	@Indexed
 	private String uuid;
 
 	@Column(nullable = false, columnDefinition = "TINYINT(1)")
