@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,6 +43,7 @@ public class Crew extends BaseTime {
 	private int joinType;  // 0:자유, 1: 신청
 
 	@Column(nullable = false)
+	@ColumnDefault("https://hobbiedo-bucket.s3.ap-northeast-2.amazonaws.com/image_1718327243910_crew.png")
 	private String profileUrl;
 
 	@Column(nullable = false)

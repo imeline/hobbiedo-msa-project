@@ -1,6 +1,6 @@
 package hobbiedo.crew.domain;
 
-import hobbiedo.global.base.BaseCreateTime;
+import hobbiedo.global.base.BaseTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CrewMember extends BaseCreateTime {
+public class CrewMember extends BaseTime {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,14 +35,14 @@ public class CrewMember extends BaseCreateTime {
 	private int role;  // 0: 일반, 1: 방장
 
 	@Column(nullable = false, columnDefinition = "TINYINT(1)")
-	private boolean isBanned;  // 0: 정상, 1: 블랙리스트
+	private boolean banned;  // 0: 정상, 1: 블랙리스트
 
 	@Builder
-	public CrewMember(Long id, Crew crew, String uuid, int role, boolean isBanned) {
+	public CrewMember(Long id, Crew crew, String uuid, int role, boolean banned) {
 		this.id = id;
 		this.crew = crew;
 		this.uuid = uuid;
 		this.role = role;
-		this.isBanned = isBanned;
+		this.banned = banned;
 	}
 }

@@ -23,7 +23,8 @@ public enum SuccessStatus { //메시지를 중앙에서 관리하는 것이 유�
 	CREATE_SING_UP_REGION("회원가입 시, 활동 지역 등록에 성공하였습니다."),
 
 	// 소모임
-	CREATE_CREW("소모임 생성에 성공하였습니다.");
+	CREATE_CREW("소모임 생성에 성공하였습니다."),
+	JOIN_FREE_CREW("자유 방식 소모임에 가입 완료되었습니다.");
 
 	private final String status;
 }
