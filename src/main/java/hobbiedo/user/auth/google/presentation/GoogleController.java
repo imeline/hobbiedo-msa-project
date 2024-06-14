@@ -14,6 +14,7 @@ import hobbiedo.user.auth.member.vo.response.LoginResponseVO;
 import hobbiedo.user.auth.member.vo.response.SignUpVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,7 +28,7 @@ public class GoogleController {
 	@Operation(summary = "구글 로그인",
 		description = "통합 회원이 아니면 에러를 return, 구글 회원이 아니면 구글 회원가입 후 로그인, 구글 회원이면 로그인")
 	@PostMapping("/login/google")
-	public ApiResponse<LoginResponseVO> googleLogin(@RequestBody GoogleLoginDTO googleLoginDTO) {
+	public ApiResponse<LoginResponseVO> googleLogin(@Valid @RequestBody GoogleLoginDTO googleLoginDTO) {
 		return ApiResponse.onSuccess(
 			SuccessStatus.GOOGLE_LOGIN_SUCCESS.getMessage(),
 			googleService.loginGoogle(googleLoginDTO));
@@ -35,7 +36,7 @@ public class GoogleController {
 
 	@Operation(summary = "구글 회원가입", description = "통합과 구글 회원가입 후, uuid return")
 	@PostMapping("/sign-up/google")
-	public ApiResponse<SignUpVO> googleSignUp(@RequestBody GoogleSignUpDTO googleSignUpDTO) {
+	public ApiResponse<SignUpVO> googleSignUp(@Valid @RequestBody GoogleSignUpDTO googleSignUpDTO) {
 		return ApiResponse.onSuccess(
 			SuccessStatus.GOOGLE_SIGN_UP_SUCCESS.getMessage(),
 			googleService.signUpGoogle(googleSignUpDTO));
