@@ -1,7 +1,5 @@
 package hobbiedo.crew.domain;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import hobbiedo.global.base.BaseTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,23 +33,20 @@ public class Crew extends BaseTime {
 	@Column(nullable = false, length = 250)
 	private String introduction;
 
-	@Column(nullable = false)
-	@ColumnDefault("1")
+	@Column(nullable = false, columnDefinition = "INT DEFAULT 1")
 	private int currentParticipant;
 
-	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	@Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
 	private int joinType;  // 0:자유, 1: 신청
 
-	@Column(nullable = false)
-	@ColumnDefault("https://hobbiedo-bucket.s3.ap-northeast-2.amazonaws.com/image_1718327243910_crew.png")
+	@Column(nullable = false,
+		columnDefinition = "VARCHAR(255) DEFAULT 'https://hobbiedo-bucket.s3.ap-northeast-2.amazonaws.com/image_1718327243910_crew.png'")
 	private String profileUrl;
 
-	@Column(nullable = false)
-	@ColumnDefault("0")
+	@Column(nullable = false, columnDefinition = "INT DEFAULT 0")
 	private int score;
 
-	@Column(nullable = false, columnDefinition = "TINYINT(1)")
-	@ColumnDefault("1")
+	@Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
 	private boolean active;
 
 	@Builder
