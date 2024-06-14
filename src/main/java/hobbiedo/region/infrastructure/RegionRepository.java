@@ -16,4 +16,6 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 	@Query("select r.addressName from Region r where r.id = :regionId")
 	Optional<String> findAddressNameById(Long regionId);
 
+	boolean existsById(long regionId);
+
 }

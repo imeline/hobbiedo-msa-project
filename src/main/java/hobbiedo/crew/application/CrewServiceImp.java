@@ -67,6 +67,10 @@ public class CrewServiceImp implements CrewService {
 		if (crewMemberRepository.countByUuidAndRole(uuid, 1) >= 5) {
 			throw new GlobalException(ErrorStatus.INVALID_MAX_HOST_COUNT);
 		}
+		// 활동 지역이 존재하는지 체크
+		if (!regionRepository.existsById(crewDTO.getRegionId())) {
+			throw new GlobalException(ErrorStatus.NO_EXIST_REGION);
+		}
 	}
 
 	@Transactional
