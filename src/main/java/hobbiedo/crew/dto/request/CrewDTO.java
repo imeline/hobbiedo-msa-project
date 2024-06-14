@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 public class CrewDTO {
-	@NotNull
+
 	private String profileUrl;
 
 	@NotNull
@@ -39,7 +39,8 @@ public class CrewDTO {
 			.introduction(introduction)
 			.currentParticipant(1) // default 1 : 방장
 			.joinType(joinType)
-			.profileUrl(profileUrl)
+			.profileUrl(profileUrl == null ? "https://hobbiedo.s3.ap-northeast-2.amazonaws.com/default/crew_profile.png" :
+				profileUrl)
 			.score(0) // default 0 : 초기 0점
 			.active(true) // default true : 활성화
 			.build();
@@ -50,7 +51,7 @@ public class CrewDTO {
 			.crew(crew)
 			.uuid(uuid)
 			.role(1) // 방장
-			.isBanned(false) // default false : 블랙리스트 아님
+			.banned(false) // default false : 블랙리스트 아님
 			.build();
 	}
 
