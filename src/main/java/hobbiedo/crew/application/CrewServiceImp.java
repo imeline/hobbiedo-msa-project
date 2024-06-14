@@ -1,5 +1,7 @@
 package hobbiedo.crew.application;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,11 +11,13 @@ import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
+import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
-import hobbiedo.crew.infrastructure.CrewMemberRepository;
-import hobbiedo.crew.infrastructure.CrewRepository;
-import hobbiedo.crew.infrastructure.HashTagRepository;
+import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
+import hobbiedo.crew.infrastructure.jpa.CrewRepository;
+import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
+import hobbiedo.crew.infrastructure.redis.JoinFormRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import hobbiedo.region.infrastructure.RegionRepository;
@@ -27,6 +31,7 @@ public class CrewServiceImp implements CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final HashTagRepository hashTagRepository;
+	private final JoinFormRepository joinFormRepository;
 	private final ChatService chatService;
 	private final RegionRepository regionRepository;
 
@@ -70,6 +75,7 @@ public class CrewServiceImp implements CrewService {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 		isVaildJoinCrew(crew, uuid);
+		isVaildCrewMember(crew, uuid);
 		// CrewMember 생성
 		crewMemberRepository.save(CrewMember.builder()
 			.crew(crew)
@@ -93,14 +99,6 @@ public class CrewServiceImp implements CrewService {
 	}
 
 	private void isVaildJoinCrew(Crew crew, String uuid) {
-		// 블랙리스트인지 확인
-		if (crewMemberRepository.existsByCrewIdAndUuidAndBanned(crew.getId(), uuid, true)) {
-			throw new GlobalException(ErrorStatus.INVALID_BANNED);
-		}
-		// 이미 가입한 방인지 체크
-		if (crewMemberRepository.existsByCrewIdAndUuid(crew.getId(), uuid)) {
-			throw new GlobalException(ErrorStatus.ALREADY_JOINED_CREW);
-		}
 		// joinType 체크
 		if (crew.getJoinType() == 1) {
 			throw new GlobalException(ErrorStatus.INVALID_JOIN_TYPE);
@@ -108,6 +106,17 @@ public class CrewServiceImp implements CrewService {
 		// 가입인원 다 찾는지 확인
 		if (crew.getCurrentParticipant() >= 100) {
 			throw new GlobalException(ErrorStatus.INVALID_MAX_PARTICIPANT);
+		}
+	}
+
+	private void isVaildCrewMember(Crew crew, String uuid) {
+		// 블랙리스트인지 확인
+		if (crewMemberRepository.existsByCrewIdAndUuidAndBanned(crew.getId(), uuid, true)) {
+			throw new GlobalException(ErrorStatus.INVALID_BANNED);
+		}
+		// 이미 가입한 방인지 체크
+		if (crewMemberRepository.existsByCrewIdAndUuid(crew.getId(), uuid)) {
+			throw new GlobalException(ErrorStatus.ALREADY_JOINED_CREW);
 		}
 	}
 
@@ -121,5 +130,30 @@ public class CrewServiceImp implements CrewService {
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 
 		return CrewResponseDTO.toDto(crew, addressName, hashTagList);
+	}
+
+	@Override
+	public List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId) {
+		List<CrewIdDTO> crewIds = new ArrayList<>( // 아래에서 랜덤하게 섞기 때문에 가변 객체로
+			crewRepository.findIdsByHobbyAndRegion(hobbyId, regionId)
+				.stream()
+				.map(CrewIdDTO::toDto)
+				.toList());
+
+		Collections.shuffle(crewIds);
+
+		return crewIds;
+	}
+
+	@Override
+	public void addJoinForm(JoinFormDTO joinFormDTO, Long crewId, String uuid) {
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+
+		isVaildCrewMember(crew, uuid);
+		if (joinFormRepository.existsByCrewIdAndUuid(crewId, uuid)) {
+			throw new GlobalException(ErrorStatus.ALREADY_SEND_JOIN_FORM);
+		}
+		joinFormRepository.save(joinFormDTO.toEntity(crewId, uuid));
 	}
 }

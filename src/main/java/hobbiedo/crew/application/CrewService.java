@@ -1,6 +1,9 @@
 package hobbiedo.crew.application;
 
+import java.util.List;
+
 import hobbiedo.crew.dto.request.CrewRequestDTO;
+import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 
@@ -10,4 +13,8 @@ public interface CrewService {
 	void joinCrew(Long crewId, String uuid);
 
 	CrewResponseDTO getCrewInfo(Long crewId);
+
+	List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId);
+
+	void addJoinForm(JoinFormDTO joinFormDTO, Long crewId, String uuid);
 }
