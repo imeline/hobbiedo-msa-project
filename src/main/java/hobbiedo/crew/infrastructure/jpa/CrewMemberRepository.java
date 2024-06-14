@@ -1,4 +1,4 @@
-package hobbiedo.crew.infrastructure;
+package hobbiedo.crew.infrastructure.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
