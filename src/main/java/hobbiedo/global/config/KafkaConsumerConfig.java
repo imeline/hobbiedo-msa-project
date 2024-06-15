@@ -15,6 +15,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import hobbiedo.batch.kafka.dto.BoardCreateEventDto;
+import hobbiedo.batch.kafka.dto.BoardDeleteEventDto;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -33,7 +34,8 @@ public class KafkaConsumerConfig {
 	 * @return ConsumerFactory<String, BoardCreateEventDto>
 	 */
 	@Bean
-	public ConsumerFactory<String, BoardCreateEventDto> consumerFactory() {
+	public ConsumerFactory<String, BoardCreateEventDto> createConsumerFactory() {
+
 		Map<String, Object> configProps = new HashMap<>();
 		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -46,10 +48,42 @@ public class KafkaConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardCreateEventDto> kafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String, BoardCreateEventDto> createKafkaListenerContainerFactory() {
+
 		ConcurrentKafkaListenerContainerFactory<String, BoardCreateEventDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
-		factory.setConsumerFactory(consumerFactory());
+
+		factory.setConsumerFactory(createConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 통계 테이블 삭제 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardDeleteEventDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardDeleteEventDto> deleteConsumerFactory() {
+
+		Map<String, Object> configProps = new HashMap<>();
+		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 모든 패키지를 신뢰하도록 설정
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardDeleteEventDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardDeleteEventDto> deleteKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardDeleteEventDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(deleteConsumerFactory());
+
 		return factory;
 	}
 }

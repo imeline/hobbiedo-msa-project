@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import hobbiedo.batch.domain.BoardStats;
 import hobbiedo.batch.infrastructure.BoardStatsRepository;
 import hobbiedo.batch.kafka.dto.BoardCreateEventDto;
+import hobbiedo.batch.kafka.dto.BoardDeleteEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,23 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 				.build();
 
 			boardStatsRepository.save(boardStats);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 게시글 통계 삭제
+	 * @param eventDto
+	 */
+	@Override
+	@Transactional
+	public void deleteBoardStats(BoardDeleteEventDto eventDto) {
+
+		try {
+
+			boardStatsRepository.deleteByBoardId(eventDto.getBoardId());
 		} catch (Exception e) {
 
 			e.printStackTrace();
