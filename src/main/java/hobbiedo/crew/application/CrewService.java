@@ -6,13 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
-import hobbiedo.crew.dto.request.JoinFormDTO;
+import hobbiedo.crew.dto.request.JoinFormRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
+import hobbiedo.crew.dto.response.JoinFormResponseDTO;
 
 public interface CrewService {
 	CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid);
@@ -23,7 +24,7 @@ public interface CrewService {
 
 	List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId);
 
-	void addJoinForm(JoinFormDTO joinFormDTO, Long crewId, String uuid);
+	void addJoinForm(JoinFormRequestDTO joinFormDTO, Long crewId, String uuid);
 
 	List<CrewProfileDTO> getCrewProfiles(String uuid);
 
@@ -41,4 +42,6 @@ public interface CrewService {
 	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
 
 	List<JoinFormListDTO> getJoinFormList(Long crewId, String uuid);
+
+	JoinFormResponseDTO getJoinForm(String joinFormId);
 }

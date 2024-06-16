@@ -11,15 +11,17 @@ import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.domain.HashTag;
+import hobbiedo.crew.domain.JoinForm;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
-import hobbiedo.crew.dto.request.JoinFormDTO;
+import hobbiedo.crew.dto.request.JoinFormRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
+import hobbiedo.crew.dto.response.JoinFormResponseDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
 import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
@@ -170,7 +172,7 @@ public class CrewServiceImp implements CrewService {
 
 	@Transactional
 	@Override
-	public void addJoinForm(JoinFormDTO joinFormDTO, Long crewId, String uuid) {
+	public void addJoinForm(JoinFormRequestDTO joinFormDTO, Long crewId, String uuid) {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 
@@ -265,5 +267,12 @@ public class CrewServiceImp implements CrewService {
 			.stream()
 			.map(JoinFormListDTO::toDto)
 			.toList();
+	}
+
+	@Override
+	public JoinFormResponseDTO getJoinForm(String joinFormId) {
+		JoinForm joinForm = joinFormRepository.findById(joinFormId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
+		return JoinFormResponseDTO.toDto(joinForm);
 	}
 }

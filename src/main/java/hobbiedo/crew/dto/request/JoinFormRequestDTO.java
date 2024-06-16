@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
 @Getter
-public class JoinFormDTO {
+public class JoinFormRequestDTO {
 	@NotBlank
 	private String joinMessage;
 
