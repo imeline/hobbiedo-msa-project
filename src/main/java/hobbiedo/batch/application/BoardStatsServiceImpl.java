@@ -30,8 +30,8 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 
 			BoardStats boardStats = BoardStats.builder()
 				.boardId(eventDto.getBoardId())
-				.commentCount(0L)
-				.likeCount(0L)
+				.commentCount(0)
+				.likeCount(0)
 				.build();
 
 			boardStatsRepository.save(boardStats);

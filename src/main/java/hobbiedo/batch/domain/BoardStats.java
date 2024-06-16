@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,14 +27,14 @@ public class BoardStats extends BaseEntity {
 
 	@Column(nullable = false)
 	@ColumnDefault("0")
-	private Long likeCount;
+	private Integer likeCount;
 
 	@Column(nullable = false)
 	@ColumnDefault("0")
-	private Long commentCount;
+	private Integer commentCount;
 
 	@Builder
-	public BoardStats(Long boardId, Long likeCount, Long commentCount) {
+	public BoardStats(Long boardId, Integer likeCount, Integer commentCount) {
 		this.boardId = boardId;
 		this.likeCount = likeCount;
 		this.commentCount = commentCount;
