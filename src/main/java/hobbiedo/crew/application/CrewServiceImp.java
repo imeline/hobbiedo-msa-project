@@ -11,6 +11,7 @@ import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.domain.HashTag;
+import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
@@ -100,13 +101,18 @@ public class CrewServiceImp implements CrewService {
 			.role(0) // 일반회원
 			.build());
 		// 참여인원 증가
+		changeCrewParticipant(crew, 1);
+	}
+
+	@Transactional
+	protected void changeCrewParticipant(Crew crew, int changeCount) {
 		crewRepository.save(Crew.builder()
 			.id(crew.getId())
 			.regionId(crew.getRegionId())
 			.hobbyId(crew.getHobbyId())
 			.name(crew.getName())
 			.introduction(crew.getIntroduction())
-			.currentParticipant(crew.getCurrentParticipant() + 1)
+			.currentParticipant(crew.getCurrentParticipant() + changeCount)
 			.joinType(crew.getJoinType())
 			.profileUrl(crew.getProfileUrl())
 			.score(crew.getScore())
@@ -204,20 +210,7 @@ public class CrewServiceImp implements CrewService {
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_MEMBER));
 		crewMemberRepository.delete(crewMember);
 		// 참여 인원 감소
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
-		crewRepository.save(Crew.builder()
-			.id(crew.getId())
-			.regionId(crew.getRegionId())
-			.hobbyId(crew.getHobbyId())
-			.name(crew.getName())
-			.introduction(crew.getIntroduction())
-			.currentParticipant(crew.getCurrentParticipant() - 1)
-			.joinType(crew.getJoinType())
-			.profileUrl(crew.getProfileUrl())
-			.score(crew.getScore())
-			.active(crew.isActive())
-			.build());
+		changeCrewParticipant(crewMember.getCrew(), -1);
 	}
 
 	@Override
@@ -249,5 +242,18 @@ public class CrewServiceImp implements CrewService {
 		hashTagRepository.deleteByCrewId(crewId);
 		// HashTag 생성
 		createHashTag(crew, crewDTO.getHashTagList());
+	}
+
+	@Transactional
+	@Override
+	public void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid) {
+		isValidHost(crewId, uuid);
+		// 블랙리스트로 변경
+		CrewMember crewMember = crewMemberRepository.findByCrewIdAndUuid(crewId,
+				crewOutDTO.getOutUuid())
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_MEMBER));
+		crewMemberRepository.save(crewOutDTO.toCrewMemberEntity(crewMember));
+		// 참여 인원 감소
+		changeCrewParticipant(crewMember.getCrew(), -1);
 	}
 }

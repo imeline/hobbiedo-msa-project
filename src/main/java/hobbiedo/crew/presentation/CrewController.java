@@ -2,6 +2,7 @@ package hobbiedo.crew.presentation;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hobbiedo.crew.application.CrewService;
+import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
@@ -89,7 +91,7 @@ public class CrewController {
 	}
 
 	@Operation(summary = "소모임 탈퇴", description = "소모임에서 회원을 탈퇴시키고 소모임 인원을 -1 한다.")
-	@PostMapping("/withdrawal/{crewId}")
+	@DeleteMapping("/withdrawal/{crewId}")
 	public BaseResponse<Void> withdrawalCrew(@PathVariable long crewId,
 		@RequestHeader(name = "Uuid") String uuid) {
 		crewService.deleteCrewMember(crewId, uuid);
@@ -109,5 +111,14 @@ public class CrewController {
 		@PathVariable long crewId, @RequestHeader(name = "Uuid") String uuid) {
 		crewService.modifyCrew(crewDTO, crewId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.MODIFY_CREW, null);
+	}
+
+	@Operation(summary = "소모임 강제 퇴장", description = "소모임에서 회원을 강제로 퇴장시킨다.(블랙리스트로 변경)")
+	@DeleteMapping("/forced-exit/{crewId}")
+	public BaseResponse<Void> forcedExitCrew(@Valid @RequestBody CrewOutDTO crewOutDTO,
+		@PathVariable long crewId,
+		@RequestHeader(name = "Uuid") String uuid) {
+		crewService.forcedExitCrew(crewOutDTO, crewId, uuid);
+		return BaseResponse.onSuccess(SuccessStatus.FORCED_EXIT_CREW, null);
 	}
 }
