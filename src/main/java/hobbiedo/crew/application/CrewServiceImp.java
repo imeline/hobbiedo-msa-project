@@ -19,6 +19,7 @@ import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
+import hobbiedo.crew.dto.response.JoinFormListDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
 import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
@@ -255,5 +256,14 @@ public class CrewServiceImp implements CrewService {
 		crewMemberRepository.save(crewOutDTO.toCrewMemberEntity(crewMember));
 		// 참여 인원 감소
 		changeCrewParticipant(crewMember.getCrew(), -1);
+	}
+
+	@Override
+	public List<JoinFormListDTO> getJoinFormList(Long crewId, String uuid) {
+		isValidHost(crewId, uuid);
+		return joinFormRepository.findByCrewId(crewId)
+			.stream()
+			.map(JoinFormListDTO::toDto)
+			.toList();
 	}
 }

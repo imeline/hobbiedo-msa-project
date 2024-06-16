@@ -21,6 +21,7 @@ import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
+import hobbiedo.crew.dto.response.JoinFormListDTO;
 import hobbiedo.global.base.BaseResponse;
 import hobbiedo.global.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -121,4 +122,13 @@ public class CrewController {
 		crewService.forcedExitCrew(crewOutDTO, crewId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.FORCED_EXIT_CREW, null);
 	}
+
+	@Operation(summary = "한 소모임의 가입 신청서 목록 조회", description = "한 소모임에 온 가입 신청서 목록을 조회한다.")
+	@GetMapping("/join-forms/{crewId}")
+	public BaseResponse<List<JoinFormListDTO>> getJoinForms(@PathVariable long crewId,
+		@RequestHeader(name = "Uuid") String uuid) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_JOIN_FORM_LIST,
+			crewService.getJoinFormList(crewId, uuid));
+	}
+
 }

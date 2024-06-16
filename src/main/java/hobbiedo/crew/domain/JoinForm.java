@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @RedisHash(value = "JoinForm", timeToLive = 864000) // 10일
 public class JoinForm {
 	@Id
-	private long id;
+	private String id;
 	@Indexed
 	private long crewId;
 	@Indexed
@@ -28,7 +28,7 @@ public class JoinForm {
 	private String gender;
 
 	@Builder
-	public JoinForm(long id, long crewId, String uuid, String joinMessage, String profileUrl,
+	public JoinForm(String id, long crewId, String uuid, String joinMessage, String profileUrl,
 		String name, String birthday, String address, String gender) {
 		this.id = id;
 		this.crewId = crewId;
