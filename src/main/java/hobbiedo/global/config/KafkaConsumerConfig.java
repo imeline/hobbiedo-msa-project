@@ -14,8 +14,10 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import hobbiedo.batch.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.batch.kafka.dto.BoardCreateEventDto;
 import hobbiedo.batch.kafka.dto.BoardDeleteEventDto;
+import hobbiedo.batch.kafka.dto.BoardLikeUpdateDto;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -83,6 +85,122 @@ public class KafkaConsumerConfig {
 			new ConcurrentKafkaListenerContainerFactory<>();
 
 		factory.setConsumerFactory(deleteConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 통계 테이블 댓글 수 증가 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardCommentUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardCommentUpdateDto> commentUpdateConsumerFactory() {
+
+		Map<String, Object> configProps = new HashMap<>();
+		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 모든 패키지를 신뢰하도록 설정
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardCommentUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> commentUpdateKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(commentUpdateConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 통계 테이블 댓글 수 감소 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardCommentUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardCommentUpdateDto> commentDeleteConsumerFactory() {
+
+		Map<String, Object> configProps = new HashMap<>();
+		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 모든 패키지를 신뢰하도록 설정
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardCommentUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> commentDeleteKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(commentDeleteConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 통계 테이블 좋아요 수 증가 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardLikeUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardLikeUpdateDto> likeUpdateConsumerFactory() {
+
+		Map<String, Object> configProps = new HashMap<>();
+		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 모든 패키지를 신뢰하도록 설정
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardLikeUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> likeUpdateKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(likeUpdateConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 통계 테이블 좋아요 수 감소 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardLikeUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardLikeUpdateDto> likeDeleteConsumerFactory() {
+
+		Map<String, Object> configProps = new HashMap<>();
+		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 모든 패키지를 신뢰하도록 설정
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardLikeUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> likeDeleteKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(likeDeleteConsumerFactory());
 
 		return factory;
 	}
