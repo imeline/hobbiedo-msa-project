@@ -18,4 +18,7 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 
 	boolean existsById(long regionId);
 
+	boolean existsByUuidAndLegalCode(String uuid, String legalCode);
+
+	boolean existsByUuidAndIsBaseRegion(String uuid, boolean isBaseRegion);
 }

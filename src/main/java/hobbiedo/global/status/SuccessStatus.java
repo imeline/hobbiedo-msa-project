@@ -20,7 +20,7 @@ public enum SuccessStatus { //메시지를 중앙에서 관리하는 것이 유�
 	DELETE_REGION("활동 지역 삭제 성공하였습니다."),
 	CHANGE_BASE_REGION("기본 활동 지역 변경에 성공하였습니다."),
 	FIND_REGION_XY("소모임 생성 시, 활동 지역 목록 조회에 성공하였습니다."),
-	CREATE_SING_UP_REGION("회원가입 시, 활동 지역 등록에 성공하였습니다."),
+	CREATE_FIRST_REGION("최초 활동 지역 등록에 성공하였습니다."),
 
 	// 소모임
 	CREATE_CREW("소모임 생성에 성공하였습니다."),

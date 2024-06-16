@@ -20,6 +20,8 @@ public enum ErrorStatus {
 	NO_EXIST_REGION("REGION401", "활동 지역이 존재하지 않습니다."),
 	NO_EXIST_BASE_REGION("REGION402", "기본 활동 지역이 존재하지 않습니다."),
 	INVALID_RANGE("REGION403", "활동 지역 범위 단위(3,5,7,10)에 맞지 않습니다."),
+	EXIST_REGION("REGION404", "이미 등록된 같은 지역 코드의 활동 지역이 존재합니다."),
+	EXIST_BASE_REGION("REGION405", "이미 기본 활동 지역이 존재합니다."),
 
 	// CREW 소모임
 	INVALID_HASH_TAG_COUNT("CREW401", "해시태그는 5개까지 등록 가능합니다."),

@@ -11,7 +11,6 @@ import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import hobbiedo.region.domain.Region;
 import hobbiedo.region.dto.request.RegionDetailDTO;
-import hobbiedo.region.dto.request.RegionSingUpDTO;
 import hobbiedo.region.dto.response.RegionAddressNameDTO;
 import hobbiedo.region.dto.response.RegionGetDetailDTO;
 import hobbiedo.region.dto.response.RegionXyDTO;
@@ -27,11 +26,10 @@ public class RegionServiceImp implements RegionService {
 
 	@Override
 	@Transactional
-	public void addRegion(RegionDetailDTO regionDetailDto, String uuid) {
-		if (isInvalidRange(regionDetailDto.getCurrentSelectedRange())) {
-			throw new GlobalException(ErrorStatus.INVALID_RANGE);
-		}
-		regionRepository.save(regionDetailDto.toCreateRegion(uuid));
+	public void addRegion(RegionDetailDTO regionDetailDTO, String uuid) {
+		isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
+		isValidRange(regionDetailDTO.getCurrentSelectedRange());
+		regionRepository.save(regionDetailDTO.toAddRegion(uuid));
 	}
 
 	@Override
@@ -59,12 +57,14 @@ public class RegionServiceImp implements RegionService {
 
 	@Override
 	@Transactional
-	public void modifyRegion(Long regionId, RegionDetailDTO regionDetailDto) {
-		if (isInvalidRange(regionDetailDto.getCurrentSelectedRange())) {
-			throw new GlobalException(ErrorStatus.INVALID_RANGE);
+	public void modifyRegion(Long regionId, RegionDetailDTO regionDetailDTO, String uuid) {
+		Region nowRegion = getRegion(regionId);
+		if (!nowRegion.getLegalCode().equals(regionDetailDTO.getLegalCode())) {
+			isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
 		}
+		isValidRange(regionDetailDTO.getCurrentSelectedRange());
 		regionRepository.save(
-			regionDetailDto.toModifyRegion(getRegion(regionId)));
+			regionDetailDTO.toModifyRegion(nowRegion));
 	}
 
 	@Override
@@ -111,11 +111,13 @@ public class RegionServiceImp implements RegionService {
 
 	@Override
 	@Transactional
-	public void singUpRegion(RegionSingUpDTO regionSingUpDTO) {
-		if (isInvalidRange(regionSingUpDTO.getCurrentSelectedRange())) {
-			throw new GlobalException(ErrorStatus.INVALID_RANGE);
+	public void addBaseRegion(RegionDetailDTO regionDetailDTO, String uuid) {
+		if (regionRepository.existsByUuidAndIsBaseRegion(uuid, true)) {
+			throw new GlobalException(ErrorStatus.EXIST_BASE_REGION);
 		}
-		regionRepository.save(regionSingUpDTO.toEntity());
+		isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
+		isValidRange(regionDetailDTO.getCurrentSelectedRange());
+		regionRepository.save(regionDetailDTO.toBaseEntity(uuid));
 	}
 
 	private Region getRegion(Long regionId) {
@@ -123,8 +125,17 @@ public class RegionServiceImp implements RegionService {
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 	}
 
-	private boolean isInvalidRange(int currentSelectedRange) {
+	private void isValidRange(int currentSelectedRange) {
 		List<Integer> validRanges = Arrays.asList(3, 5, 7, 10);
-		return !validRanges.contains(currentSelectedRange);
+		if (!validRanges.contains(currentSelectedRange)) {
+			throw new GlobalException(ErrorStatus.INVALID_RANGE);
+		}
+
+	}
+
+	private void isValidLegalCode(String uuid, String legalCode) {
+		if (regionRepository.existsByUuidAndLegalCode(uuid, legalCode)) {
+			throw new GlobalException(ErrorStatus.EXIST_REGION);
+		}
 	}
 }

@@ -13,7 +13,7 @@ public class RegionDetailDTO {
 	private double longitude;
 	private int currentSelectedRange;
 
-	public Region toCreateRegion(String uuid) {
+	public Region toAddRegion(String uuid) {
 		return Region.builder()
 			.uuid(uuid)
 			.currentSelectedRange(currentSelectedRange)
@@ -35,6 +35,18 @@ public class RegionDetailDTO {
 			.addressName(addressName)
 			.legalCode(legalCode)
 			.isBaseRegion(region.isBaseRegion())
+			.build();
+	}
+
+	public Region toBaseEntity(String uuid) {
+		return Region.builder()
+			.uuid(uuid)
+			.currentSelectedRange(currentSelectedRange)
+			.latitude(latitude)
+			.longitude(longitude)
+			.addressName(addressName)
+			.legalCode(legalCode)
+			.isBaseRegion(true)
 			.build();
 	}
 

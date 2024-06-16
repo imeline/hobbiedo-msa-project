@@ -3,7 +3,6 @@ package hobbiedo.region.application;
 import java.util.List;
 
 import hobbiedo.region.dto.request.RegionDetailDTO;
-import hobbiedo.region.dto.request.RegionSingUpDTO;
 import hobbiedo.region.dto.response.RegionAddressNameDTO;
 import hobbiedo.region.dto.response.RegionGetDetailDTO;
 import hobbiedo.region.dto.response.RegionXyDTO;
@@ -17,7 +16,7 @@ public interface RegionService {
 
 	RegionAddressNameDTO getBaseAddressName(String uuid);
 
-	void modifyRegion(Long regionId, RegionDetailDTO regionDetailDto);
+	void modifyRegion(Long regionId, RegionDetailDTO regionDetailDTO, String uuid);
 
 	void deleteRegion(Long regionId);
 
@@ -25,5 +24,5 @@ public interface RegionService {
 
 	List<RegionXyDTO> getRegionXY(String uuid);
 
-	void singUpRegion(RegionSingUpDTO regionSingUpDTO);
+	void addBaseRegion(RegionDetailDTO regionDetailDTO, String uuid);
 }

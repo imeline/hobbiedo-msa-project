@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,31 +21,24 @@ public class Region {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	@Column(nullable = false)
+	@Column(nullable = false, length = 50)
 	private String uuid;
 
-	@NotNull
 	@Column(nullable = false)
 	private Integer currentSelectedRange;
 
-	@NotNull
 	@Column(nullable = false)
 	private double latitude;
 
-	@NotNull
 	@Column(nullable = false)
 	private double longitude;
 
-	@NotBlank
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30)
 	private String addressName;
 
-	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, length = 15)
 	private String legalCode;
 
-	@NotNull
 	@Column(nullable = false)
 	private boolean isBaseRegion;
 
