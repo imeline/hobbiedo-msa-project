@@ -85,4 +85,12 @@ public class CrewController {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_NAME,
 			crewService.getCrewName(crewId));
 	}
+
+	@Operation(summary = "소모임 탈퇴", description = "소모임에서 회원을 탈퇴시키고 소모임 인원을 -1 한다.")
+	@PostMapping("/withdrawal/{crewId}")
+	public BaseResponse<Void> withdrawalCrew(@PathVariable long crewId,
+		@RequestHeader(name = "Uuid") String uuid) {
+		crewService.deleteCrewMember(crewId, uuid);
+		return BaseResponse.onSuccess(SuccessStatus.WITHDRAWAL_CREW, null);
+	}
 }

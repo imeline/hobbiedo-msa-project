@@ -2,6 +2,8 @@ package hobbiedo.crew.application;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
@@ -23,4 +25,7 @@ public interface CrewService {
 	List<CrewProfileDTO> getCrewProfiles(String uuid);
 
 	CrewNameDTO getCrewName(Long crewId);
+
+	@Transactional
+	void deleteCrewMember(Long crewId, String uuid);
 }
