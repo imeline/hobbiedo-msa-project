@@ -12,6 +12,7 @@ import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
+import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
@@ -127,7 +128,7 @@ public class CrewServiceImp implements CrewService {
 	}
 
 	@Override
-	public CrewResponseDTO getCrewInfo(Long crewId) {
+	public CrewDetailDTO getCrewInfo(Long crewId) {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 
@@ -135,7 +136,7 @@ public class CrewServiceImp implements CrewService {
 		String addressName = regionRepository.findAddressNameById(crew.getRegionId())
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 
-		return CrewResponseDTO.toDto(crew, addressName, hashTagList);
+		return CrewDetailDTO.toDto(crew, addressName, hashTagList);
 	}
 
 	@Override
@@ -185,6 +186,9 @@ public class CrewServiceImp implements CrewService {
 	@Transactional
 	@Override
 	public void deleteCrewMember(Long crewId, String uuid) {
+		if (crewMemberRepository.existsByCrewIdAndUuidAndRole(crewId, uuid, 1)) { // 방장인지 확인
+			throw new GlobalException(ErrorStatus.INVALID_HOST_WITHDRAWAL);
+		}
 		CrewMember crewMember = crewMemberRepository.findByCrewIdAndUuid(crewId, uuid)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_MEMBER));
 		crewMemberRepository.delete(crewMember);
@@ -203,5 +207,13 @@ public class CrewServiceImp implements CrewService {
 			.score(crew.getScore())
 			.active(crew.isActive())
 			.build());
+	}
+
+	@Override
+	public CrewResponseDTO getCrew(Long crewId) {
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
+		return CrewResponseDTO.toDto(crew, hashTagList);
 	}
 }

@@ -9,23 +9,31 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CrewResponseDTO {
-	private String crewName;
-	private String addressName;
-	private String introduction;
-	private int currentParticipant;
-	private int joinType;
+
 	private String profileUrl;
+
+	private Long regionId;
+
+	private Long hobbyId;
+
+	private String name;
+
+	private String introduction;
+
 	private List<String> hashTagList;
 
-	public static CrewResponseDTO toDto(Crew crew, String addressName, List<String> hashTagList) {
+	private int joinType;
+
+	public static CrewResponseDTO toDto(Crew crew, List<String> hashTagList) {
 		return CrewResponseDTO.builder()
-			.crewName(crew.getName())
-			.addressName(addressName)
-			.introduction(crew.getIntroduction())
-			.currentParticipant(crew.getCurrentParticipant())
-			.joinType(crew.getJoinType())
 			.profileUrl(crew.getProfileUrl())
-			.hashTagList(hashTagList.isEmpty() ? null : hashTagList)
+			.regionId(crew.getRegionId())
+			.hobbyId(crew.getHobbyId())
+			.name(crew.getName())
+			.introduction(crew.getIntroduction())
+			.joinType(crew.getJoinType())
+			.hashTagList(hashTagList)
 			.build();
 	}
+
 }
