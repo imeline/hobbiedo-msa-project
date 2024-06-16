@@ -307,6 +307,16 @@ public class CrewServiceImp implements CrewService {
 			.toList();
 	}
 
+	@Transactional
+	@Override
+	public void cancelJoinForm(String joinFormId, String uuid) {
+		JoinForm joinForm = getJoinFormById(joinFormId);
+		if (!joinForm.getUuid().equals(uuid)) {
+			throw new GlobalException(ErrorStatus.INVALID_JOIN_FORM_ACCESS);
+		}
+		joinFormRepository.delete(joinForm);
+	}
+
 	private JoinForm getJoinFormById(String joinFormId) {
 		return joinFormRepository.findById(joinFormId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
