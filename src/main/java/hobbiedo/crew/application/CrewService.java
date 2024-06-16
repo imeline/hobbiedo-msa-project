@@ -31,4 +31,7 @@ public interface CrewService {
 	void deleteCrewMember(Long crewId, String uuid);
 
 	CrewResponseDTO getCrew(Long crewId);
+
+	@Transactional
+	void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid);
 }

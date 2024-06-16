@@ -10,4 +10,6 @@ import hobbiedo.crew.domain.HashTag;
 public interface HashTagRepository extends JpaRepository<HashTag, Long> {
 	@Query("select h.name from HashTag h where h.crew.id = :crewId")
 	List<String> findNamesByCrewId(Long crewId);
+
+	void deleteByCrewId(Long crewId);
 }
