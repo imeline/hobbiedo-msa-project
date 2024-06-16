@@ -29,7 +29,8 @@ public enum SuccessStatus { //메시지를 중앙에서 관리하는 것이 유�
 	FIND_CREWS_BY_HOBBY_AND_REGION("취미와 활동 지역에 해당하는 소모임 목록 조회에 성공하였습니다."),
 	SUBMISSION_JOIN_FORM("소모임 가입 신청서 제출에 성공하였습니다."),
 	FIND_CREW_PROFILE_LIST("가입한 소모임 목록 조회 조회에 성공하였습니다."),
-	FIND_CREW_NAME("소모임 이름 조회에 성공하였습니다."),;
+	FIND_CREW_NAME("소모임 이름 조회에 성공하였습니다."),
+	WITHDRAWAL_CREW("소모임 탈퇴에 성공하였습니다."),;
 
 	private final String status;
 }

@@ -182,4 +182,26 @@ public class CrewServiceImp implements CrewService {
 		return CrewNameDTO.toDto(crew.getName());
 	}
 
+	@Transactional
+	@Override
+	public void deleteCrewMember(Long crewId, String uuid) {
+		CrewMember crewMember = crewMemberRepository.findByCrewIdAndUuid(crewId, uuid)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_MEMBER));
+		crewMemberRepository.delete(crewMember);
+		// 참여 인원 감소
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		crewRepository.save(Crew.builder()
+			.id(crew.getId())
+			.regionId(crew.getRegionId())
+			.hobbyId(crew.getHobbyId())
+			.name(crew.getName())
+			.introduction(crew.getIntroduction())
+			.currentParticipant(crew.getCurrentParticipant() - 1)
+			.joinType(crew.getJoinType())
+			.profileUrl(crew.getProfileUrl())
+			.score(crew.getScore())
+			.active(crew.isActive())
+			.build());
+	}
 }
