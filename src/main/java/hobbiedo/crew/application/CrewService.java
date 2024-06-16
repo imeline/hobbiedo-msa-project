@@ -47,4 +47,7 @@ public interface CrewService {
 
 	@Transactional
 	void acceptJoinForm(String joinFormId, String uuid);
+
+	@Transactional
+	void rejectJoinForm(String joinFormId, String uuid);
 }
