@@ -33,7 +33,8 @@ public enum ErrorStatus {
 	INVALID_MAX_PARTICIPANT("CREW407", "현재 소모임은 최대 인원 100명을 충족한 상태입니다."),
 	ALREADY_SEND_JOIN_FORM("CREW408", "이미 해당 소모임에 가입 신청을 보냈습니다."),
 	NO_EXIST_CREW_MEMBER("CREW409", "해당 소모임 회원이 존재하지 않습니다."),
-	INVALID_HOST_WITHDRAWAL("CREW410", "방장은 소모임을 탈퇴할 수 없습니다."),;
+	INVALID_HOST_WITHDRAWAL("CREW410", "방장은 소모임을 탈퇴할 수 없습니다."),
+	INVALID_HOST_ACCESS("CREW411", "방장만 접근 가능한 페이지입니다."),;
 
 	private final String status;
 	private final String message;

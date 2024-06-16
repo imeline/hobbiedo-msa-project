@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -100,5 +101,13 @@ public class CrewController {
 	public BaseResponse<CrewResponseDTO> getCrewModifyView(@PathVariable long crewId) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_MODIFY_VIEW,
 			crewService.getCrew(crewId));
+	}
+
+	@Operation(summary = "소모임 정보 수정", description = "소모임 정보를 수정한다.")
+	@PutMapping("/{crewId}")
+	public BaseResponse<Void> modifyCrew(@Valid @RequestBody CrewRequestDTO crewDTO,
+		@PathVariable long crewId, @RequestHeader(name = "Uuid") String uuid) {
+		crewService.modifyCrew(crewDTO, crewId, uuid);
+		return BaseResponse.onSuccess(SuccessStatus.MODIFY_CREW, null);
 	}
 }

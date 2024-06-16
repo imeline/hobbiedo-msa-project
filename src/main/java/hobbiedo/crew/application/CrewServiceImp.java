@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
+import hobbiedo.crew.domain.HashTag;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
@@ -41,23 +42,35 @@ public class CrewServiceImp implements CrewService {
 	@Transactional
 	@Override
 	public CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid) {
-		isVaildCreateCrew(crewDTO, uuid);
+		isVaildCrew(crewDTO, uuid);
+		// 이미 만든 방이 5개 이상인지 체크
+		if (crewMemberRepository.countByUuidAndRole(uuid, 1) >= 5) {
+			throw new GlobalException(ErrorStatus.INVALID_MAX_HOST_COUNT);
+		}
 		// Crew 생성
 		Crew crew = crewRepository.save(crewDTO.toCrewEntity());
 		// 방장 CrewMember 생성
 		crewMemberRepository.save(crewDTO.toCrewMemberEntity(crew, uuid));
 		// HashTag 생성
-		if (!crewDTO.getHashTagList().isEmpty()) {
-			crewDTO.getHashTagList().forEach(hashTagName -> hashTagRepository.save(
-				crewDTO.toHashTagEntity(crew, hashTagName)));
-		}
+		createHashTag(crew, crewDTO.getHashTagList());
 		// ChatLastStatus 생성
 		chatService.createChatStatus(crew.getId(), uuid);
 
 		return CrewIdDTO.toDto(crew.getId());
 	}
 
-	private void isVaildCreateCrew(CrewRequestDTO crewDTO, String uuid) {
+	@Transactional
+	protected void createHashTag(Crew crew, List<String> hashTagList) {
+		if (!hashTagList.isEmpty()) {
+			hashTagList.forEach(hashTagName -> hashTagRepository.save(
+				HashTag.builder()
+					.crew(crew)
+					.name(hashTagName)
+					.build()));
+		}
+	}
+
+	private void isVaildCrew(CrewRequestDTO crewDTO, String uuid) {
 		// HashTag 개수 체크
 		if (crewDTO.getHashTagList().size() > 5) {
 			throw new GlobalException(ErrorStatus.INVALID_HASH_TAG_COUNT);
@@ -66,10 +79,7 @@ public class CrewServiceImp implements CrewService {
 		if (crewDTO.getJoinType() != 0 && crewDTO.getJoinType() != 1) {
 			throw new GlobalException(ErrorStatus.INVALID_JOIN_TYPE);
 		}
-		// 이미 만든 방이 5개 이상인지 체크
-		if (crewMemberRepository.countByUuidAndRole(uuid, 1) >= 5) {
-			throw new GlobalException(ErrorStatus.INVALID_MAX_HOST_COUNT);
-		}
+
 		// 활동 지역이 존재하는지 체크
 		if (!regionRepository.existsById(crewDTO.getRegionId())) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_REGION);
@@ -215,5 +225,26 @@ public class CrewServiceImp implements CrewService {
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
 		return CrewResponseDTO.toDto(crew, hashTagList);
+	}
+
+	private void isValidHost(Long crewId, String uuid) {
+		if (!crewMemberRepository.existsByCrewIdAndUuidAndRole(crewId, uuid, 1)) {
+			throw new GlobalException(ErrorStatus.INVALID_HOST_ACCESS);
+		}
+	}
+
+	@Transactional
+	@Override
+	public void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid) {
+		isValidHost(crewId, uuid);
+		isVaildCrew(crewDTO, uuid);
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		// Crew 수정
+		crewRepository.save(crewDTO.toModifyCrewEntity(crew));
+		// HashTag 삭제
+		hashTagRepository.deleteByCrewId(crewId);
+		// HashTag 생성
+		createHashTag(crew, crewDTO.getHashTagList());
 	}
 }
