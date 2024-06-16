@@ -44,4 +44,7 @@ public interface CrewService {
 	List<JoinFormListDTO> getJoinFormList(Long crewId, String uuid);
 
 	JoinFormResponseDTO getJoinForm(String joinFormId);
+
+	@Transactional
+	void acceptJoinForm(String joinFormId, String uuid);
 }
