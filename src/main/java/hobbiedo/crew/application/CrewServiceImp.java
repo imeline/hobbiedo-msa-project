@@ -13,6 +13,7 @@ import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
@@ -172,6 +173,13 @@ public class CrewServiceImp implements CrewService {
 		return crewMembers.stream()
 			.map(crewMember -> CrewProfileDTO.toDto(crewMember.getCrew()))
 			.toList();
+	}
+
+	@Override
+	public CrewNameDTO getCrewName(Long crewId) {
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		return CrewNameDTO.toDto(crew.getName());
 	}
 
 }
