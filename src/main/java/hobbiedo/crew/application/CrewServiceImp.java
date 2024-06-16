@@ -195,8 +195,10 @@ public class CrewServiceImp implements CrewService {
 	@Transactional
 	@Override
 	public void deleteCrewMember(Long crewId, String uuid) {
-		if (crewMemberRepository.existsByCrewIdAndUuidAndRole(crewId, uuid, 1)) { // 방장인지 확인
-			throw new GlobalException(ErrorStatus.INVALID_HOST_WITHDRAWAL);
+		if (crewMemberRepository.findByCrewIdAndRole(crewId, 1)
+			.map(crewMember -> crewMember.getUuid().equals(uuid))
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_ID_OR_HOST))) {
+			throw new GlobalException(ErrorStatus.INVALID_HOST_WITHDRAWAL); // 방장은 탈퇴 불가
 		}
 		CrewMember crewMember = crewMemberRepository.findByCrewIdAndUuid(crewId, uuid)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_MEMBER));
@@ -227,7 +229,9 @@ public class CrewServiceImp implements CrewService {
 	}
 
 	private void isValidHost(Long crewId, String uuid) {
-		if (!crewMemberRepository.existsByCrewIdAndUuidAndRole(crewId, uuid, 1)) {
+		if (crewMemberRepository.findByCrewIdAndRole(crewId, 1)
+			.map(crewMember -> !crewMember.getUuid().equals(uuid))
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_ID_OR_HOST))) {
 			throw new GlobalException(ErrorStatus.INVALID_HOST_ACCESS);
 		}
 	}
