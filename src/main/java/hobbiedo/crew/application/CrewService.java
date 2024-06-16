@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
@@ -34,4 +35,7 @@ public interface CrewService {
 
 	@Transactional
 	void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid);
+
+	@Transactional
+	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
 }
