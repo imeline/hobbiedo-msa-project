@@ -50,7 +50,6 @@ public class CrewRequestDTO {
 			.crew(crew)
 			.uuid(uuid)
 			.role(1) // 방장
-			.banned(false) // default false : 블랙리스트 아님
 			.build();
 	}
 

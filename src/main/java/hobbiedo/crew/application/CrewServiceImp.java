@@ -98,7 +98,6 @@ public class CrewServiceImp implements CrewService {
 			.crew(crew)
 			.uuid(uuid)
 			.role(0) // 일반회원
-			.banned(false) // default false : 블랙리스트 아님
 			.build());
 		// 참여인원 증가
 		crewRepository.save(Crew.builder()
@@ -128,7 +127,7 @@ public class CrewServiceImp implements CrewService {
 
 	private void isVaildCrewMember(Crew crew, String uuid) {
 		// 블랙리스트인지 확인
-		if (crewMemberRepository.existsByCrewIdAndUuidAndBanned(crew.getId(), uuid, true)) {
+		if (crewMemberRepository.existsByCrewIdAndUuidAndRole(crew.getId(), uuid, 2)) {
 			throw new GlobalException(ErrorStatus.INVALID_BANNED);
 		}
 		// 이미 가입한 방인지 체크
@@ -177,7 +176,7 @@ public class CrewServiceImp implements CrewService {
 
 	@Override
 	public List<CrewProfileDTO> getCrewProfiles(String uuid) {
-		List<CrewMember> crewMembers = crewMemberRepository.findByUuidAndBannedIsFalse(uuid);
+		List<CrewMember> crewMembers = crewMemberRepository.findByUuidAndRole(uuid);
 		if (crewMembers.isEmpty()) {
 			throw new GlobalException(ErrorStatus.NO_EXIST_CREW);
 		}
