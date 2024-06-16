@@ -272,16 +272,14 @@ public class CrewServiceImp implements CrewService {
 
 	@Override
 	public JoinFormResponseDTO getJoinForm(String joinFormId) {
-		JoinForm joinForm = joinFormRepository.findById(joinFormId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
+		JoinForm joinForm = getJoinFormById(joinFormId);
 		return JoinFormResponseDTO.toDto(joinForm);
 	}
 
 	@Transactional
 	@Override
 	public void acceptJoinForm(String joinFormId, String uuid) {
-		JoinForm joinForm = joinFormRepository.findById(joinFormId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
+		JoinForm joinForm = getJoinFormById(joinFormId);
 		isValidHost(joinForm.getCrewId(), uuid);
 		Crew crew = crewRepository.findById(joinForm.getCrewId())
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
@@ -289,5 +287,18 @@ public class CrewServiceImp implements CrewService {
 		joinCrewMember(crew, joinForm.getUuid());
 		// JoinForm 삭제
 		joinFormRepository.delete(joinForm);
+	}
+
+	@Transactional
+	@Override
+	public void rejectJoinForm(String joinFormId, String uuid) {
+		JoinForm joinForm = getJoinFormById(joinFormId);
+		isValidHost(joinForm.getCrewId(), uuid);
+		joinFormRepository.delete(joinForm);
+	}
+
+	private JoinForm getJoinFormById(String joinFormId) {
+		return joinFormRepository.findById(joinFormId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
 	}
 }

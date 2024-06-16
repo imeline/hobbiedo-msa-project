@@ -140,11 +140,19 @@ public class CrewController {
 	}
 
 	@Operation(summary = "소모임 가입 신청서 수락", description = "소모임 가입 신청서를 수락한다.")
-	@PostMapping("/accept/join/{joinFormId}")
-	public BaseResponse<Void> agreementJoinForm(@PathVariable String joinFormId,
+	@PostMapping("/acceptance/join/{joinFormId}")
+	public BaseResponse<Void> acceptJoinForm(@PathVariable String joinFormId,
 		@RequestHeader(name = "Uuid") String uuid) {
 		crewService.acceptJoinForm(joinFormId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.ACCEPT_JOIN_FORM, null);
+	}
+
+	@Operation(summary = "소모임 가입 신청서 거절", description = "소모임 가입 신청서를 거절한다.")
+	@DeleteMapping("/rejection/join/{joinFormId}")
+	public BaseResponse<Void> rejectJoinForm(@PathVariable String joinFormId,
+		@RequestHeader(name = "Uuid") String uuid) {
+		crewService.rejectJoinForm(joinFormId, uuid);
+		return BaseResponse.onSuccess(SuccessStatus.REJECT_JOIN_FORM, null);
 	}
 
 }
