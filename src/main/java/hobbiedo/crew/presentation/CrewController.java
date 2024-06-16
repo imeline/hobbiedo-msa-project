@@ -14,6 +14,7 @@ import hobbiedo.crew.application.CrewService;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.global.base.BaseResponse;
@@ -76,5 +77,12 @@ public class CrewController {
 		@RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_PROFILE_LIST,
 			crewService.getCrewProfiles(uuid));
+	}
+
+	@Operation(summary = "소모임 이름 조회", description = "소모임 ID를 통해 소모임 이름을 조회한다.")
+	@GetMapping("/name/{crewId}")
+	public BaseResponse<CrewNameDTO> getCrewName(@PathVariable long crewId) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_NAME,
+			crewService.getCrewName(crewId));
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 
@@ -20,4 +21,6 @@ public interface CrewService {
 	void addJoinForm(JoinFormDTO joinFormDTO, Long crewId, String uuid);
 
 	List<CrewProfileDTO> getCrewProfiles(String uuid);
+
+	CrewNameDTO getCrewName(Long crewId);
 }
