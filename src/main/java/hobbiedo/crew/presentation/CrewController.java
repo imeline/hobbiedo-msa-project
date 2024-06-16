@@ -164,5 +164,12 @@ public class CrewController {
 			crewService.getMyJoinForms(uuid));
 	}
 
+	@Operation(summary = "소모임 가입 신청서 철회", description = "제출한 소모임 가입 신청서를 철회한다.")
+	@DeleteMapping("/cancellation/join/{joinFormId}")
+	public BaseResponse<Void> cancelJoinForm(@PathVariable String joinFormId,
+		@RequestHeader(name = "Uuid") String uuid) {
+		crewService.cancelJoinForm(joinFormId, uuid);
+		return BaseResponse.onSuccess(SuccessStatus.CANCEL_JOIN_FORM, null);
+	}
 }
 

@@ -53,4 +53,7 @@ public interface CrewService {
 	void rejectJoinForm(String joinFormId, String uuid);
 
 	List<MyJoinFormDTO> getMyJoinForms(String uuid);
+
+	@Transactional
+	void cancelJoinForm(String joinFormId, String uuid);
 }
