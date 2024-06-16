@@ -12,6 +12,7 @@ import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
+import hobbiedo.crew.dto.response.JoinFormListDTO;
 
 public interface CrewService {
 	CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid);
@@ -38,4 +39,6 @@ public interface CrewService {
 
 	@Transactional
 	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
+
+	List<JoinFormListDTO> getJoinFormList(Long crewId, String uuid);
 }
