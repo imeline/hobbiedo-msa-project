@@ -22,6 +22,7 @@ import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
 import hobbiedo.crew.dto.response.JoinFormResponseDTO;
+import hobbiedo.crew.dto.response.MyJoinFormDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
 import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
@@ -295,6 +296,15 @@ public class CrewServiceImp implements CrewService {
 		JoinForm joinForm = getJoinFormById(joinFormId);
 		isValidHost(joinForm.getCrewId(), uuid);
 		joinFormRepository.delete(joinForm);
+	}
+
+	@Override
+	public List<MyJoinFormDTO> getMyJoinForms(String uuid) {
+		return joinFormRepository.findByUuid(uuid)
+			.stream()
+			.map(joinForm -> MyJoinFormDTO.toDto(joinForm, crewRepository.findById(joinForm.getCrewId())
+				.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW))))
+			.toList();
 	}
 
 	private JoinForm getJoinFormById(String joinFormId) {

@@ -14,6 +14,7 @@ import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
 import hobbiedo.crew.dto.response.JoinFormResponseDTO;
+import hobbiedo.crew.dto.response.MyJoinFormDTO;
 
 public interface CrewService {
 	CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid);
@@ -50,4 +51,6 @@ public interface CrewService {
 
 	@Transactional
 	void rejectJoinForm(String joinFormId, String uuid);
+
+	List<MyJoinFormDTO> getMyJoinForms(String uuid);
 }
