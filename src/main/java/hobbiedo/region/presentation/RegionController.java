@@ -96,4 +96,12 @@ public class RegionController {
 			regionService.getRegionXY(uuid));
 	}
 
+	@Operation(summary = "기본 활동 지역 등록", description = "기본 활동 지역을 등록한다. (첫 활동 지역이므로, 기본 활동 지역으로 설정)")
+	@PostMapping("/region/base")
+	public BaseResponse<Void> addBaseRegion(@RequestBody RegionDetailDTO regionDetailDTO,
+		@RequestHeader(name = "Uuid") String uuid) {
+		regionService.addBaseRegion(regionDetailDTO, uuid);
+		return BaseResponse.onSuccess(SuccessStatus.CREATE_FIRST_REGION, null);
+	}
+
 }
