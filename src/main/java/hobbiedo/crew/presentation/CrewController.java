@@ -132,11 +132,19 @@ public class CrewController {
 			crewService.getJoinFormList(crewId, uuid));
 	}
 
-	@Operation(summary = "하나의 소모임 가입 신청서 상세 조회", description = "하나의 소모임 가입 신청서를 상세 조회한다.")
+	@Operation(summary = "소모임 가입 신청서 상세 조회", description = "소모임 가입 신청서를 상세 조회한다.")
 	@GetMapping("/join-form/{joinFormId}")
 	public BaseResponse<JoinFormResponseDTO> getJoinForm(@PathVariable String joinFormId) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_JOIN_FORM,
 			crewService.getJoinForm(joinFormId));
+	}
+
+	@Operation(summary = "소모임 가입 신청서 수락", description = "소모임 가입 신청서를 수락한다.")
+	@PostMapping("/accept/join/{joinFormId}")
+	public BaseResponse<Void> agreementJoinForm(@PathVariable String joinFormId,
+		@RequestHeader(name = "Uuid") String uuid) {
+		crewService.acceptJoinForm(joinFormId, uuid);
+		return BaseResponse.onSuccess(SuccessStatus.ACCEPT_JOIN_FORM, null);
 	}
 
 }

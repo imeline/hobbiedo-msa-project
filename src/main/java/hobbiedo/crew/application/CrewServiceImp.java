@@ -95,8 +95,13 @@ public class CrewServiceImp implements CrewService {
 	public void joinCrew(Long crewId, String uuid) {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
-		isVaildJoinCrew(crew, uuid);
 		isVaildCrewMember(crew, uuid);
+		joinCrewMember(crew, uuid);
+	}
+
+	@Transactional
+	protected void joinCrewMember(Crew crew, String uuid) {
+		isVaildFullCrew(crew);
 		// CrewMember 생성
 		crewMemberRepository.save(CrewMember.builder()
 			.crew(crew)
@@ -123,11 +128,7 @@ public class CrewServiceImp implements CrewService {
 			.build());
 	}
 
-	private void isVaildJoinCrew(Crew crew, String uuid) {
-		// joinType 체크
-		if (crew.getJoinType() == 1) {
-			throw new GlobalException(ErrorStatus.INVALID_JOIN_TYPE);
-		}
+	private void isVaildFullCrew(Crew crew) {
 		// 가입인원 다 찾는지 확인
 		if (crew.getCurrentParticipant() >= 100) {
 			throw new GlobalException(ErrorStatus.INVALID_MAX_PARTICIPANT);
@@ -274,5 +275,19 @@ public class CrewServiceImp implements CrewService {
 		JoinForm joinForm = joinFormRepository.findById(joinFormId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
 		return JoinFormResponseDTO.toDto(joinForm);
+	}
+
+	@Transactional
+	@Override
+	public void acceptJoinForm(String joinFormId, String uuid) {
+		JoinForm joinForm = joinFormRepository.findById(joinFormId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
+		isValidHost(joinForm.getCrewId(), uuid);
+		Crew crew = crewRepository.findById(joinForm.getCrewId())
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		// CrewMember 생성
+		joinCrewMember(crew, joinForm.getUuid());
+		// JoinForm 삭제
+		joinFormRepository.delete(joinForm);
 	}
 }

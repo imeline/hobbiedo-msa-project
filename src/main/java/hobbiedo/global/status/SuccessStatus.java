@@ -35,7 +35,8 @@ public enum SuccessStatus { //메시지를 중앙에서 관리하는 것이 유�
 	MODIFY_CREW("소모임 정보 수정에 성공하였습니다."),
 	FORCED_EXIT_CREW("소모임 강제 퇴장에 성공하였습니다."),
 	FIND_JOIN_FORM_LIST("한 소모임의 가입 신청서 목록 조회에 성공하였습니다."),
-	FIND_JOIN_FORM("한 가입 신청서 상세 조회에 성공하였습니다.");
+	FIND_JOIN_FORM("소모임 가입 신청서 상세 조회에 성공하였습니다."),
+	ACCEPT_JOIN_FORM("소모임 가입 신청서 수락에 성공하였습니다."),;
 
 	private final String status;
 }

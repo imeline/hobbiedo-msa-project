@@ -34,7 +34,8 @@ public enum ErrorStatus {
 	INVALID_HOST_WITHDRAWAL("CREW410", "방장은 소모임을 탈퇴할 수 없습니다."),
 	INVALID_HOST_ACCESS("CREW411", "방장만 접근 가능한 페이지입니다."),
 	NO_EXIST_CREW_ID_OR_HOST("CREW412", "없는 소모임 ID 이거나 해당 소모임에 방장이 존재하지 않습니다."),
-	NO_EXIST_JOIN_FORM("CREW413", "해당 ID의 가입 신청서가 존재하지 않습니다."),;
+	NO_EXIST_JOIN_FORM("CREW413", "해당 ID의 가입 신청서가 존재하지 않습니다."),
+	;
 
 	private final String status;
 	private final String message;
