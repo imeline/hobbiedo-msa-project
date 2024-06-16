@@ -17,4 +17,7 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 	List<CrewMember> findByUuidAndBannedIsFalse(String uuid);
 
 	Optional<CrewMember> findByCrewIdAndUuid(long crewId, String uuid);
+
+	boolean existsByCrewIdAndUuidAndRole(Long crewId, String uuid, int role);
+
 }

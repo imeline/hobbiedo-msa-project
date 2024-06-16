@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import hobbiedo.crew.application.CrewService;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.request.JoinFormDTO;
+import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
@@ -50,7 +51,7 @@ public class CrewController {
 
 	@Operation(summary = "소모임 정보 조회", description = "소모임 ID를 통해 소모임 정보를 조회한다.")
 	@GetMapping("/{crewId}")
-	public BaseResponse<CrewResponseDTO> getCrewInfo(@PathVariable long crewId) {
+	public BaseResponse<CrewDetailDTO> getCrewInfo(@PathVariable long crewId) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_INFO,
 			crewService.getCrewInfo(crewId));
 	}
@@ -92,5 +93,12 @@ public class CrewController {
 		@RequestHeader(name = "Uuid") String uuid) {
 		crewService.deleteCrewMember(crewId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.WITHDRAWAL_CREW, null);
+	}
+
+	@Operation(summary = "소모임 정보 수정화면 조회", description = "소모임 정보 수정화면을 조회한다.")
+	@GetMapping("/modify-view/{crewId}")
+	public BaseResponse<CrewResponseDTO> getCrewModifyView(@PathVariable long crewId) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_MODIFY_VIEW,
+			crewService.getCrew(crewId));
 	}
 }
