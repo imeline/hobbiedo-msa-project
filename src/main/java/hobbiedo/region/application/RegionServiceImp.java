@@ -27,8 +27,8 @@ public class RegionServiceImp implements RegionService {
 	@Override
 	@Transactional
 	public void addRegion(RegionDetailDTO regionDetailDTO, String uuid) {
+		isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
 		isValidRange(regionDetailDTO.getCurrentSelectedRange());
-		isValidLegalCode(regionDetailDTO.getLegalCode());
 		regionRepository.save(regionDetailDTO.toAddRegion(uuid));
 	}
 
@@ -49,7 +49,7 @@ public class RegionServiceImp implements RegionService {
 
 	@Override
 	public RegionAddressNameDTO getBaseAddressName(String uuid) {
-		Region region = regionRepository.findByUuidAndBaseRegion(uuid,
+		Region region = regionRepository.findByUuidAndIsBaseRegion(uuid,
 				true)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_REGION));
 		return RegionAddressNameDTO.toDto(region);
@@ -57,12 +57,12 @@ public class RegionServiceImp implements RegionService {
 
 	@Override
 	@Transactional
-	public void modifyRegion(Long regionId, RegionDetailDTO regionDetailDTO) {
-		isValidRange(regionDetailDTO.getCurrentSelectedRange());
+	public void modifyRegion(Long regionId, RegionDetailDTO regionDetailDTO, String uuid) {
 		Region nowRegion = getRegion(regionId);
 		if (!nowRegion.getLegalCode().equals(regionDetailDTO.getLegalCode())) {
-			isValidLegalCode(regionDetailDTO.getLegalCode());
+			isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
 		}
+		isValidRange(regionDetailDTO.getCurrentSelectedRange());
 		regionRepository.save(
 			regionDetailDTO.toModifyRegion(nowRegion));
 	}
@@ -77,7 +77,7 @@ public class RegionServiceImp implements RegionService {
 	@Transactional
 	public void changeBaseRegion(Long newRegionId, String uuid) {
 		// 기존 활성화된 활동 지역 찾기
-		Region nowRegion = regionRepository.findByUuidAndBaseRegion(uuid,
+		Region nowRegion = regionRepository.findByUuidAndIsBaseRegion(uuid,
 				true)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_BASE_REGION));
 		// 기존 활성화된 활동 지역 비활성화
@@ -112,8 +112,11 @@ public class RegionServiceImp implements RegionService {
 	@Override
 	@Transactional
 	public void addBaseRegion(RegionDetailDTO regionDetailDTO, String uuid) {
+		if (regionRepository.existsByUuidAndIsBaseRegion(uuid, true)) {
+			throw new GlobalException(ErrorStatus.EXIST_BASE_REGION);
+		}
+		isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
 		isValidRange(regionDetailDTO.getCurrentSelectedRange());
-		isValidLegalCode(regionDetailDTO.getLegalCode());
 		regionRepository.save(regionDetailDTO.toBaseEntity(uuid));
 	}
 
@@ -130,8 +133,8 @@ public class RegionServiceImp implements RegionService {
 
 	}
 
-	private void isValidLegalCode(String legalCode) {
-		if (regionRepository.existsByLegalCode(legalCode)) {
+	private void isValidLegalCode(String uuid, String legalCode) {
+		if (regionRepository.existsByUuidAndLegalCode(uuid, legalCode)) {
 			throw new GlobalException(ErrorStatus.EXIST_REGION);
 		}
 	}

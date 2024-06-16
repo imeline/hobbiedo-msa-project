@@ -67,8 +67,9 @@ public class RegionController {
 	@PutMapping("/{regionId}")
 	public BaseResponse<Void> modifyRegion(
 		@PathVariable Long regionId,
-		@RequestBody RegionDetailDTO regionDetailDTO) {
-		regionService.modifyRegion(regionId, regionDetailDTO);
+		@RequestBody RegionDetailDTO regionDetailDTO,
+		@RequestHeader(name = "Uuid") String uuid) {
+		regionService.modifyRegion(regionId, regionDetailDTO, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.UPDATE_REGION, null);
 	}
 

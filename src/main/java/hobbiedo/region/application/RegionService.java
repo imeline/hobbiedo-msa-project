@@ -16,7 +16,7 @@ public interface RegionService {
 
 	RegionAddressNameDTO getBaseAddressName(String uuid);
 
-	void modifyRegion(Long regionId, RegionDetailDTO regionDetailDto);
+	void modifyRegion(Long regionId, RegionDetailDTO regionDetailDTO, String uuid);
 
 	void deleteRegion(Long regionId);
 

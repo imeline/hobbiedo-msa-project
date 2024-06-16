@@ -11,12 +11,14 @@ import hobbiedo.region.domain.Region;
 public interface RegionRepository extends JpaRepository<Region, Long> {
 	List<Region> findByUuid(String uuid);
 
-	Optional<Region> findByUuidAndBaseRegion(String uuid, boolean baseRegion);
+	Optional<Region> findByUuidAndIsBaseRegion(String uuid, boolean isBaseRegion);
 
 	@Query("select r.addressName from Region r where r.id = :regionId")
 	Optional<String> findAddressNameById(Long regionId);
 
 	boolean existsById(long regionId);
 
-	boolean existsByLegalCode(String legalCode);
+	boolean existsByUuidAndLegalCode(String uuid, String legalCode);
+
+	boolean existsByUuidAndIsBaseRegion(String uuid, boolean isBaseRegion);
 }
