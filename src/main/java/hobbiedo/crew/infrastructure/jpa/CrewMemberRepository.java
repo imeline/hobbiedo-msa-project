@@ -20,4 +20,6 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 
 	Optional<CrewMember> findByCrewIdAndUuid(long crewId, String uuid);
 
+	Optional<CrewMember> findByCrewIdAndRole(long crewId, int role);
+
 }
