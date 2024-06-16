@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import hobbiedo.crew.application.CrewService;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
-import hobbiedo.crew.dto.request.JoinFormDTO;
+import hobbiedo.crew.dto.request.JoinFormRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
+import hobbiedo.crew.dto.response.JoinFormResponseDTO;
 import hobbiedo.global.base.BaseResponse;
 import hobbiedo.global.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,7 +71,7 @@ public class CrewController {
 
 	@Operation(summary = "(가입 방식) 소모임 가입 신청서 제출", description = "가입 방식 소모임에 가입 신청서를 제출한다.")
 	@PostMapping("/submission/join-form/{crewId}")
-	public BaseResponse<Void> submissionJoinForm(@Valid @RequestBody JoinFormDTO joinFormDTO,
+	public BaseResponse<Void> submissionJoinForm(@Valid @RequestBody JoinFormRequestDTO joinFormDTO,
 		@PathVariable long crewId, @RequestHeader(name = "Uuid") String uuid) {
 		crewService.addJoinForm(joinFormDTO, crewId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.SUBMISSION_JOIN_FORM, null);
@@ -129,6 +130,13 @@ public class CrewController {
 		@RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_JOIN_FORM_LIST,
 			crewService.getJoinFormList(crewId, uuid));
+	}
+
+	@Operation(summary = "하나의 소모임 가입 신청서 상세 조회", description = "하나의 소모임 가입 신청서를 상세 조회한다.")
+	@GetMapping("/join-form/{joinFormId}")
+	public BaseResponse<JoinFormResponseDTO> getJoinForm(@PathVariable String joinFormId) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_JOIN_FORM,
+			crewService.getJoinForm(joinFormId));
 	}
 
 }
