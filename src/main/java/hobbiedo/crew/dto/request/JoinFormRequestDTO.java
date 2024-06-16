@@ -1,5 +1,7 @@
 package hobbiedo.crew.dto.request;
 
+import java.time.LocalDateTime;
+
 import hobbiedo.crew.domain.JoinForm;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -38,6 +40,7 @@ public class JoinFormRequestDTO {
 			.birthday(birthday)
 			.address(address)
 			.gender(gender)
+			.createdAt(LocalDateTime.now())
 			.build();
 	}
 }

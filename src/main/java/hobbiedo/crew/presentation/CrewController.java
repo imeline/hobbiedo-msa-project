@@ -23,6 +23,7 @@ import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
 import hobbiedo.crew.dto.response.JoinFormResponseDTO;
+import hobbiedo.crew.dto.response.MyJoinFormDTO;
 import hobbiedo.global.base.BaseResponse;
 import hobbiedo.global.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -155,4 +156,13 @@ public class CrewController {
 		return BaseResponse.onSuccess(SuccessStatus.REJECT_JOIN_FORM, null);
 	}
 
+	@Operation(summary = "나의 소모임 가입신청서 리스트 조회", description = "나의 소모임 가입신청서 리스트를 조회한다.")
+	@GetMapping("/my-join-forms")
+	public BaseResponse<List<MyJoinFormDTO>> getMyJoinForms(
+		@RequestHeader(name = "Uuid") String uuid) {
+		return BaseResponse.onSuccess(SuccessStatus.FIND_MY_JOIN_FORM_LIST,
+			crewService.getMyJoinForms(uuid));
+	}
+
 }
+
