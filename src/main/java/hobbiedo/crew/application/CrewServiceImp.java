@@ -27,6 +27,7 @@ import hobbiedo.crew.kafka.dto.EntryExitDTO;
 import hobbiedo.crew.kafka.type.EntryExitType;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
+import hobbiedo.region.domain.Region;
 import hobbiedo.region.infrastructure.RegionRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -140,15 +141,40 @@ public class CrewServiceImp implements CrewService {
 
 	@Override
 	public List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId) {
-		List<CrewIdDTO> crewIds = new ArrayList<>( // 아래에서 랜덤하게 섞기 때문에 가변 객체로
-			crewRepository.findIdsByHobbyAndRegion(hobbyId, regionId)
-				.stream()
-				.map(CrewIdDTO::toDto)
-				.toList());
+		Region region = regionRepository.findById(regionId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 
-		Collections.shuffle(crewIds);
+		List<Crew> crews = crewRepository.findAllByHobbyId(hobbyId);
 
-		return crewIds;
+		List<CrewIdDTO> crewIdDtoList = new ArrayList<>(crews.stream() // 아래에서 랜덤하게 섞기 때문에 가변 객체로
+			.filter(crew -> {
+				Region crewRegion = regionRepository.findById(crew.getRegionId())
+					.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
+				return calculateDistance(region.getLatitude(), region.getLongitude(),
+					crewRegion.getLatitude(), crewRegion.getLongitude())
+					<= region.getCurrentSelectedRange();
+			})
+			.map(crew -> CrewIdDTO.toDto(crew.getId()))
+			.toList());
+
+		Collections.shuffle(crewIdDtoList);
+
+		return crewIdDtoList;
+	}
+
+	private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+		final int R = 6371; // 지구 반지름(km)
+
+		double latDistance = Math.toRadians(lat2 - lat1);
+		double lonDistance = Math.toRadians(lon2 - lon1);
+
+		double haversinePart = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+			+ Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+			* Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+		double count = 2 * Math.atan2(Math.sqrt(haversinePart), Math.sqrt(1 - haversinePart));
+
+		return R * count; // km 단위
 	}
 
 	@Override
