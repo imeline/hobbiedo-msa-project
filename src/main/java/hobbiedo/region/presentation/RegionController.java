@@ -31,8 +31,8 @@ public class RegionController {
 
 	private final RegionService regionService;
 
-	@PostMapping
 	@Operation(summary = "활동 지역 등록", description = "회원이 등록할 수 있는 활동 지역(동네)를 등록(추가)한다.")
+	@PostMapping
 	public BaseResponse<Void> addRegion(
 		@RequestBody RegionDetailDTO regionDetailDTO, @RequestHeader(name = "Uuid") String uuid) {
 		regionService.addRegion(regionDetailDTO, uuid);
@@ -98,7 +98,7 @@ public class RegionController {
 	}
 
 	@Operation(summary = "기본 활동 지역 등록", description = "기본 활동 지역을 등록한다. (첫 활동 지역이므로, 기본 활동 지역으로 설정)")
-	@PostMapping("/region/base")
+	@PostMapping("/base")
 	public BaseResponse<Void> addBaseRegion(@RequestBody RegionDetailDTO regionDetailDTO,
 		@RequestHeader(name = "Uuid") String uuid) {
 		regionService.addBaseRegion(regionDetailDTO, uuid);
