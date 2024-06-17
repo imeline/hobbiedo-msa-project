@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class BoardCommentUpdateDto {
 
 	private Long boardId;
+	private Integer commentCount;
 }

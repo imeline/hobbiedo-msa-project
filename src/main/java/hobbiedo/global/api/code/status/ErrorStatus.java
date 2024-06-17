@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
 	VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "GLOBAL400", "데이터베이스 유효성 에러"),
-	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다");
+	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
+
+	// 게시글 통계 테이블이 존재하지 않을 경우
+	BOARD_STATS_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_STATS404", "게시글 통계 테이블이 존재하지 않습니다");
 
 	private final HttpStatus httpStatus;
 	private final String status;
