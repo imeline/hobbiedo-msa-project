@@ -14,7 +14,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
 
 	// 게시글 통계 테이블이 존재하지 않을 경우
-	BOARD_STATS_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_STATS404", "게시글 통계 테이블이 존재하지 않습니다");
+	BOARD_STATS_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_STATS401", "게시글 통계 테이블이 존재하지 않습니다");
 
 	private final HttpStatus httpStatus;
 	private final String status;
