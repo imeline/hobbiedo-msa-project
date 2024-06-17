@@ -77,6 +77,7 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 
 		boardStatsRepository.save(
 			BoardStats.builder()
+				.id(boardStats.getId())
 				.boardId(eventDto.getBoardId())
 				.commentCount(boardStats.getCommentCount() + eventDto.getCommentCount())
 				.likeCount(boardStats.getLikeCount())
@@ -98,6 +99,7 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 
 		boardStatsRepository.save(
 			BoardStats.builder()
+				.id(boardStats.getId())
 				.boardId(eventDto.getBoardId())
 				.commentCount(boardStats.getCommentCount())
 				.likeCount(boardStats.getLikeCount() + eventDto.getLikeCount())

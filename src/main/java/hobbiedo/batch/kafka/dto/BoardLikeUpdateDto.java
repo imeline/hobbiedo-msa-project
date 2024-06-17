@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class BoardLikeUpdateDto {
 
 	private Long boardId;
-	private Integer likeCount;
+	private Integer likeCount = 0;
 }

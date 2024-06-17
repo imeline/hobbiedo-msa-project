@@ -46,6 +46,12 @@ public class KafkaConsumerService {
 		containerFactory = "commentUpdateKafkaListenerContainerFactory")
 	public void listenToBoardCommentUpdateTopic(BoardCommentUpdateDto eventDto) {
 
+		boardStatsService.updateBoardCommentStats(
+			BoardCommentUpdateDto.builder()
+				.boardId(eventDto.getBoardId())
+				.commentCount(eventDto.getCommentCount() + 1)
+				.build()
+		);
 	}
 
 	/**
@@ -56,6 +62,12 @@ public class KafkaConsumerService {
 		containerFactory = "commentDeleteKafkaListenerContainerFactory")
 	public void listenToBoardCommentDeleteTopic(BoardCommentUpdateDto eventDto) {
 
+		boardStatsService.updateBoardCommentStats(
+			BoardCommentUpdateDto.builder()
+				.boardId(eventDto.getBoardId())
+				.commentCount(eventDto.getCommentCount() - 1)
+				.build()
+		);
 	}
 
 	/**
@@ -66,6 +78,12 @@ public class KafkaConsumerService {
 		containerFactory = "likeUpdateKafkaListenerContainerFactory")
 	public void listenToBoardLikeUpdateTopic(BoardLikeUpdateDto eventDto) {
 
+		boardStatsService.updateBoardLikeStats(
+			BoardLikeUpdateDto.builder()
+				.boardId(eventDto.getBoardId())
+				.likeCount(eventDto.getLikeCount() + 1)
+				.build()
+		);
 	}
 
 	/**
@@ -76,5 +94,11 @@ public class KafkaConsumerService {
 		containerFactory = "likeDeleteKafkaListenerContainerFactory")
 	public void listenToBoardLikeDeleteTopic(BoardLikeUpdateDto eventDto) {
 
+		boardStatsService.updateBoardLikeStats(
+			BoardLikeUpdateDto.builder()
+				.boardId(eventDto.getBoardId())
+				.likeCount(eventDto.getLikeCount() - 1)
+				.build()
+		);
 	}
 }
