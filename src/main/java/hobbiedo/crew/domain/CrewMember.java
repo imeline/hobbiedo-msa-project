@@ -38,17 +38,13 @@ public class CrewMember extends BaseTime {
 	private String uuid;
 
 	@Column(nullable = false, columnDefinition = "TINYINT(1)")
-	private int role;  // 0: 일반, 1: 방장
-
-	@Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
-	private boolean banned;  // 0: 정상, 1: 블랙리스트
+	private int role;  // 0: 일반, 1: 방장, 2: 블랙리스트
 
 	@Builder
-	public CrewMember(Long id, Crew crew, String uuid, int role, boolean banned) {
+	public CrewMember(Long id, Crew crew, String uuid, int role) {
 		this.id = id;
 		this.crew = crew;
 		this.uuid = uuid;
 		this.role = role;
-		this.banned = banned;
 	}
 }

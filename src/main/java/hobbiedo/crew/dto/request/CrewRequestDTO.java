@@ -4,7 +4,6 @@ import java.util.List;
 
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
-import hobbiedo.crew.domain.HashTag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -51,14 +50,21 @@ public class CrewRequestDTO {
 			.crew(crew)
 			.uuid(uuid)
 			.role(1) // 방장
-			.banned(false) // default false : 블랙리스트 아님
 			.build();
 	}
 
-	public HashTag toHashTagEntity(Crew crew, String hashTagName) {
-		return HashTag.builder()
-			.crew(crew)
-			.name(hashTagName)
+	public Crew toModifyCrewEntity(Crew crew) {
+		return Crew.builder()
+			.id(crew.getId())
+			.regionId(regionId)
+			.hobbyId(hobbyId)
+			.name(name)
+			.introduction(introduction)
+			.currentParticipant(crew.getCurrentParticipant())
+			.joinType(joinType)
+			.profileUrl(profileUrl == null ? crew.getProfileUrl() : profileUrl)
+			.score(crew.getScore())
+			.active(crew.isActive())
 			.build();
 	}
 }
