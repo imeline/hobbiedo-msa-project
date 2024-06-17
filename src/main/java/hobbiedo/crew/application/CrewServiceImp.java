@@ -198,19 +198,6 @@ public class CrewServiceImp implements CrewService {
 		return R * count; // km 단위
 	}
 
-	// @Override
-	// public List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId) {
-	// 	List<CrewIdDTO> crewIds = new ArrayList<>( // 아래에서 랜덤하게 섞기 때문에 가변 객체로
-	// 		crewRepository.findIdsByHobbyAndRegion(hobbyId, regionId)
-	// 			.stream()
-	// 			.map(CrewIdDTO::toDto)
-	// 			.toList());
-	//
-	// 	Collections.shuffle(crewIds);
-	//
-	// 	return crewIds;
-	// }
-
 	@Transactional
 	@Override
 	public void addJoinForm(JoinFormRequestDTO joinFormDTO, Long crewId, String uuid) {

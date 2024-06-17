@@ -37,7 +37,7 @@ public class CrewMember extends BaseTime {
 	@Indexed
 	private String uuid;
 
-	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	@Column(nullable = false, columnDefinition = "TINYINT")
 	private int role;  // 0: 일반, 1: 방장, 2: 블랙리스트
 
 	@Builder
