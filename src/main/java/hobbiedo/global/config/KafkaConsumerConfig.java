@@ -108,7 +108,8 @@ public class KafkaConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> commentUpdateKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardCommentUpdateDto> commentUpdateKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -137,7 +138,8 @@ public class KafkaConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> commentDeleteKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardCommentUpdateDto> commentDeleteKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -166,7 +168,8 @@ public class KafkaConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> likeUpdateKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardLikeUpdateDto> likeUpdateKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -195,7 +198,8 @@ public class KafkaConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> likeDeleteKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardLikeUpdateDto> likeDeleteKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardLikeUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();

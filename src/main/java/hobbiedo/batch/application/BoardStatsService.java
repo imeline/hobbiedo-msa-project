@@ -14,7 +14,11 @@ public interface BoardStatsService {
 
 	void updateBoardCommentStats(BoardCommentUpdateDto eventDto);
 
+	void deleteBoardCommentStats(BoardCommentUpdateDto eventDto);
+
 	void updateBoardLikeStats(BoardLikeUpdateDto eventDto);
+
+	void deleteBoardLikeStats(BoardLikeUpdateDto eventDto);
 
 	BoardStatsResponseDto getBoardStats(Long boardId);
 }

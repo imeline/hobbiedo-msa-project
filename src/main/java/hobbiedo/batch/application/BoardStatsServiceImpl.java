@@ -66,7 +66,6 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 
 	/**
 	 * 게시글 통계 댓글 수 업데이트
-	 * 댓글 수는 증가 또는 감소 가능
 	 * @param eventDto
 	 */
 	@Override
@@ -80,7 +79,28 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 			BoardStats.builder()
 				.id(boardStats.getId())
 				.boardId(eventDto.getBoardId())
-				.commentCount(boardStats.getCommentCount() + eventDto.getCommentCount())
+				.commentCount(boardStats.getCommentCount() + 1)
+				.likeCount(boardStats.getLikeCount())
+				.build()
+		);
+	}
+
+	/**
+	 * 게시글 통계 댓글 수 삭제
+	 * @param eventDto
+	 */
+	@Override
+	@Transactional
+	public void deleteBoardCommentStats(BoardCommentUpdateDto eventDto) {
+
+		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
+
+		boardStatsRepository.save(
+			BoardStats.builder()
+				.id(boardStats.getId())
+				.boardId(eventDto.getBoardId())
+				.commentCount(boardStats.getCommentCount() - 1)
 				.likeCount(boardStats.getLikeCount())
 				.build()
 		);
@@ -88,7 +108,6 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 
 	/**
 	 * 게시글 통계 좋아요 수 업데이트
-	 * 좋아요 수는 증가 또는 감소 가능
 	 * @param eventDto
 	 */
 	@Override
@@ -103,7 +122,28 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 				.id(boardStats.getId())
 				.boardId(eventDto.getBoardId())
 				.commentCount(boardStats.getCommentCount())
-				.likeCount(boardStats.getLikeCount() + eventDto.getLikeCount())
+				.likeCount(boardStats.getLikeCount() + 1)
+				.build()
+		);
+	}
+
+	/**
+	 * 게시글 통계 좋아요 수 삭제
+	 * @param eventDto
+	 */
+	@Override
+	@Transactional
+	public void deleteBoardLikeStats(BoardLikeUpdateDto eventDto) {
+
+		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
+
+		boardStatsRepository.save(
+			BoardStats.builder()
+				.id(boardStats.getId())
+				.boardId(eventDto.getBoardId())
+				.commentCount(boardStats.getCommentCount())
+				.likeCount(boardStats.getLikeCount() - 1)
 				.build()
 		);
 	}
