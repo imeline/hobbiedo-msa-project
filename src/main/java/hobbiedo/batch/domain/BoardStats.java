@@ -34,7 +34,8 @@ public class BoardStats extends BaseEntity {
 	private Integer commentCount;
 
 	@Builder
-	public BoardStats(Long boardId, Integer likeCount, Integer commentCount) {
+	public BoardStats(Long id, Long boardId, Integer likeCount, Integer commentCount) {
+		this.id = id;
 		this.boardId = boardId;
 		this.likeCount = likeCount;
 		this.commentCount = commentCount;
