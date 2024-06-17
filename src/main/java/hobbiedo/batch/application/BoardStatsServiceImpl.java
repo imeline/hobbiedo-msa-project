@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.batch.domain.BoardStats;
+import hobbiedo.batch.dto.response.BoardStatsResponseDto;
 import hobbiedo.batch.infrastructure.BoardStatsRepository;
 import hobbiedo.batch.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.batch.kafka.dto.BoardCreateEventDto;
@@ -105,5 +106,22 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 				.likeCount(boardStats.getLikeCount() + eventDto.getLikeCount())
 				.build()
 		);
+	}
+
+	/**
+	 * 게시글 통계 조회
+	 * @param boardId
+	 * @return
+	 */
+	@Override
+	public BoardStatsResponseDto getBoardStats(Long boardId) {
+
+		BoardStats boardStats = boardStatsRepository.findByBoardId(boardId)
+			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
+
+		return BoardStatsResponseDto.builder()
+			.commentCount(boardStats.getCommentCount())
+			.likeCount(boardStats.getLikeCount())
+			.build();
 	}
 }
