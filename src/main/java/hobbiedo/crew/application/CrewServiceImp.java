@@ -268,5 +268,4 @@ public class CrewServiceImp implements CrewService {
 		return crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 	}
-
 }
