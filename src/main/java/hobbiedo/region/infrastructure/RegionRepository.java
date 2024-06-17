@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import hobbiedo.region.domain.Region;
 
 public interface RegionRepository extends JpaRepository<Region, Long> {
+	Optional<Region> findById(long regionId);
+
 	List<Region> findByUuid(String uuid);
 
 	Optional<Region> findByUuidAndIsBaseRegion(String uuid, boolean isBaseRegion);
