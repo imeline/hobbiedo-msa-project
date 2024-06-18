@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.domain.HashTag;
@@ -34,7 +33,6 @@ public class CrewServiceImp implements CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final HashTagRepository hashTagRepository;
-	private final ChatService chatService;
 	private final RegionRepository regionRepository;
 	private final ValidationService validationService;
 
@@ -53,7 +51,7 @@ public class CrewServiceImp implements CrewService {
 		// HashTag 생성
 		createHashTag(crew, crewDTO.getHashTagList());
 		// ChatLastStatus 생성
-		chatService.createChatStatus(crew.getId(), uuid);
+		//chatService.createChatStatus(crew.getId(), uuid);
 
 		return CrewIdDTO.toDto(crew.getId());
 	}
