@@ -48,6 +48,6 @@ public class Member extends BaseEntity {
 	private String profileMessage = BLANK;
 
 	@Builder.Default
-	private String imageUrl = BLANK;
+	private String imageUrl = "https://hobbiedo-bucket.s3.ap-northeast-2.amazonaws.com/image_1718266148717_Frame%201000004039.png";
 
 }

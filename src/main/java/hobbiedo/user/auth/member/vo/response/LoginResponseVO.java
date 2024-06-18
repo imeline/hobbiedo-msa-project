@@ -15,4 +15,5 @@ public class LoginResponseVO {
 	private final String accessToken;
 	@Schema(description = "리프레시 토큰")
 	private final String refreshToken;
+	private final String uuid;
 }

@@ -34,14 +34,20 @@ public class AuthService {
 		LoginResponseDTO user = getUuidByLoginId(loginDTO.getLoginId());
 		validatePassword(loginDTO.getPassword(), user.getPassword());
 
-		String accessToken = jwtUtil.createJwt(user.getUuid(), TokenType.ACCESS_TOKEN);
-		String refreshToken = jwtUtil.createJwt(user.getUuid(), TokenType.REFRESH_TOKEN);
+		return getLoginResponse(user.getUuid());
+	}
 
-		saveToRedis(refreshToken, TokenType.REFRESH_TOKEN, user.getUuid());
+	@Transactional
+	public LoginResponseVO getLoginResponse(String uuid) {
+		String accessToken = jwtUtil.createJwt(uuid, TokenType.ACCESS_TOKEN);
+		String refreshToken = jwtUtil.createJwt(uuid, TokenType.REFRESH_TOKEN);
+
+		saveToRedis(refreshToken, TokenType.REFRESH_TOKEN, uuid);
 		return LoginResponseVO
 			.builder()
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
+			.uuid(uuid)
 			.build();
 	}
 
@@ -78,7 +84,7 @@ public class AuthService {
 	public void logout(String uuid) {
 		RefreshToken refreshToken = refreshTokenRepository.findByUuid(uuid)
 			.orElseThrow(() -> new MemberExceptionHandler(ErrorStatus.LOGOUT_FAIL));
-		
+
 		refreshTokenRepository.delete(refreshToken);
 	}
 
