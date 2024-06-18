@@ -44,6 +44,5 @@ public interface MemberRepository extends JpaRepository<IntegrateAuth, Long> {
 
 	@Query("SELECT i.password FROM IntegrateAuth i WHERE i.member.uuid = :uuid")
 	String findPasswordByUuid(@Param("uuid") String uuid);
-
 }
 
