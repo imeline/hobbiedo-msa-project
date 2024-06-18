@@ -21,6 +21,7 @@ import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
 import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
+import hobbiedo.crew.kafka.dto.CrewScoreDTO;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import hobbiedo.region.infrastructure.RegionRepository;
@@ -72,8 +73,7 @@ public class CrewServiceImp implements CrewService {
 	@Transactional
 	@Override
 	public void joinCrew(Long crewId, String uuid) {
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		Crew crew = getCrewById(crewId);
 		validationService.isValidCrewMember(crew, uuid);
 		joinCrewMember(crew, uuid);
 	}
@@ -110,8 +110,7 @@ public class CrewServiceImp implements CrewService {
 
 	@Override
 	public CrewDetailDTO getCrewInfo(Long crewId) {
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		Crew crew = getCrewById(crewId);
 
 		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
 		String addressName = regionRepository.findAddressNameById(crew.getRegionId())
@@ -146,8 +145,7 @@ public class CrewServiceImp implements CrewService {
 
 	@Override
 	public CrewNameDTO getCrewName(Long crewId) {
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		Crew crew = getCrewById(crewId);
 		return CrewNameDTO.toDto(crew.getName());
 	}
 
@@ -168,8 +166,7 @@ public class CrewServiceImp implements CrewService {
 
 	@Override
 	public CrewResponseDTO getCrew(Long crewId) {
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		Crew crew = getCrewById(crewId);
 		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
 		return CrewResponseDTO.toDto(crew, hashTagList);
 	}
@@ -179,8 +176,7 @@ public class CrewServiceImp implements CrewService {
 	public void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid) {
 		validationService.isValidHost(crewId, uuid);
 		validationService.isValidCrew(crewDTO, uuid);
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		Crew crew = getCrewById(crewId);
 		// Crew 수정
 		crewRepository.save(crewDTO.toModifyCrewEntity(crew));
 		// HashTag 삭제
@@ -200,6 +196,25 @@ public class CrewServiceImp implements CrewService {
 		crewMemberRepository.save(crewOutDTO.toCrewMemberEntity(crewMember));
 		// 참여 인원 감소
 		changeCrewParticipant(crewMember.getCrew(), -1);
+	}
+
+	@Transactional
+	@Override
+	public void addCrewScore(CrewScoreDTO crewScoreDTO) {
+		Crew crew = getCrewById(crewScoreDTO.getCrewId());
+		crewRepository.save(crewScoreDTO.toEntity(crew, 1)); // 1점 추가
+	}
+
+	@Transactional
+	@Override
+	public void minusCrewScore(CrewScoreDTO crewScoreDTO) {
+		Crew crew = getCrewById(crewScoreDTO.getCrewId());
+		crewRepository.save(crewScoreDTO.toEntity(crew, -1)); // 1점 감소
+	}
+
+	private Crew getCrewById(long crewId) {
+		return crewRepository.findById(crewId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 	}
 
 }

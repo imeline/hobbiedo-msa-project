@@ -2,6 +2,8 @@ package hobbiedo.crew.application;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
@@ -10,6 +12,7 @@ import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
+import hobbiedo.crew.kafka.dto.CrewScoreDTO;
 
 public interface CrewService {
 	CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid);
@@ -33,4 +36,10 @@ public interface CrewService {
 	void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid);
 
 	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
+
+	@Transactional
+	void addCrewScore(CrewScoreDTO crewScoreDTO);
+
+	@Transactional
+	void minusCrewScore(CrewScoreDTO crewScoreDTO);
 }
