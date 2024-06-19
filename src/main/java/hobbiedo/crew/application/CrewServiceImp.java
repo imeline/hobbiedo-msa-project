@@ -7,26 +7,19 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.domain.HashTag;
-import hobbiedo.crew.domain.JoinForm;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
-import hobbiedo.crew.dto.request.JoinFormRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
-import hobbiedo.crew.dto.response.JoinFormListDTO;
-import hobbiedo.crew.dto.response.JoinFormResponseDTO;
-import hobbiedo.crew.dto.response.MyJoinFormDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
 import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
-import hobbiedo.crew.infrastructure.redis.JoinFormRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import hobbiedo.region.infrastructure.RegionRepository;
@@ -40,14 +33,13 @@ public class CrewServiceImp implements CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final HashTagRepository hashTagRepository;
-	private final JoinFormRepository joinFormRepository;
-	private final ChatService chatService;
 	private final RegionRepository regionRepository;
+	private final ValidationService validationService;
 
 	@Transactional
 	@Override
 	public CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid) {
-		isVaildCrew(crewDTO, uuid);
+		validationService.isValidCrew(crewDTO, uuid);
 		// 이미 만든 방이 5개 이상인지 체크
 		if (crewMemberRepository.countByUuidAndRole(uuid, 1) >= 5) {
 			throw new GlobalException(ErrorStatus.INVALID_MAX_HOST_COUNT);
@@ -59,7 +51,7 @@ public class CrewServiceImp implements CrewService {
 		// HashTag 생성
 		createHashTag(crew, crewDTO.getHashTagList());
 		// ChatLastStatus 생성
-		chatService.createChatStatus(crew.getId(), uuid);
+		//chatService.createChatStatus(crew.getId(), uuid);
 
 		return CrewIdDTO.toDto(crew.getId());
 	}
@@ -75,34 +67,19 @@ public class CrewServiceImp implements CrewService {
 		}
 	}
 
-	private void isVaildCrew(CrewRequestDTO crewDTO, String uuid) {
-		// HashTag 개수 체크
-		if (crewDTO.getHashTagList().size() > 5) {
-			throw new GlobalException(ErrorStatus.INVALID_HASH_TAG_COUNT);
-		}
-		// joinType 체크
-		if (crewDTO.getJoinType() != 0 && crewDTO.getJoinType() != 1) {
-			throw new GlobalException(ErrorStatus.INVALID_JOIN_TYPE);
-		}
-
-		// 활동 지역이 존재하는지 체크
-		if (!regionRepository.existsById(crewDTO.getRegionId())) {
-			throw new GlobalException(ErrorStatus.NO_EXIST_REGION);
-		}
-	}
-
 	@Transactional
 	@Override
 	public void joinCrew(Long crewId, String uuid) {
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
-		isVaildCrewMember(crew, uuid);
+		validationService.isValidCrewMember(crew, uuid);
 		joinCrewMember(crew, uuid);
 	}
 
 	@Transactional
-	protected void joinCrewMember(Crew crew, String uuid) {
-		isVaildFullCrew(crew);
+	@Override
+	public void joinCrewMember(Crew crew, String uuid) {
+		validationService.isValidFullCrew(crew);
 		// CrewMember 생성
 		crewMemberRepository.save(CrewMember.builder()
 			.crew(crew)
@@ -129,24 +106,6 @@ public class CrewServiceImp implements CrewService {
 			.build());
 	}
 
-	private void isVaildFullCrew(Crew crew) {
-		// 가입인원 다 찾는지 확인
-		if (crew.getCurrentParticipant() >= 100) {
-			throw new GlobalException(ErrorStatus.INVALID_MAX_PARTICIPANT);
-		}
-	}
-
-	private void isVaildCrewMember(Crew crew, String uuid) {
-		// 블랙리스트인지 확인
-		if (crewMemberRepository.existsByCrewIdAndUuidAndRole(crew.getId(), uuid, 2)) {
-			throw new GlobalException(ErrorStatus.INVALID_BANNED);
-		}
-		// 이미 가입한 방인지 체크
-		if (crewMemberRepository.existsByCrewIdAndUuid(crew.getId(), uuid)) {
-			throw new GlobalException(ErrorStatus.ALREADY_JOINED_CREW);
-		}
-	}
-
 	@Override
 	public CrewDetailDTO getCrewInfo(Long crewId) {
 		Crew crew = crewRepository.findById(crewId)
@@ -170,19 +129,6 @@ public class CrewServiceImp implements CrewService {
 		Collections.shuffle(crewIds);
 
 		return crewIds;
-	}
-
-	@Transactional
-	@Override
-	public void addJoinForm(JoinFormRequestDTO joinFormDTO, Long crewId, String uuid) {
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
-
-		isVaildCrewMember(crew, uuid);
-		if (joinFormRepository.existsByCrewIdAndUuid(crewId, uuid)) {
-			throw new GlobalException(ErrorStatus.ALREADY_SEND_JOIN_FORM);
-		}
-		joinFormRepository.save(joinFormDTO.toEntity(crewId, uuid));
 	}
 
 	@Override
@@ -226,19 +172,11 @@ public class CrewServiceImp implements CrewService {
 		return CrewResponseDTO.toDto(crew, hashTagList);
 	}
 
-	private void isValidHost(Long crewId, String uuid) {
-		if (crewMemberRepository.findByCrewIdAndRole(crewId, 1)
-			.map(crewMember -> !crewMember.getUuid().equals(uuid))
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_ID_OR_HOST))) {
-			throw new GlobalException(ErrorStatus.INVALID_HOST_ACCESS);
-		}
-	}
-
 	@Transactional
 	@Override
 	public void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid) {
-		isValidHost(crewId, uuid);
-		isVaildCrew(crewDTO, uuid);
+		validationService.isValidHost(crewId, uuid);
+		validationService.isValidCrew(crewDTO, uuid);
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 		// Crew 수정
@@ -252,7 +190,7 @@ public class CrewServiceImp implements CrewService {
 	@Transactional
 	@Override
 	public void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid) {
-		isValidHost(crewId, uuid);
+		validationService.isValidHost(crewId, uuid);
 		// 블랙리스트로 변경
 		CrewMember crewMember = crewMemberRepository.findByCrewIdAndUuid(crewId,
 				crewOutDTO.getOutUuid())
@@ -262,63 +200,4 @@ public class CrewServiceImp implements CrewService {
 		changeCrewParticipant(crewMember.getCrew(), -1);
 	}
 
-	@Override
-	public List<JoinFormListDTO> getJoinFormList(Long crewId, String uuid) {
-		isValidHost(crewId, uuid);
-		return joinFormRepository.findByCrewId(crewId)
-			.stream()
-			.map(JoinFormListDTO::toDto)
-			.toList();
-	}
-
-	@Override
-	public JoinFormResponseDTO getJoinForm(String joinFormId) {
-		JoinForm joinForm = getJoinFormById(joinFormId);
-		return JoinFormResponseDTO.toDto(joinForm);
-	}
-
-	@Transactional
-	@Override
-	public void acceptJoinForm(String joinFormId, String uuid) {
-		JoinForm joinForm = getJoinFormById(joinFormId);
-		isValidHost(joinForm.getCrewId(), uuid);
-		Crew crew = crewRepository.findById(joinForm.getCrewId())
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
-		// CrewMember 생성
-		joinCrewMember(crew, joinForm.getUuid());
-		// JoinForm 삭제
-		joinFormRepository.delete(joinForm);
-	}
-
-	@Transactional
-	@Override
-	public void rejectJoinForm(String joinFormId, String uuid) {
-		JoinForm joinForm = getJoinFormById(joinFormId);
-		isValidHost(joinForm.getCrewId(), uuid);
-		joinFormRepository.delete(joinForm);
-	}
-
-	@Override
-	public List<MyJoinFormDTO> getMyJoinForms(String uuid) {
-		return joinFormRepository.findByUuid(uuid)
-			.stream()
-			.map(joinForm -> MyJoinFormDTO.toDto(joinForm, crewRepository.findById(joinForm.getCrewId())
-				.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW))))
-			.toList();
-	}
-
-	@Transactional
-	@Override
-	public void cancelJoinForm(String joinFormId, String uuid) {
-		JoinForm joinForm = getJoinFormById(joinFormId);
-		if (!joinForm.getUuid().equals(uuid)) {
-			throw new GlobalException(ErrorStatus.INVALID_JOIN_FORM_ACCESS);
-		}
-		joinFormRepository.delete(joinForm);
-	}
-
-	private JoinForm getJoinFormById(String joinFormId) {
-		return joinFormRepository.findById(joinFormId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_JOIN_FORM));
-	}
 }
