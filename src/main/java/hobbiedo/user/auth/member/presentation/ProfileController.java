@@ -75,4 +75,18 @@ public class ProfileController {
 			SignUpProfileResponseVo.profileDtoToSignProfileVo(profileResponseDto)
 		);
 	}
+
+	// 다른 사용자 프로필 조회
+	@GetMapping("/member/other-profile")
+	@Operation(summary = "다른 사용자 프로필 조회", description = "다른 사용자의 프로필 상세 정보를 조회합니다.")
+	public ApiResponse<ProfileResponseVo> getOtherProfile(
+		@RequestHeader(name = "OtherUuid") String otherUuid) {
+
+		ProfileResponseDto profileResponseDto = profileService.getProfile(otherUuid);
+
+		return ApiResponse.onSuccess(
+			GET_OTHER_PROFILE_SUCCESS,
+			ProfileResponseVo.profileDtoToProfileVo(profileResponseDto)
+		);
+	}
 }

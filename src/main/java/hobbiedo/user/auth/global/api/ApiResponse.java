@@ -11,7 +11,7 @@ import hobbiedo.user.auth.global.api.code.BaseErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@JsonPropertyOrder({"isSuccess", "status", "data", "message"})
+@JsonPropertyOrder({"isSuccess", "status", "message", "data"})
 @Getter
 @AllArgsConstructor
 public class ApiResponse<T> {
