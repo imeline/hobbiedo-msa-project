@@ -1,9 +1,13 @@
 package hobbiedo.crew.kafka.dto;
 
 import hobbiedo.crew.domain.Crew;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CrewScoreDTO {
 	private long crewId;
 
