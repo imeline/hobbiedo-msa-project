@@ -10,6 +10,7 @@ import hobbiedo.crew.dto.response.CrewIdDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
+import hobbiedo.crew.kafka.dto.CrewScoreDTO;
 
 public interface CrewService {
 	CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid);
@@ -33,4 +34,8 @@ public interface CrewService {
 	void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid);
 
 	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
+
+	void addCrewScore(CrewScoreDTO crewScoreDTO);
+
+	void minusCrewScore(CrewScoreDTO crewScoreDTO);
 }
