@@ -57,12 +57,16 @@ public class CrewServiceImp implements CrewService {
 		// HashTag 생성
 		createHashTag(crew, crewDTO.getHashTagList());
 		// ChatLastStatus 생성
-		kafkaProducerService.createChatLastStatus(
-			ChatLastStatusCreateDTO.toDto(crew.getId(), uuid));
+		createChatLastStatus(crew.getId(), uuid);
 		// 입장 chat 전송
 		sendEntryExitChat(crew.getId(), uuid, EntryExitType.ENTRY);
 
 		return CrewIdDTO.toDto(crew.getId());
+	}
+
+	private void createChatLastStatus(Long crewId, String uuid) {
+		kafkaProducerService.createChatLastStatus(
+			ChatLastStatusCreateDTO.toDto(crewId, uuid));
 	}
 
 	private void sendEntryExitChat(Long crewId, String uuid, EntryExitType type) {
@@ -87,8 +91,6 @@ public class CrewServiceImp implements CrewService {
 		Crew crew = getCrewById(crewId);
 		validationService.isValidCrewMember(crew, uuid);
 		joinCrewMember(crew, uuid);
-		// 입장 chat 전송
-		sendEntryExitChat(crew.getId(), uuid, EntryExitType.ENTRY);
 	}
 
 	@Transactional
@@ -103,6 +105,10 @@ public class CrewServiceImp implements CrewService {
 			.build());
 		// 참여인원 증가
 		changeCrewParticipant(crew, 1);
+		// 입장 chat 전송
+		sendEntryExitChat(crew.getId(), uuid, EntryExitType.ENTRY);
+		// ChatLastStatus 생성
+		createChatLastStatus(crew.getId(), uuid);
 	}
 
 	@Transactional
