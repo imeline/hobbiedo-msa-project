@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import hobbiedo.crew.application.CrewService;
 import hobbiedo.crew.kafka.dto.CrewScoreDTO;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class KafkaConsumerService {
 
 	private final CrewService crewService;

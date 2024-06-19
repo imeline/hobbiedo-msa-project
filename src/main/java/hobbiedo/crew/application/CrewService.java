@@ -2,8 +2,6 @@ package hobbiedo.crew.application;
 
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
@@ -37,9 +35,7 @@ public interface CrewService {
 
 	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
 
-	@Transactional
 	void addCrewScore(CrewScoreDTO crewScoreDTO);
 
-	@Transactional
 	void minusCrewScore(CrewScoreDTO crewScoreDTO);
 }

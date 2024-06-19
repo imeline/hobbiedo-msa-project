@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hobbiedo.chat.application.ChatService;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.domain.HashTag;
@@ -21,7 +20,11 @@ import hobbiedo.crew.dto.response.CrewResponseDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
 import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
+import hobbiedo.crew.kafka.application.KafkaProducerService;
+import hobbiedo.crew.kafka.dto.ChatLastStatusCreateDTO;
 import hobbiedo.crew.kafka.dto.CrewScoreDTO;
+import hobbiedo.crew.kafka.dto.EntryExitDTO;
+import hobbiedo.crew.kafka.type.EntryExitType;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import hobbiedo.region.infrastructure.RegionRepository;
@@ -35,9 +38,9 @@ public class CrewServiceImp implements CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final HashTagRepository hashTagRepository;
-	private final ChatService chatService;
 	private final RegionRepository regionRepository;
 	private final ValidationService validationService;
+	private final KafkaProducerService kafkaProducerService;
 
 	@Transactional
 	@Override
@@ -54,9 +57,17 @@ public class CrewServiceImp implements CrewService {
 		// HashTag 생성
 		createHashTag(crew, crewDTO.getHashTagList());
 		// ChatLastStatus 생성
-		chatService.createChatStatus(crew.getId(), uuid);
+		kafkaProducerService.createChatLastStatus(
+			ChatLastStatusCreateDTO.toDto(crew.getId(), uuid));
+		// 입장 chat 전송
+		sendEntryExitChat(crew.getId(), uuid, EntryExitType.ENTRY);
 
 		return CrewIdDTO.toDto(crew.getId());
+	}
+
+	private void sendEntryExitChat(Long crewId, String uuid, EntryExitType type) {
+		kafkaProducerService.sendEntryExitChat(
+			EntryExitDTO.toDto(crewId, uuid, type));
 	}
 
 	@Transactional
@@ -76,6 +87,8 @@ public class CrewServiceImp implements CrewService {
 		Crew crew = getCrewById(crewId);
 		validationService.isValidCrewMember(crew, uuid);
 		joinCrewMember(crew, uuid);
+		// 입장 chat 전송
+		sendEntryExitChat(crew.getId(), uuid, EntryExitType.ENTRY);
 	}
 
 	@Transactional
@@ -162,6 +175,8 @@ public class CrewServiceImp implements CrewService {
 		crewMemberRepository.delete(crewMember);
 		// 참여 인원 감소
 		changeCrewParticipant(crewMember.getCrew(), -1);
+		// 퇴장 chat 전송
+		sendEntryExitChat(crewId, uuid, EntryExitType.EXIT);
 	}
 
 	@Override
@@ -196,6 +211,8 @@ public class CrewServiceImp implements CrewService {
 		crewMemberRepository.save(crewOutDTO.toCrewMemberEntity(crewMember));
 		// 참여 인원 감소
 		changeCrewParticipant(crewMember.getCrew(), -1);
+		// 강제 퇴장 chat 전송
+		sendEntryExitChat(crewId, crewOutDTO.getOutUuid(), EntryExitType.FORCE_EXIT);
 	}
 
 	@Transactional
@@ -209,6 +226,9 @@ public class CrewServiceImp implements CrewService {
 	@Override
 	public void minusCrewScore(CrewScoreDTO crewScoreDTO) {
 		Crew crew = getCrewById(crewScoreDTO.getCrewId());
+		if (crew.getScore() <= 0) {
+			throw new GlobalException(ErrorStatus.INVALID_SCORE);
+		}
 		crewRepository.save(crewScoreDTO.toEntity(crew, -1)); // 1점 감소
 	}
 
