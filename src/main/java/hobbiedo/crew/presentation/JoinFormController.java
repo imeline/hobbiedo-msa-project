@@ -85,7 +85,7 @@ public class JoinFormController {
 	@DeleteMapping("/withdrawal/{crewId}")
 	public BaseResponse<Void> withdrawalCrew(@PathVariable long crewId,
 		@RequestHeader(name = "Uuid") String uuid) {
-		crewService.deleteCrewMember(crewId, uuid);
+		crewService.exitCrew(crewId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.WITHDRAWAL_CREW, null);
 	}
 

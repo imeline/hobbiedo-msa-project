@@ -1,5 +1,6 @@
 package hobbiedo.crew.kafka.dto;
 
+import hobbiedo.crew.kafka.type.EntryExitType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,14 +10,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatLastStatusCreateDTO {
+public class ChatEntryExitDTO {
 	private long crewId;
 	private String uuid;
+	private EntryExitType entryExitType;
 
-	public static ChatLastStatusCreateDTO toDto(long crewId, String uuid) {
-		return ChatLastStatusCreateDTO.builder()
+	public static ChatEntryExitDTO toDto(long crewId, String uuid, EntryExitType entryExitType) {
+		return ChatEntryExitDTO.builder()
 			.crewId(crewId)
 			.uuid(uuid)
+			.entryExitType(entryExitType)
 			.build();
 	}
 }
