@@ -13,7 +13,7 @@ public enum SuccessStatus implements BaseCode {
 	EXAMPLE_EXCEPTION(HttpStatus.OK, "EXAMPLE200", "샘플 성공 메시지입니다."),
 
 	// 게시글 통계 조회 성공
-	GET_BOARD_STATS_SUCCESS(HttpStatus.OK, "BOARD_STATS200", "게시글 통계 조회 성공");
+	GET_BOARD_STATS_SUCCESS(HttpStatus.OK, "200", "게시글 통계 조회 성공");
 
 	private final HttpStatus httpStatus;
 	private final String status;
