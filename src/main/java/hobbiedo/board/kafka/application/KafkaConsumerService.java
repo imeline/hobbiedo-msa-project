@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import hobbiedo.board.application.ReplicaBoardService;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
+import hobbiedo.board.kafka.dto.BoardPinEventDto;
+import hobbiedo.board.kafka.dto.BoardUnPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUpdateEventDto;
 import lombok.RequiredArgsConstructor;
 
@@ -51,5 +53,27 @@ public class KafkaConsumerService {
 	public void listenToBoardUpdateTopic(BoardUpdateEventDto eventDto) {
 
 		replicaBoardService.updateReplicaBoard(eventDto);
+	}
+
+	/**
+	 * 게시글 고정 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "board-pin-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "pinKafkaListenerContainerFactory")
+	public void listenToBoardPinTopic(BoardPinEventDto eventDto) {
+
+		replicaBoardService.pinReplicaBoard(eventDto);
+	}
+
+	/**
+	 * 게시글 고정 해제 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "board-unpin-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "unpinKafkaListenerContainerFactory")
+	public void listenToBoardUnPinTopic(BoardUnPinEventDto eventDto) {
+
+		replicaBoardService.unPinReplicaBoard(eventDto);
 	}
 }

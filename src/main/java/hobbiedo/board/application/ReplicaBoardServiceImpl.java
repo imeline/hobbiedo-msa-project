@@ -8,6 +8,8 @@ import hobbiedo.board.domain.ReplicaBoard;
 import hobbiedo.board.infrastructure.ReplicaBoardRepository;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
+import hobbiedo.board.kafka.dto.BoardPinEventDto;
+import hobbiedo.board.kafka.dto.BoardUnPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUpdateEventDto;
 import hobbiedo.global.api.exception.handler.ReadOnlyExceptionHandler;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,10 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 
 	private final ReplicaBoardRepository replicaBoardRepository;
 
+	/**
+	 * 게시글 CQRS 패턴을 통해 복제
+	 * @param eventDto
+	 */
 	@Override
 	public void createReplicaBoard(BoardCreateEventDto eventDto) {
 
@@ -39,12 +45,20 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 		);
 	}
 
+	/**
+	 * 게시글 삭제
+	 * @param eventDto
+	 */
 	@Override
 	public void deleteReplicaBoard(BoardDeleteEventDto eventDto) {
 
 		replicaBoardRepository.deleteByBoardId(eventDto.getBoardId());
 	}
 
+	/**
+	 * 게시글 수정
+	 * @param eventDto
+	 */
 	@Override
 	public void updateReplicaBoard(BoardUpdateEventDto eventDto) {
 
@@ -62,6 +76,60 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 				.createdAt(replicaBoard.getCreatedAt())
 				.updated(true)
 				.imageUrls(eventDto.getImageUrls())
+				.commentCount(replicaBoard.getCommentCount())
+				.likeCount(replicaBoard.getLikeCount())
+				.build()
+		);
+	}
+
+	/**
+	 * 게시글 고정
+	 * @param eventDto
+	 */
+	@Override
+	public void pinReplicaBoard(BoardPinEventDto eventDto) {
+
+		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
+
+		replicaBoardRepository.save(
+			ReplicaBoard.builder()
+				.id(replicaBoard.getId())
+				.boardId(replicaBoard.getBoardId())
+				.crewId(replicaBoard.getCrewId())
+				.content(replicaBoard.getContent())
+				.writerUuid(replicaBoard.getWriterUuid())
+				.pinned(true)
+				.createdAt(replicaBoard.getCreatedAt())
+				.updated(replicaBoard.isUpdated())
+				.imageUrls(replicaBoard.getImageUrls())
+				.commentCount(replicaBoard.getCommentCount())
+				.likeCount(replicaBoard.getLikeCount())
+				.build()
+		);
+	}
+
+	/**
+	 * 게시글 고정 해제
+	 * @param eventDto
+	 */
+	@Override
+	public void unPinReplicaBoard(BoardUnPinEventDto eventDto) {
+
+		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
+
+		replicaBoardRepository.save(
+			ReplicaBoard.builder()
+				.id(replicaBoard.getId())
+				.boardId(replicaBoard.getBoardId())
+				.crewId(replicaBoard.getCrewId())
+				.content(replicaBoard.getContent())
+				.writerUuid(replicaBoard.getWriterUuid())
+				.pinned(false)
+				.createdAt(replicaBoard.getCreatedAt())
+				.updated(replicaBoard.isUpdated())
+				.imageUrls(replicaBoard.getImageUrls())
 				.commentCount(replicaBoard.getCommentCount())
 				.likeCount(replicaBoard.getLikeCount())
 				.build()
