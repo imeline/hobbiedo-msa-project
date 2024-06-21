@@ -8,10 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import hobbiedo.batch.domain.BoardStats;
 import hobbiedo.batch.dto.response.BoardStatsResponseDto;
 import hobbiedo.batch.infrastructure.BoardStatsRepository;
-import hobbiedo.batch.kafka.dto.BoardCommentUpdateDto;
-import hobbiedo.batch.kafka.dto.BoardCreateEventDto;
-import hobbiedo.batch.kafka.dto.BoardDeleteEventDto;
-import hobbiedo.batch.kafka.dto.BoardLikeUpdateDto;
+import hobbiedo.batch.kafka.application.KafkaProducerService;
+import hobbiedo.batch.kafka.dto.consumer.BoardCommentUpdateDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardCreateEventDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardDeleteEventDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardLikeUpdateDto;
+import hobbiedo.batch.kafka.dto.producer.BoardCommentCountUpdateDto;
+import hobbiedo.batch.kafka.dto.producer.BoardLikeCountUpdateDto;
 import hobbiedo.global.api.exception.handler.BatchExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardStatsServiceImpl implements BoardStatsService {
 
 	private final BoardStatsRepository boardStatsRepository;
+
+	// kafka producer service 추가
+	private final KafkaProducerService kafkaProducerService;
 
 	/**
 	 * 게시글 통계 생성
@@ -83,6 +89,14 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 				.likeCount(boardStats.getLikeCount())
 				.build()
 		);
+
+		// 게시글의 댓글 수 업데이트 이벤트 메시지 전송
+		BoardCommentCountUpdateDto commentCountUpdateDto = BoardCommentCountUpdateDto.builder()
+			.boardId(eventDto.getBoardId())
+			.commentCount(boardStats.getCommentCount() + 1)
+			.build();
+
+		kafkaProducerService.sendUpdateCommentCountMessage(commentCountUpdateDto);
 	}
 
 	/**
@@ -104,6 +118,14 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 				.likeCount(boardStats.getLikeCount())
 				.build()
 		);
+
+		// 게시글의 댓글 수 삭제 이벤트 메시지 전송
+		BoardCommentCountUpdateDto commentCountUpdateDto = BoardCommentCountUpdateDto.builder()
+			.boardId(eventDto.getBoardId())
+			.commentCount(boardStats.getCommentCount() - 1)
+			.build();
+
+		kafkaProducerService.sendDeleteCommentCountMessage(commentCountUpdateDto);
 	}
 
 	/**
@@ -125,6 +147,14 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 				.likeCount(boardStats.getLikeCount() + 1)
 				.build()
 		);
+
+		// 게시글의 좋아요 수 업데이트 이벤트 메시지 전송
+		BoardLikeCountUpdateDto likeCountUpdateDto = BoardLikeCountUpdateDto.builder()
+			.boardId(eventDto.getBoardId())
+			.likeCount(boardStats.getLikeCount() + 1)
+			.build();
+
+		kafkaProducerService.sendUpdateLikeCountMessage(likeCountUpdateDto);
 	}
 
 	/**
@@ -146,6 +176,14 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 				.likeCount(boardStats.getLikeCount() - 1)
 				.build()
 		);
+
+		// 게시글의 좋아요 수 삭제 이벤트 메시지 전송
+		BoardLikeCountUpdateDto likeCountUpdateDto = BoardLikeCountUpdateDto.builder()
+			.boardId(eventDto.getBoardId())
+			.likeCount(boardStats.getLikeCount() - 1)
+			.build();
+
+		kafkaProducerService.sendDeleteLikeCountMessage(likeCountUpdateDto);
 	}
 
 	/**
