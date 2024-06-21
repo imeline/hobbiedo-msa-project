@@ -14,14 +14,14 @@ public class KafkaConsumerService {
 	private final CrewService crewService;
 
 	// 게시글 생성 이벤트 수신 - 팀 점수 1 증가
-	@KafkaListener(topics = "crew-score-increase-topic", groupId = "${spring.kafka.consumer.group-id}",
+	@KafkaListener(topics = "board-create-topic", groupId = "${spring.kafka.consumer.group-id}",
 		containerFactory = "crewScoreKafkaListenerContainerFactory")
 	public void listenToScoreAddTopic(CrewScoreDTO eventDto) {
 		crewService.addCrewScore(eventDto);
 	}
 
 	// 게시글 삭제 이벤트 수신 - 팀 점수 1 감소
-	@KafkaListener(topics = "crew-score-decrease-topic", groupId = "${spring.kafka.consumer.group-id}",
+	@KafkaListener(topics = "board-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
 		containerFactory = "crewScoreKafkaListenerContainerFactory")
 	public void listenToScoreMinusTopic(CrewScoreDTO eventDto) {
 		crewService.minusCrewScore(eventDto);

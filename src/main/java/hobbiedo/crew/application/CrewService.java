@@ -29,7 +29,7 @@ public interface CrewService {
 
 	CrewNameDTO getCrewName(Long crewId);
 
-	void deleteCrewMember(Long crewId, String uuid);
+	void exitCrew(Long crewId, String uuid);
 
 	CrewResponseDTO getCrew(Long crewId);
 
