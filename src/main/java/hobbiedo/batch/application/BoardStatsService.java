@@ -1,10 +1,10 @@
 package hobbiedo.batch.application;
 
 import hobbiedo.batch.dto.response.BoardStatsResponseDto;
-import hobbiedo.batch.kafka.dto.BoardCommentUpdateDto;
-import hobbiedo.batch.kafka.dto.BoardCreateEventDto;
-import hobbiedo.batch.kafka.dto.BoardDeleteEventDto;
-import hobbiedo.batch.kafka.dto.BoardLikeUpdateDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardCommentUpdateDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardCreateEventDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardDeleteEventDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardLikeUpdateDto;
 
 public interface BoardStatsService {
 

@@ -1,4 +1,4 @@
-package hobbiedo.batch.kafka.dto;
+package hobbiedo.batch.kafka.dto.producer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardCommentUpdateDto {
+public class BoardCommentCountUpdateDto {
 
 	private Long boardId;
 	private Integer commentCount;

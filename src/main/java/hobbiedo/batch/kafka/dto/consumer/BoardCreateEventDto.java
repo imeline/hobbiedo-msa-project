@@ -1,4 +1,4 @@
-package hobbiedo.batch.kafka.dto;
+package hobbiedo.batch.kafka.dto.consumer;
 
 import java.time.LocalDateTime;
 import java.util.List;

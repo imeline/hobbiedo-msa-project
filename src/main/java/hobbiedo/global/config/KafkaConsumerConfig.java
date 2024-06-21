@@ -14,10 +14,10 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-import hobbiedo.batch.kafka.dto.BoardCommentUpdateDto;
-import hobbiedo.batch.kafka.dto.BoardCreateEventDto;
-import hobbiedo.batch.kafka.dto.BoardDeleteEventDto;
-import hobbiedo.batch.kafka.dto.BoardLikeUpdateDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardCommentUpdateDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardCreateEventDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardDeleteEventDto;
+import hobbiedo.batch.kafka.dto.consumer.BoardLikeUpdateDto;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

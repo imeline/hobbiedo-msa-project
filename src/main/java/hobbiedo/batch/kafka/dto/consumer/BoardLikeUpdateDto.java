@@ -1,4 +1,4 @@
-package hobbiedo.batch.kafka.dto;
+package hobbiedo.batch.kafka.dto.consumer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
