@@ -6,8 +6,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import hobbiedo.board.application.ReplicaBoardService;
+import hobbiedo.board.kafka.dto.BoardCommentCountUpdateDto;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
+import hobbiedo.board.kafka.dto.BoardLikeCountUpdateDto;
 import hobbiedo.board.kafka.dto.BoardPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUnPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUpdateEventDto;
@@ -75,5 +77,49 @@ public class KafkaConsumerService {
 	public void listenToBoardUnPinTopic(BoardUnPinEventDto eventDto) {
 
 		replicaBoardService.unPinReplicaBoard(eventDto);
+	}
+
+	/**
+	 * 게시글 댓글 수 증가 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "statistics-board-comment-update-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "commentCountUpdateKafkaListenerContainerFactory")
+	public void listenToCommentCountUpdateTopic(BoardCommentCountUpdateDto eventDto) {
+
+		replicaBoardService.increaseCommentCount(eventDto);
+	}
+
+	/**
+	 * 게시글 댓글 수 감소 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "statistics-board-comment-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "commentCountDeleteKafkaListenerContainerFactory")
+	public void listenToCommentCountDeleteTopic(BoardCommentCountUpdateDto eventDto) {
+
+		replicaBoardService.decreaseCommentCount(eventDto);
+	}
+
+	/**
+	 * 게시글 좋아요 수 증가 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "statistics-board-like-update-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "likeCountUpdateKafkaListenerContainerFactory")
+	public void listenToLikeCountUpdateTopic(BoardLikeCountUpdateDto eventDto) {
+
+		replicaBoardService.increaseLikeCount(eventDto);
+	}
+
+	/**
+	 * 게시글 좋아요 수 감소 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "statistics-board-like-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "likeCountDeleteKafkaListenerContainerFactory")
+	public void listenToLikeCountDeleteTopic(BoardLikeCountUpdateDto eventDto) {
+
+		replicaBoardService.decreaseLikeCount(eventDto);
 	}
 }
