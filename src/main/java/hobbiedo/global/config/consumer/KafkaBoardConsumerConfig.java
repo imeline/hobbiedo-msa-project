@@ -14,8 +14,10 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import hobbiedo.board.kafka.dto.BoardCommentCountUpdateDto;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
+import hobbiedo.board.kafka.dto.BoardLikeCountUpdateDto;
 import hobbiedo.board.kafka.dto.BoardPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUnPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUpdateEventDto;
@@ -162,6 +164,102 @@ public class KafkaBoardConsumerConfig {
 			new ConcurrentKafkaListenerContainerFactory<>();
 
 		factory.setConsumerFactory(unpinConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 테이블 댓글 수 증가 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardCommentCountUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardCommentCountUpdateDto> commentCountUpdateConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardCommentCountUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> commentCountUpdateKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(commentCountUpdateConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 댓글 수 감소 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardCommentCountUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardCommentCountUpdateDto> commentCountDeleteConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardCommentCountUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> commentCountDeleteKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(commentCountDeleteConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 좋아요 수 증가 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardLikeCountUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardLikeCountUpdateDto> likeCountUpdateConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardLikeCountUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> likeCountUpdateKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(likeCountUpdateConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 좋아요 수 감소 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardLikeCountUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardLikeCountUpdateDto> likeCountDeleteConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardLikeCountUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> likeCountDeleteKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(likeCountDeleteConsumerFactory());
 
 		return factory;
 	}
