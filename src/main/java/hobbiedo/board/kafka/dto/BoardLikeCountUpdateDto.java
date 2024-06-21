@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardLikeUpdateDto {
+public class BoardLikeCountUpdateDto {
 
 	private Long boardId;
+	private Integer likeCount;
 }
