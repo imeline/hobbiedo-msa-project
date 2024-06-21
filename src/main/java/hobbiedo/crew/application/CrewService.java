@@ -19,6 +19,8 @@ public interface CrewService {
 
 	void joinCrewMember(Crew crew, String uuid);
 
+	List<CrewDetailDTO> getCrewInfoList(long hobbyId, long regionId);
+
 	CrewDetailDTO getCrewInfo(Long crewId);
 
 	List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId);

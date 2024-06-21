@@ -26,7 +26,7 @@ public enum SuccessStatus { //메시지를 중앙에서 관리하는 것이 유�
 	CREATE_CREW("소모임 생성에 성공하였습니다."),
 	JOIN_FREE_CREW("자유 방식 소모임에 가입 완료되었습니다."),
 	FIND_CREW_INFO("소모임 정보 조회에 성공하였습니다."),
-	FIND_CREWS_BY_HOBBY_AND_REGION("취미와 활동 지역에 해당하는 소모임 목록 조회에 성공하였습니다."),
+	FIND_CREWS_BY_HOBBY_AND_REGION("취미와 활동 지역에 해당하는 소모임 아이디 목록 조회에 성공하였습니다."),
 	SUBMISSION_JOIN_FORM("소모임 가입 신청서 제출에 성공하였습니다."),
 	FIND_CREW_PROFILE_LIST("가입한 소모임 목록 조회 조회에 성공하였습니다."),
 	FIND_CREW_NAME("소모임 이름 조회에 성공하였습니다."),
@@ -39,7 +39,8 @@ public enum SuccessStatus { //메시지를 중앙에서 관리하는 것이 유�
 	ACCEPT_JOIN_FORM("가입 신청서 수락에 성공하였습니다."),
 	REJECT_JOIN_FORM("가입 신청서 거절에 성공하였습니다."),
 	FIND_MY_JOIN_FORM_LIST("나의 소모임 가입 신청서 목록 조회에 성공하였습니다."),
-	CANCEL_JOIN_FORM("가입 신청서 철회에 성공하였습니다."),;
+	CANCEL_JOIN_FORM("가입 신청서 철회에 성공하였습니다."),
+	FIND_CREW_INFO_LIST("취미와 활동 지역에 해당하는 소모임 정보 목록 조회에 성공하였습니다."),;
 
 	private final String status;
 }

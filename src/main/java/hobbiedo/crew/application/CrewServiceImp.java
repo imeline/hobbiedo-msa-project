@@ -116,6 +116,14 @@ public class CrewServiceImp implements CrewService {
 	}
 
 	@Override
+	public List<CrewDetailDTO> getCrewInfoList(long hobbyId, long regionId) {
+		List<CrewIdDTO> crewIds = getCrewsByHobbyAndRegion(hobbyId, regionId);
+		return crewIds.stream()
+			.map(crewId -> getCrewInfo(crewId.getCrewId()))
+			.toList();
+	}
+
+	@Override
 	public CrewDetailDTO getCrewInfo(Long crewId) {
 		Crew crew = getCrewById(crewId);
 
