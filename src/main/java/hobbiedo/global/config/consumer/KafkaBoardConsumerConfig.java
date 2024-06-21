@@ -16,6 +16,8 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
+import hobbiedo.board.kafka.dto.BoardPinEventDto;
+import hobbiedo.board.kafka.dto.BoardUnPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUpdateEventDto;
 import lombok.RequiredArgsConstructor;
 
@@ -31,18 +33,27 @@ public class KafkaBoardConsumerConfig {
 	private String groupId;
 
 	/**
+	 * Consumer 설정
+	 * @return Map<String, Object>
+	 */
+	private Map<String, Object> consumerConfigs() {
+		Map<String, Object> props = new HashMap<>();
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		props.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 모든 패키지를 신뢰하도록 설정
+		return props;
+	}
+
+	/**
 	 * 게시글 테이블 생성 이벤트용 ConsumerFactory
 	 * @return ConsumerFactory<String, BoardCreateEventDto>
 	 */
 	@Bean
 	public ConsumerFactory<String, BoardCreateEventDto> createConsumerFactory() {
 
-		Map<String, Object> configProps = new HashMap<>();
-		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+		Map<String, Object> configProps = consumerConfigs();
 
 		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
 			new JsonDeserializer<>(BoardCreateEventDto.class, false));
@@ -66,12 +77,7 @@ public class KafkaBoardConsumerConfig {
 	@Bean
 	public ConsumerFactory<String, BoardDeleteEventDto> deleteConsumerFactory() {
 
-		Map<String, Object> configProps = new HashMap<>();
-		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+		Map<String, Object> configProps = consumerConfigs();
 
 		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
 			new JsonDeserializer<>(BoardDeleteEventDto.class, false));
@@ -89,18 +95,13 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	/**
-	 * 게시글 테이블 댓글 증가 이벤트용 ConsumerFactory
+	 * 게시글 테이블 수정 이벤트용 ConsumerFactory
 	 * @return ConsumerFactory<String, BoardUpdateEventDto>
 	 */
 	@Bean
 	public ConsumerFactory<String, BoardUpdateEventDto> updateConsumerFactory() {
 
-		Map<String, Object> configProps = new HashMap<>();
-		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+		Map<String, Object> configProps = consumerConfigs();
 
 		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
 			new JsonDeserializer<>(BoardUpdateEventDto.class, false));
@@ -113,6 +114,54 @@ public class KafkaBoardConsumerConfig {
 			new ConcurrentKafkaListenerContainerFactory<>();
 
 		factory.setConsumerFactory(updateConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 테이블 고정 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardPinEventDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardPinEventDto> pinConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardPinEventDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardPinEventDto> pinKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardPinEventDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(pinConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 테이블 고정 해제 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardUnPinEventDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardUnPinEventDto> unpinConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardUnPinEventDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, BoardUnPinEventDto> unpinKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardUnPinEventDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(unpinConsumerFactory());
 
 		return factory;
 	}

@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardCommentUpdateDto {
+public class BoardCommentCountUpdateDto {
 
 	private Long boardId;
+	private Integer commentCount;
 }
