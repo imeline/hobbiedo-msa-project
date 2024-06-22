@@ -49,8 +49,6 @@ public class GoogleSignUpDTO {
 	private String password;
 
 	@Schema(description = "가입자 생년월일, YYYY-mm-dd 형식만 허용")
-	@Pattern(regexp = "^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",
-		message = "생일은 yyyy-MM-dd 형식으로 이뤄져야합니다.")
 	private LocalDate birth;
 
 	public Member toMemberEntity() {
