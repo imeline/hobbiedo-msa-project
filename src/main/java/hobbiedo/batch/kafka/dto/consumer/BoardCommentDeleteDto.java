@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardLikeUpdateDto {
+public class BoardCommentDeleteDto {
 
 	private Long boardId;
+	private Long commentId;
 }

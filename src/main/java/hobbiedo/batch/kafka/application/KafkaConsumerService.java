@@ -4,6 +4,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import hobbiedo.batch.application.BoardStatsService;
+import hobbiedo.batch.kafka.dto.consumer.BoardCommentDeleteDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardCommentUpdateDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardCreateEventDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardDeleteEventDto;
@@ -55,7 +56,7 @@ public class KafkaConsumerService {
 	 */
 	@KafkaListener(topics = "board-comment-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
 		containerFactory = "commentDeleteKafkaListenerContainerFactory")
-	public void listenToBoardCommentDeleteTopic(BoardCommentUpdateDto eventDto) {
+	public void listenToBoardCommentDeleteTopic(BoardCommentDeleteDto eventDto) {
 
 		boardStatsService.deleteBoardCommentStats(eventDto);
 	}
