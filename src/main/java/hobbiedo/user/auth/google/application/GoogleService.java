@@ -11,6 +11,8 @@ import hobbiedo.user.auth.google.dto.request.GoogleLoginDTO;
 import hobbiedo.user.auth.google.dto.request.GoogleSignUpDTO;
 import hobbiedo.user.auth.google.infrastructure.GoogleMemberRepository;
 import hobbiedo.user.auth.google.infrastructure.SocialAuthRepository;
+import hobbiedo.user.auth.kafka.application.KafkaProducerService;
+import hobbiedo.user.auth.kafka.dto.SignUpDTO;
 import hobbiedo.user.auth.member.application.AuthService;
 import hobbiedo.user.auth.member.domain.Member;
 import hobbiedo.user.auth.member.infrastructure.MemberRepository;
@@ -27,6 +29,7 @@ public class GoogleService {
 	private final AuthService authService;
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final KafkaProducerService kafkaProducerService;
 
 	@Transactional
 	public LoginResponseVO loginGoogle(GoogleLoginDTO googleLoginDTO) {
@@ -60,7 +63,7 @@ public class GoogleService {
 			passwordEncoder.encode(googleSignUpDTO.getPassword())));
 		// 구글 회원 가입
 		createSocialAuth(member, googleSignUpDTO.getExternalId(), "GOOGLE");
-
+		kafkaProducerService.setSignUpTopic(SignUpDTO.toDto(member.getUuid(), member.getName()));
 		return SignUpVO.builder()
 			.uuid(member.getUuid())
 			.build();

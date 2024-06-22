@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.user.auth.global.api.code.status.ErrorStatus;
 import hobbiedo.user.auth.global.exception.MemberExceptionHandler;
+import hobbiedo.user.auth.kafka.application.KafkaProducerService;
+import hobbiedo.user.auth.kafka.dto.ModifyProfileDTO;
 import hobbiedo.user.auth.member.domain.Member;
 import hobbiedo.user.auth.member.dto.request.ProfileRequestDto;
 import hobbiedo.user.auth.member.dto.response.ProfileResponseDto;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfileService {
 
 	private final MemberProfileRepository memberProfileRepository;
+	private final KafkaProducerService kafkaProducerService;
 
 	public ProfileResponseDto getProfile(String uuid) {
 
@@ -62,5 +65,7 @@ public class ProfileService {
 			.build();
 
 		memberProfileRepository.save(updateMember);
+		kafkaProducerService.setUpdateProfileTopic(
+			ModifyProfileDTO.toDto(updateMember.getUuid(), updateMember.getImageUrl()));
 	}
 }

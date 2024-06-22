@@ -29,7 +29,10 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 회원 프로필 상세 조회 실패
 	NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "MEMBER412", "회원을 찾을 수 없습니다."),
 	// 회원 프로필 메세지가 50자를 초과할 경우
-	PROFILE_MESSAGE_LENGTH_EXCEED(HttpStatus.BAD_REQUEST, "MEMBER413", "상태 메세지는 공백 포함 50자 이내로 입력해주세요");
+	PROFILE_MESSAGE_LENGTH_EXCEED(HttpStatus.BAD_REQUEST, "MEMBER413", "상태 메세지는 공백 포함 50자 이내로 입력해주세요"),
+
+	// kafka 전송 실패
+	KAFKA_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "KAFKA401", "카프카 전송에 실패했습니다."),;
 
 	private final HttpStatus httpStatus;
 	private final String status;
