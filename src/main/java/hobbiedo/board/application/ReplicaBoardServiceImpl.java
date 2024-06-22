@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import hobbiedo.board.domain.ReplicaBoard;
 import hobbiedo.board.dto.BoardDetailsResponseDto;
 import hobbiedo.board.infrastructure.ReplicaBoardRepository;
+import hobbiedo.board.infrastructure.ReplicaCommentRepository;
 import hobbiedo.board.kafka.dto.BoardCommentCountUpdateDto;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 
 	private final ReplicaBoardRepository replicaBoardRepository;
+	private final ReplicaCommentRepository replicaCommentRepository;
 
 	// 회원 서비스 추가
 	private final ReplicaMemberService replicaMemberService;
@@ -62,6 +64,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 	public void deleteReplicaBoard(BoardDeleteEventDto eventDto) {
 
 		replicaBoardRepository.deleteByBoardId(eventDto.getBoardId());
+
+		// 삭제된 게시글의 댓글 삭제
+		replicaCommentRepository.deleteByBoardId(eventDto.getBoardId());
 	}
 
 	/**
