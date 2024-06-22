@@ -3,7 +3,7 @@ package hobbiedo.crew.kafka.application;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import hobbiedo.crew.kafka.dto.ChatEntryExitDTO;
+import hobbiedo.crew.kafka.dto.CrewEntryExitDTO;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class KafkaProducerService {
 	private static final String EXIT_CREW_TOPIC = "exit-crew-topic";
 	private static final String FORCE_EXIT_CREW_TOPIC = "force-exit-crew-topic";
 
-	public void setCreateCrewTopic(ChatEntryExitDTO eventDto) {
+	public void setCreateCrewTopic(CrewEntryExitDTO eventDto) {
 		try {
 
 			kafkaTemplate.send(CREATE_CREW_TOPIC, eventDto);
@@ -32,7 +32,7 @@ public class KafkaProducerService {
 		}
 	}
 
-	public void setJoinCrewTopic(ChatEntryExitDTO eventDto) {
+	public void setJoinCrewTopic(CrewEntryExitDTO eventDto) {
 		try {
 
 			kafkaTemplate.send(JOIN_CREW_TOPIC, eventDto);
@@ -44,7 +44,7 @@ public class KafkaProducerService {
 		}
 	}
 
-	public void setExitCrewTopic(ChatEntryExitDTO eventDto) {
+	public void setExitCrewTopic(CrewEntryExitDTO eventDto) {
 		try {
 
 			kafkaTemplate.send(EXIT_CREW_TOPIC, eventDto);
@@ -56,7 +56,7 @@ public class KafkaProducerService {
 		}
 	}
 
-	public void setForceExitCrewTopic(ChatEntryExitDTO eventDto) {
+	public void setForceExitCrewTopic(CrewEntryExitDTO eventDto) {
 		try {
 
 			kafkaTemplate.send(FORCE_EXIT_CREW_TOPIC, eventDto);
