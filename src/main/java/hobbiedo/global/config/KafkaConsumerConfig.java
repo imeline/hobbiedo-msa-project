@@ -14,6 +14,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import hobbiedo.batch.kafka.dto.consumer.BoardCommentDeleteDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardCommentUpdateDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardCreateEventDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardDeleteEventDto;
@@ -121,10 +122,10 @@ public class KafkaConsumerConfig {
 
 	/**
 	 * 게시글 통계 테이블 댓글 수 감소 이벤트용 ConsumerFactory
-	 * @return ConsumerFactory<String, BoardCommentUpdateDto>
+	 * @return ConsumerFactory<String, BoardCommentDeleteDto>
 	 */
 	@Bean
-	public ConsumerFactory<String, BoardCommentUpdateDto> commentDeleteConsumerFactory() {
+	public ConsumerFactory<String, BoardCommentDeleteDto> commentDeleteConsumerFactory() {
 
 		Map<String, Object> configProps = new HashMap<>();
 		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -134,14 +135,14 @@ public class KafkaConsumerConfig {
 		configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 모든 패키지를 신뢰하도록 설정
 
 		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
-			new JsonDeserializer<>(BoardCommentUpdateDto.class, false));
+			new JsonDeserializer<>(BoardCommentDeleteDto.class, false));
 	}
 
 	@Bean
 	public ConcurrentKafkaListenerContainerFactory<String,
-		BoardCommentUpdateDto> commentDeleteKafkaListenerContainerFactory() {
+		BoardCommentDeleteDto> commentDeleteKafkaListenerContainerFactory() {
 
-		ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> factory =
+		ConcurrentKafkaListenerContainerFactory<String, BoardCommentDeleteDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
 
 		factory.setConsumerFactory(commentDeleteConsumerFactory());

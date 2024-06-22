@@ -9,6 +9,7 @@ import hobbiedo.batch.domain.BoardStats;
 import hobbiedo.batch.dto.response.BoardStatsResponseDto;
 import hobbiedo.batch.infrastructure.BoardStatsRepository;
 import hobbiedo.batch.kafka.application.KafkaProducerService;
+import hobbiedo.batch.kafka.dto.consumer.BoardCommentDeleteDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardCommentUpdateDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardCreateEventDto;
 import hobbiedo.batch.kafka.dto.consumer.BoardDeleteEventDto;
@@ -105,7 +106,7 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 	 */
 	@Override
 	@Transactional
-	public void deleteBoardCommentStats(BoardCommentUpdateDto eventDto) {
+	public void deleteBoardCommentStats(BoardCommentDeleteDto eventDto) {
 
 		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
 			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
