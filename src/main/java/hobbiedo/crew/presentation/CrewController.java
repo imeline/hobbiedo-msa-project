@@ -94,7 +94,7 @@ public class CrewController {
 	@DeleteMapping("/withdrawal/{crewId}")
 	public BaseResponse<Void> withdrawalCrew(@PathVariable long crewId,
 		@RequestHeader(name = "Uuid") String uuid) {
-    crewService.exitCrew(crewId, uuid);
+		crewService.exitCrew(crewId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.WITHDRAWAL_CREW, null);
 	}
 
@@ -114,7 +114,7 @@ public class CrewController {
 	}
 
 	@Operation(summary = "소모임 강제 퇴장", description = "소모임에서 회원을 강제로 퇴장시킨다.(블랙리스트로 변경)")
-	@DeleteMapping("/forced-exit/{crewId}")
+	@PostMapping("/forced-exit/{crewId}")
 	public BaseResponse<Void> forcedExitCrew(@Valid @RequestBody CrewOutDTO crewOutDTO,
 		@PathVariable long crewId,
 		@RequestHeader(name = "Uuid") String uuid) {
