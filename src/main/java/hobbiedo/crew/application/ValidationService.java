@@ -1,9 +1,10 @@
 package hobbiedo.crew.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import hobbiedo.crew.domain.Crew;
-import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
@@ -16,20 +17,25 @@ public class ValidationService {
 	private final CrewMemberRepository crewMemberRepository;
 	private final RegionRepository regionRepository;
 
-	public void isValidCrew(CrewRequestDTO crewDTO, String uuid) {
+	public void isValidRegionIdCountHostCrew(long regionId, String uuid) {
+		// 활동 지역이 존재하는지 체크
+		if (!regionRepository.existsById(regionId)) {
+			throw new GlobalException(ErrorStatus.NO_EXIST_REGION);
+		}
+		// 이미 만든 방이 5개 이상인지 체크
+		if (crewMemberRepository.countByUuidAndRole(uuid, 1) >= 5) {
+			throw new GlobalException(ErrorStatus.INVALID_MAX_HOST_COUNT);
+		}
+	}
 
+	public void isValidHashTagJoinType(List<String> hashTagList, int joinType) {
 		// HashTag 개수 체크
-		if (crewDTO.getHashTagList().size() > 5) {
+		if (hashTagList.size() > 5) {
 			throw new GlobalException(ErrorStatus.INVALID_HASH_TAG_COUNT);
 		}
 		// joinType 체크
-		if (crewDTO.getJoinType() != 0 && crewDTO.getJoinType() != 1) {
+		if (joinType != 0 && joinType != 1) {
 			throw new GlobalException(ErrorStatus.INVALID_JOIN_TYPE);
-		}
-
-		// 활동 지역이 존재하는지 체크
-		if (!regionRepository.existsById(crewDTO.getRegionId())) {
-			throw new GlobalException(ErrorStatus.NO_EXIST_REGION);
 		}
 	}
 

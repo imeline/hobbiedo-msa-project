@@ -12,10 +12,6 @@ public class CrewResponseDTO {
 
 	private String profileUrl;
 
-	private Long regionId;
-
-	private Long hobbyId;
-
 	private String name;
 
 	private String introduction;
@@ -27,8 +23,6 @@ public class CrewResponseDTO {
 	public static CrewResponseDTO toDto(Crew crew, List<String> hashTagList) {
 		return CrewResponseDTO.builder()
 			.profileUrl(crew.getProfileUrl())
-			.regionId(crew.getRegionId())
-			.hobbyId(crew.getHobbyId())
 			.name(crew.getName())
 			.introduction(crew.getIntroduction())
 			.joinType(crew.getJoinType())

@@ -3,6 +3,7 @@ package hobbiedo.crew.application;
 import java.util.List;
 
 import hobbiedo.crew.domain.Crew;
+import hobbiedo.crew.dto.request.CrewModifyDTO;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
@@ -33,7 +34,7 @@ public interface CrewService {
 
 	CrewResponseDTO getCrew(Long crewId);
 
-	void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid);
+	void modifyCrew(CrewModifyDTO crewModifyDTO, Long crewId, String uuid);
 
 	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
 

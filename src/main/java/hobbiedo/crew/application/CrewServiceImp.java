@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.domain.HashTag;
+import hobbiedo.crew.dto.request.CrewModifyDTO;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
@@ -45,11 +46,8 @@ public class CrewServiceImp implements CrewService {
 	@Transactional
 	@Override
 	public CrewIdDTO createCrew(CrewRequestDTO crewDTO, String uuid) {
-		validationService.isValidCrew(crewDTO, uuid);
-		// 이미 만든 방이 5개 이상인지 체크
-		if (crewMemberRepository.countByUuidAndRole(uuid, 1) >= 5) {
-			throw new GlobalException(ErrorStatus.INVALID_MAX_HOST_COUNT);
-		}
+		validationService.isValidRegionIdCountHostCrew(crewDTO.getRegionId(), uuid);
+		validationService.isValidHashTagJoinType(crewDTO.getHashTagList(), crewDTO.getJoinType());
 		// Crew 생성
 		Crew crew = crewRepository.save(crewDTO.toCrewEntity());
 		// 방장 CrewMember 생성
@@ -216,16 +214,17 @@ public class CrewServiceImp implements CrewService {
 
 	@Transactional
 	@Override
-	public void modifyCrew(CrewRequestDTO crewDTO, Long crewId, String uuid) {
+	public void modifyCrew(CrewModifyDTO crewModifyDTO, Long crewId, String uuid) {
 		validationService.isValidHost(crewId, uuid);
-		validationService.isValidCrew(crewDTO, uuid);
+		validationService.isValidHashTagJoinType(crewModifyDTO.getHashTagList(),
+			crewModifyDTO.getJoinType());
 		Crew crew = getCrewById(crewId);
 		// Crew 수정
-		crewRepository.save(crewDTO.toModifyCrewEntity(crew));
+		crewRepository.save(crewModifyDTO.toModifyCrewEntity(crew));
 		// HashTag 삭제
 		hashTagRepository.deleteByCrewId(crewId);
 		// HashTag 생성
-		createHashTag(crew, crewDTO.getHashTagList());
+		createHashTag(crew, crewModifyDTO.getHashTagList());
 	}
 
 	@Transactional

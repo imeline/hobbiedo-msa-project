@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hobbiedo.crew.application.CrewService;
+import hobbiedo.crew.dto.request.CrewModifyDTO;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
@@ -106,9 +107,9 @@ public class CrewController {
 
 	@Operation(summary = "소모임 정보 수정", description = "소모임 정보를 수정한다.")
 	@PutMapping("/{crewId}")
-	public BaseResponse<Void> modifyCrew(@Valid @RequestBody CrewRequestDTO crewDTO,
+	public BaseResponse<Void> modifyCrew(@Valid @RequestBody CrewModifyDTO crewModifyDTO,
 		@PathVariable long crewId, @RequestHeader(name = "Uuid") String uuid) {
-		crewService.modifyCrew(crewDTO, crewId, uuid);
+		crewService.modifyCrew(crewModifyDTO, crewId, uuid);
 		return BaseResponse.onSuccess(SuccessStatus.MODIFY_CREW, null);
 	}
 
