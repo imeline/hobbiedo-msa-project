@@ -15,6 +15,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import hobbiedo.board.kafka.dto.BoardCommentCountUpdateDto;
+import hobbiedo.board.kafka.dto.BoardCommentDeleteDto;
+import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
 import hobbiedo.board.kafka.dto.BoardLikeCountUpdateDto;
@@ -269,6 +271,56 @@ public class KafkaBoardConsumerConfig {
 			new ConcurrentKafkaListenerContainerFactory<>();
 
 		factory.setConsumerFactory(likeCountDeleteConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 댓글 테이블 생성 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardCommentUpdateDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardCommentUpdateDto> commentCreateConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardCommentUpdateDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardCommentUpdateDto> commentCreateKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardCommentUpdateDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(commentCreateConsumerFactory());
+
+		return factory;
+	}
+
+	/**
+	 * 게시글 댓글 테이블 삭제 이벤트용 ConsumerFactory
+	 * @return ConsumerFactory<String, BoardCommentDeleteDto>
+	 */
+	@Bean
+	public ConsumerFactory<String, BoardCommentDeleteDto> commentDeleteConsumerFactory() {
+
+		Map<String, Object> configProps = consumerConfigs();
+
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+			new JsonDeserializer<>(BoardCommentDeleteDto.class, false));
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardCommentDeleteDto> commentDeleteKafkaListenerContainerFactory() {
+
+		ConcurrentKafkaListenerContainerFactory<String, BoardCommentDeleteDto> factory =
+			new ConcurrentKafkaListenerContainerFactory<>();
+
+		factory.setConsumerFactory(commentDeleteConsumerFactory());
 
 		return factory;
 	}

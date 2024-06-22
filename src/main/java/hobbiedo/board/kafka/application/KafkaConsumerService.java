@@ -6,7 +6,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import hobbiedo.board.application.ReplicaBoardService;
+import hobbiedo.board.application.ReplicaCommentService;
 import hobbiedo.board.kafka.dto.BoardCommentCountUpdateDto;
+import hobbiedo.board.kafka.dto.BoardCommentDeleteDto;
+import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
 import hobbiedo.board.kafka.dto.BoardLikeCountUpdateDto;
@@ -21,6 +24,7 @@ public class KafkaConsumerService {
 
 	private static final Logger log = LoggerFactory.getLogger(KafkaConsumerService.class);
 	private final ReplicaBoardService replicaBoardService;
+	private final ReplicaCommentService replicaCommentService;
 
 	/**
 	 * 게시글 생성 이벤트 수신
@@ -121,5 +125,27 @@ public class KafkaConsumerService {
 	public void listenToLikeCountDeleteTopic(BoardLikeCountUpdateDto eventDto) {
 
 		replicaBoardService.decreaseLikeCount(eventDto);
+	}
+
+	/**
+	 * 게시글 댓글 테이블 생성 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "board-comment-update-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "commentCreateKafkaListenerContainerFactory")
+	public void listenToCommentCreateTopic(BoardCommentUpdateDto eventDto) {
+
+		replicaCommentService.createReplicaComment(eventDto);
+	}
+
+	/**
+	 * 게시글 댓글 테이블 삭제 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "board-comment-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "commentDeleteKafkaListenerContainerFactory")
+	public void listenToCommentDeleteTopic(BoardCommentDeleteDto eventDto) {
+
+		replicaCommentService.deleteReplicaComment(eventDto);
 	}
 }
