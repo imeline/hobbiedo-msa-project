@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
+import hobbiedo.crew.dto.response.CrewMemberDTO;
 import hobbiedo.crew.infrastructure.ReplicaCrewRepository;
 import hobbiedo.crew.kafka.dto.CrewEntryExitDTO;
 import hobbiedo.global.api.code.status.ErrorStatus;
@@ -20,6 +21,12 @@ public class ReplicaCrewServiceImp implements ReplicaCrewService {
 
 	private final ReplicaCrewRepository replicaCrewRepository;
 	private final ReplicaMemberRepository replicaMemberRepository;
+
+	@Override
+	public List<CrewMemberDTO> getCrewMembers(long crewId) {
+		Crew crew = getCrew(crewId);
+		return CrewMemberDTO.toDtoList(crew.getCrewMembers());
+	}
 
 	@Override
 	public void createCrew(CrewEntryExitDTO crewEntryExitDTO) {
