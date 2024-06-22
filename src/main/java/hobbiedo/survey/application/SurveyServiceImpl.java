@@ -19,6 +19,7 @@ import hobbiedo.survey.dto.response.HobbySurveyResponseDto;
 import hobbiedo.survey.infrastructure.HobbyRepository;
 import hobbiedo.survey.infrastructure.HobbySurveyRepository;
 import hobbiedo.survey.infrastructure.UserHobbyRepository;
+import hobbiedo.survey.type.QuestionType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,11 +37,16 @@ public class SurveyServiceImpl implements SurveyService {
 	public List<HobbySurveyResponseDto> getHobbySurveyQuestions() {
 
 		// 데이터베이스에서 랜덤으로 20개의 취미 설문 문항을 가져옴
-		List<HobbySurvey> randomQuestions = Optional.ofNullable(
-				hobbySurveyRepository.findRandomQuestions())
-			.filter(list -> !list.isEmpty())
-			.orElseThrow(() -> new SurveyExceptionHandler(
-				GET_HOBBY_SURVEY_QUESTIONS_EMPTY));
+		List<HobbySurvey> randomQuestions = new ArrayList<>();
+
+		for (QuestionType questionType : QuestionType.values()) {
+			List<HobbySurvey> questionsByType = Optional.ofNullable(
+					hobbySurveyRepository.findRandomQuestionsByType(questionType.name()))
+				.filter(list -> !list.isEmpty())
+				.orElseThrow(() -> new SurveyExceptionHandler(GET_HOBBY_SURVEY_QUESTIONS_EMPTY));
+
+			randomQuestions.addAll(questionsByType);
+		}
 
 		log.info("Get Hobby Survey Questions Size (취미 설문 조사 질문 수) : {}", randomQuestions.size());
 
