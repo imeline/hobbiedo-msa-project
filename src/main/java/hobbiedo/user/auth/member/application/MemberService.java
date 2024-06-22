@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import hobbiedo.user.auth.email.util.RandomPasswordUtil;
 import hobbiedo.user.auth.global.api.code.status.ErrorStatus;
 import hobbiedo.user.auth.global.exception.MemberExceptionHandler;
+import hobbiedo.user.auth.kafka.application.KafkaProducerService;
+import hobbiedo.user.auth.kafka.dto.SignUpDTO;
 import hobbiedo.user.auth.member.converter.SignUpConverter;
 import hobbiedo.user.auth.member.domain.IntegrateAuth;
 import hobbiedo.user.auth.member.domain.Member;
@@ -26,6 +28,7 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final KafkaProducerService kafkaProducerService;
 
 	@Transactional
 	public SignUpVO integrateSignUp(IntegrateSignUpDTO integrateSignUpDTO) {
@@ -36,7 +39,7 @@ public class MemberService {
 			.password(passwordEncoder.encode(integrateSignUpDTO.getPassword()))
 			.member(newMember)
 			.build());
-
+		kafkaProducerService.setSignUpTopic(SignUpDTO.toDto(newMember.getUuid(), newMember.getName()));
 		return SignUpVO.builder()
 			.uuid(newMember.getUuid())
 			.build();
