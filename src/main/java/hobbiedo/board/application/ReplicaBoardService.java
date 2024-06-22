@@ -1,5 +1,6 @@
 package hobbiedo.board.application;
 
+import hobbiedo.board.dto.BoardDetailsResponseDto;
 import hobbiedo.board.kafka.dto.BoardCommentCountUpdateDto;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
@@ -27,4 +28,10 @@ public interface ReplicaBoardService {
 	void increaseLikeCount(BoardLikeCountUpdateDto eventDto);
 
 	void decreaseLikeCount(BoardLikeCountUpdateDto eventDto);
+
+	BoardDetailsResponseDto getBoard(Long boardId);
+
+	BoardDetailsResponseDto getLatestBoard(Long crewId);
+
+	BoardDetailsResponseDto getPinnedBoard(Long crewId);
 }

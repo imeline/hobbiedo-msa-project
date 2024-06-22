@@ -62,7 +62,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardCreateEventDto> createKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardCreateEventDto> createKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardCreateEventDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -86,7 +87,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardDeleteEventDto> deleteKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardDeleteEventDto> deleteKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardDeleteEventDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -110,7 +112,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardUpdateEventDto> updateKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardUpdateEventDto> updateKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardUpdateEventDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -134,7 +137,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardPinEventDto> pinKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardPinEventDto> pinKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardPinEventDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -158,7 +162,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardUnPinEventDto> unpinKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardUnPinEventDto> unpinKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardUnPinEventDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -182,7 +187,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> commentCountUpdateKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardCommentCountUpdateDto> commentCountUpdateKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -206,7 +212,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> commentCountDeleteKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardCommentCountUpdateDto> commentCountDeleteKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardCommentCountUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -230,7 +237,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> likeCountUpdateKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardLikeCountUpdateDto> likeCountUpdateKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();
@@ -254,7 +262,8 @@ public class KafkaBoardConsumerConfig {
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> likeCountDeleteKafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String,
+		BoardLikeCountUpdateDto> likeCountDeleteKafkaListenerContainerFactory() {
 
 		ConcurrentKafkaListenerContainerFactory<String, BoardLikeCountUpdateDto> factory =
 			new ConcurrentKafkaListenerContainerFactory<>();

@@ -7,4 +7,8 @@ public interface ReplicaMemberService {
 	void createMemberProfile(SignUpDTO signUpDTO);
 
 	void updateMemberProfile(ModifyProfileDTO modifyProfileDTO);
+
+	String getMemberName(String writerUuid);
+
+	String getMemberProfileImageUrl(String writerUuid);
 }

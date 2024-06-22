@@ -31,15 +31,12 @@ public class ReplicaBoard {
 	private List<String> imageUrls;
 	private Integer likeCount;
 	private Integer commentCount;
-	private String profileImageUrl;
-	private String writerName;
 
 	@Builder
 	public ReplicaBoard(String id, Long boardId, Long crewId, String content, String writerUuid,
 		boolean pinned,
 		LocalDateTime createdAt, boolean updated, List<String> imageUrls, Integer likeCount,
-		Integer commentCount,
-		String profileImageUrl, String writerName) {
+		Integer commentCount) {
 		this.id = id;
 		this.boardId = boardId;
 		this.crewId = crewId;
@@ -51,7 +48,5 @@ public class ReplicaBoard {
 		this.imageUrls = imageUrls;
 		this.likeCount = likeCount;
 		this.commentCount = commentCount;
-		this.profileImageUrl = profileImageUrl;
-		this.writerName = writerName;
 	}
 }
