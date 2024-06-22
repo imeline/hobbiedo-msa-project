@@ -16,8 +16,14 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 게시글 조회 에러
 	BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD401", "게시글을 찾을 수 없습니다."),
 
+	// 아직 소모임에 게시글이 없는 경우
+	BOARD_NOT_FOUND_IN_CREW(HttpStatus.NOT_FOUND, "BOARD402", "소모임에 게시글이 없습니다."),
+
 	// MemberProfile
-	NOT_FOUND_MEMBER_PROFILE(HttpStatus.NOT_FOUND, "MEMBER401", "회원 프로필을 찾을 수 없습니다."),;
+	NOT_FOUND_MEMBER_PROFILE(HttpStatus.NOT_FOUND, "MEMBER401", "회원 프로필을 찾을 수 없습니다."),
+
+	// 회원 이미지 조회 에러
+	NOT_FOUND_MEMBER_PROFILE_IMAGE(HttpStatus.NOT_FOUND, "MEMBER402", "회원 프로필 이미지를 찾을 수 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

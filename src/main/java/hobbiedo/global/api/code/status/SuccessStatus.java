@@ -10,7 +10,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SuccessStatus implements BaseCode {
-	EXAMPLE_EXCEPTION(HttpStatus.OK, "EXAMPLE200", "샘플 성공 메시지입니다.");
+	EXAMPLE_EXCEPTION(HttpStatus.OK, "EXAMPLE200", "샘플 성공 메시지입니다."),
+
+	// 게시글 조회 성공
+	GET_BOARD_SUCCESS(HttpStatus.OK, "200", "게시글 조회 성공"),
+
+	// 해당 소모임의 최신 게시글 조회 성공
+	GET_LATEST_BOARD_SUCCESS(HttpStatus.OK, "200", "해당 소모임의 최신 게시글 조회 성공");
 
 	private final HttpStatus httpStatus;
 	private final String status;
