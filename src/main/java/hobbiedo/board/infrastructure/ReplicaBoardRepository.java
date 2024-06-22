@@ -14,4 +14,6 @@ public interface ReplicaBoardRepository extends MongoRepository<ReplicaBoard, St
 
 	// crewId로 가장 최근에 작성된 board 를 가져옴
 	Optional<ReplicaBoard> findTopByCrewIdOrderByBoardIdDesc(Long crewId);
+
+	Optional<ReplicaBoard> findByPinnedTrueAndCrewId(Long crewId);
 }

@@ -32,4 +32,6 @@ public interface ReplicaBoardService {
 	BoardDetailsResponseDto getBoard(Long boardId);
 
 	BoardDetailsResponseDto getLatestBoard(Long crewId);
+
+	BoardDetailsResponseDto getPinnedBoard(Long crewId);
 }

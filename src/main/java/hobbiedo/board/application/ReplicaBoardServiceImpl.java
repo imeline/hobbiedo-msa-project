@@ -2,6 +2,8 @@ package hobbiedo.board.application;
 
 import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import hobbiedo.board.domain.ReplicaBoard;
@@ -307,6 +309,41 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 			.imageUrls(replicaBoard.getImageUrls())
 			.commentCount(replicaBoard.getCommentCount())
 			.likeCount(replicaBoard.getLikeCount())
+			.writerName(writerName)
+			.writerProfileImageUrl(writerProfileImageUrl)
+			.build();
+	}
+
+	/**
+	 * 고정된 게시글 조회
+	 * @param crewId
+	 * @return
+	 */
+	@Override
+	public BoardDetailsResponseDto getPinnedBoard(Long crewId) {
+
+		Optional<ReplicaBoard> replicaBoard = replicaBoardRepository.findByPinnedTrueAndCrewId(
+			crewId);
+
+		if (!replicaBoard.isPresent()) {
+			return null;
+		}
+
+		String writerName = replicaMemberService.getMemberName(replicaBoard.get().getWriterUuid());
+		String writerProfileImageUrl = replicaMemberService.getMemberProfileImageUrl(
+			replicaBoard.get().getWriterUuid());
+
+		return BoardDetailsResponseDto.builder()
+			.boardId(replicaBoard.get().getBoardId())
+			.crewId(replicaBoard.get().getCrewId())
+			.content(replicaBoard.get().getContent())
+			.writerUuid(replicaBoard.get().getWriterUuid())
+			.pinned(replicaBoard.get().isPinned())
+			.createdAt(replicaBoard.get().getCreatedAt())
+			.updated(replicaBoard.get().isUpdated())
+			.imageUrls(replicaBoard.get().getImageUrls())
+			.commentCount(replicaBoard.get().getCommentCount())
+			.likeCount(replicaBoard.get().getLikeCount())
 			.writerName(writerName)
 			.writerProfileImageUrl(writerProfileImageUrl)
 			.build();

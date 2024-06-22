@@ -16,7 +16,10 @@ public enum SuccessStatus implements BaseCode {
 	GET_BOARD_SUCCESS(HttpStatus.OK, "200", "게시글 조회 성공"),
 
 	// 해당 소모임의 최신 게시글 조회 성공
-	GET_LATEST_BOARD_SUCCESS(HttpStatus.OK, "200", "해당 소모임의 최신 게시글 조회 성공");
+	GET_LATEST_BOARD_SUCCESS(HttpStatus.OK, "200", "해당 소모임의 최신 게시글 조회 성공"),
+
+	// 해당 소모임의 고정 게시글 조회 성공
+	GET_PINNED_BOARD_SUCCESS(HttpStatus.OK, "200", "해당 소모임의 고정 게시글 조회 성공");
 
 	private final HttpStatus httpStatus;
 	private final String status;

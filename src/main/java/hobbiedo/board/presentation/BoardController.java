@@ -52,4 +52,25 @@ public class BoardController {
 			LatestBoardDetailsResponseVo.boardDtoToLatestDetailsVo(boardResponseDto)
 		);
 	}
+
+	// 고정 게시글 조회
+	@GetMapping("/{crewId}/pinned")
+	@Operation(summary = "고정 게시글 조회", description = "해당 소모임의 고정 게시글을 조회합니다.")
+	public ApiResponse<BoardDetailsResponseVo> getPinnedPost(
+		@PathVariable("crewId") Long crewId) {
+
+		BoardDetailsResponseDto boardResponseDto = replicaBoardService.getPinnedBoard(crewId);
+
+		if (boardResponseDto == null) {
+			return ApiResponse.onSuccess(
+				SuccessStatus.GET_PINNED_BOARD_SUCCESS,
+				null
+			);
+		}
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.GET_PINNED_BOARD_SUCCESS,
+			BoardDetailsResponseVo.boardDtoToDetailsVo(boardResponseDto)
+		);
+	}
 }
