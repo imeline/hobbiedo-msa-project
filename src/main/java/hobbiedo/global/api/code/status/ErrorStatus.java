@@ -14,7 +14,10 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
 
 	// 게시글 조회 에러
-	BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD401", "게시글을 찾을 수 없습니다.");
+	BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD401", "게시글을 찾을 수 없습니다."),
+
+	// MemberProfile
+	NOT_FOUND_MEMBER_PROFILE(HttpStatus.NOT_FOUND, "MEMBER401", "회원 프로필을 찾을 수 없습니다."),;
 
 	private final HttpStatus httpStatus;
 	private final String status;
