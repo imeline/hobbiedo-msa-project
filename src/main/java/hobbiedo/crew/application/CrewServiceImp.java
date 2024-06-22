@@ -22,7 +22,7 @@ import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
 import hobbiedo.crew.infrastructure.jpa.CrewRepository;
 import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
 import hobbiedo.crew.kafka.application.KafkaProducerService;
-import hobbiedo.crew.kafka.dto.ChatEntryExitDTO;
+import hobbiedo.crew.kafka.dto.CrewEntryExitDTO;
 import hobbiedo.crew.kafka.dto.CrewScoreDTO;
 import hobbiedo.crew.kafka.type.EntryExitType;
 import hobbiedo.global.exception.GlobalException;
@@ -56,7 +56,7 @@ public class CrewServiceImp implements CrewService {
 		createHashTag(crew, crewDTO.getHashTagList());
 		// ChatLastStatus 생성 및 입장 chat 전송
 		kafkaProducerService.setCreateCrewTopic(
-			ChatEntryExitDTO.toDto(crew.getId(), uuid, EntryExitType.ENTRY));
+			CrewEntryExitDTO.toDto(crew.getId(), uuid, EntryExitType.ENTRY));
 
 		return CrewIdDTO.toDto(crew.getId());
 	}
@@ -94,7 +94,7 @@ public class CrewServiceImp implements CrewService {
 		changeCrewParticipant(crew, 1);
 		// ChatLastStatus 생성 맟 입장 chat 전송
 		kafkaProducerService.setJoinCrewTopic(
-			ChatEntryExitDTO.toDto(crew.getId(), uuid, EntryExitType.ENTRY));
+			CrewEntryExitDTO.toDto(crew.getId(), uuid, EntryExitType.ENTRY));
 	}
 
 	@Transactional
@@ -202,7 +202,7 @@ public class CrewServiceImp implements CrewService {
 		changeCrewParticipant(crewMember.getCrew(), -1);
 		// 퇴장 chat 전송
 		kafkaProducerService.setExitCrewTopic(
-			ChatEntryExitDTO.toDto(crewId, uuid, EntryExitType.EXIT));
+			CrewEntryExitDTO.toDto(crewId, uuid, EntryExitType.EXIT));
 	}
 
 	@Override
@@ -240,7 +240,7 @@ public class CrewServiceImp implements CrewService {
 		changeCrewParticipant(crewMember.getCrew(), -1);
 		// 강제 퇴장 chat 전송
 		kafkaProducerService.setForceExitCrewTopic(
-			ChatEntryExitDTO.toDto(crewId, crewOutDTO.getOutUuid(), EntryExitType.FORCE_EXIT));
+			CrewEntryExitDTO.toDto(crewId, crewOutDTO.getOutUuid(), EntryExitType.FORCE_EXIT));
 	}
 
 	@Transactional

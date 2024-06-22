@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatEntryExitDTO {
+public class CrewEntryExitDTO {
 	private long crewId;
 	private String uuid;
 	private EntryExitType entryExitType;
 
-	public static ChatEntryExitDTO toDto(long crewId, String uuid, EntryExitType entryExitType) {
-		return ChatEntryExitDTO.builder()
+	public static CrewEntryExitDTO toDto(long crewId, String uuid, EntryExitType entryExitType) {
+		return CrewEntryExitDTO.builder()
 			.crewId(crewId)
 			.uuid(uuid)
 			.entryExitType(entryExitType)
