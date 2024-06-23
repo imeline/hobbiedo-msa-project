@@ -8,22 +8,20 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CrewDetailDTO {
+public class CrewHomeDTO {
 	private long crewId;
 	private String crewName;
 	private String addressName;
-	private String introduction;
 	private int currentParticipant;
 	private int joinType;
 	private String profileUrl;
 	private List<String> hashTagList;
 
-	public static CrewDetailDTO toDto(Crew crew, String addressName, List<String> hashTagList) {
-		return CrewDetailDTO.builder()
+	public static CrewHomeDTO toDto(Crew crew, String addressName, List<String> hashTagList) {
+		return CrewHomeDTO.builder()
 			.crewId(crew.getId())
 			.crewName(crew.getName())
 			.addressName(addressName)
-			.introduction(crew.getIntroduction())
 			.currentParticipant(crew.getCurrentParticipant())
 			.joinType(crew.getJoinType())
 			.profileUrl(crew.getProfileUrl())
