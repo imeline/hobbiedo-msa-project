@@ -55,9 +55,9 @@ public class CrewController {
 	@Operation(summary = "취미와 활동 지역에 해당하는 소모임 정보 목록 조회", description = "취미와 활동 지역에 해당하는 소모임 정보 목록을 조회한다.(순서 랜덤)")
 	@GetMapping("/info/{hobbyId}/{regionId}")
 	public BaseResponse<List<CrewDetailDTO>> getCrewInfoList(@PathVariable long hobbyId,
-		@PathVariable long regionId) {
+		@PathVariable long regionId, @RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_INFO_LIST,
-			crewService.getCrewInfoList(hobbyId, regionId));
+			crewService.getCrewInfoList(hobbyId, regionId, uuid));
 	}
 
 	@Operation(summary = "소모임 정보 조회", description = "소모임 ID를 통해 소모임 정보를 조회한다.")
@@ -70,9 +70,9 @@ public class CrewController {
 	@Operation(summary = "취미와 활동 지역에 해당하는 소모임 아이디 목록 조회", description = "취미와 활동 지역에 해당하는 소모임 아이디 목록을 조회한다.(순서 랜덤)")
 	@GetMapping("/id/{hobbyId}/{regionId}")
 	public BaseResponse<List<CrewIdDTO>> getCrewIdList(@PathVariable long hobbyId,
-		@PathVariable long regionId) {
+		@PathVariable long regionId, @RequestHeader(name = "Uuid") String uuid) {
 		return BaseResponse.onSuccess(SuccessStatus.FIND_CREWS_BY_HOBBY_AND_REGION,
-			crewService.getCrewsByHobbyAndRegion(hobbyId, regionId));
+			crewService.getCrewsByHobbyAndRegion(hobbyId, regionId, uuid));
 	}
 
 	@Operation(summary = "한 유저가 가입한 소모임 프로필 목록 조회", description = "한 유저가 가입한 소모임 프로필 목록을 조회한다.")

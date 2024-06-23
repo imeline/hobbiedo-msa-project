@@ -114,8 +114,8 @@ public class CrewServiceImp implements CrewService {
 	}
 
 	@Override
-	public List<CrewDetailDTO> getCrewInfoList(long hobbyId, long regionId) {
-		List<CrewIdDTO> crewIds = getCrewsByHobbyAndRegion(hobbyId, regionId);
+	public List<CrewDetailDTO> getCrewInfoList(long hobbyId, long regionId, String uuid) {
+		List<CrewIdDTO> crewIds = getCrewsByHobbyAndRegion(hobbyId, regionId, uuid);
 		return crewIds.stream()
 			.map(crewId -> getCrewInfo(crewId.getCrewId()))
 			.toList();
@@ -133,11 +133,16 @@ public class CrewServiceImp implements CrewService {
 	}
 
 	@Override
-	public List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId) {
+	public List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId, String uuid) {
 		Region region = regionRepository.findById(regionId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 
-		List<Crew> crews = crewRepository.findAllByHobbyId(hobbyId);
+		List<Long> joinedCrewIds = crewMemberRepository.findCrewIdsByUuid(uuid);
+
+		List<Crew> crews = crewRepository.findAllByHobbyId(hobbyId).stream()
+			// 사용자가 이미 가입한 크루 제외
+			.filter(crew -> !joinedCrewIds.contains(crew.getId()))
+			.toList();
 
 		List<CrewIdDTO> crewIdDtoList = new ArrayList<>(crews.stream() // 아래에서 랜덤하게 섞기 때문에 가변 객체로
 			.filter(crew -> {

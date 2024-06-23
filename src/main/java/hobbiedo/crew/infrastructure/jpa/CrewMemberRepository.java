@@ -22,4 +22,6 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
 
 	Optional<CrewMember> findByCrewIdAndRole(long crewId, int role);
 
+	@Query("SELECT cm.crew.id FROM CrewMember cm WHERE cm.uuid = :uuid")
+	List<Long> findCrewIdsByUuid(String uuid);
 }
