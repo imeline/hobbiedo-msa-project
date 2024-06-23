@@ -17,7 +17,6 @@ import hobbiedo.board.infrastructure.ReplicaCommentRepository;
 import hobbiedo.board.kafka.dto.BoardCommentDeleteDto;
 import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.crew.infrastructure.ReplicaCrewRepository;
-import hobbiedo.global.api.code.status.ErrorStatus;
 import hobbiedo.global.api.exception.handler.ReadOnlyExceptionHandler;
 import hobbiedo.member.application.ReplicaMemberService;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +73,7 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 	public CommentListResponseDto getCommentList(Long boardId, Pageable page) {
 
 		// 게시글이 존재하는지 확인
-		replicaBoardRepository.findById(String.valueOf(boardId))
+		replicaBoardRepository.findByBoardId(boardId)
 			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
 
 		Page<ReplicaComment> comments = replicaCommentRepository.findByBoardId(boardId, page);
