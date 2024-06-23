@@ -17,6 +17,7 @@ import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewHomeDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewIdNameDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
@@ -206,7 +207,7 @@ public class CrewServiceImp implements CrewService {
 	@Override
 	public CrewResponseDTO getCrew(Long crewId) {
 		Crew crew = getCrewById(crewId);
-		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
+		List<String> hashTagList = getHashTagList(crewId);
 		return CrewResponseDTO.toDto(crew, hashTagList);
 	}
 
@@ -255,6 +256,29 @@ public class CrewServiceImp implements CrewService {
 			.toList();
 	}
 
+	@Override
+	public List<CrewIdNameDTO> getTop5ScoreCrews(long regionId, String uuid) {
+		List<Long> joinedCrewIds = crewMemberRepository.findCrewIdsByUuid(uuid);
+		List<Crew> allCrews = crewRepository.findAll();
+		Region userRegion = regionService.getRegionById(regionId);
+
+		List<Crew> filteredCrews = allCrews.stream()
+			.filter(crew -> {
+				Region crewRegion = regionService.getRegionById(crew.getRegionId());
+				double distance = calculateDistance(userRegion.getLatitude(),
+					userRegion.getLongitude(), crewRegion.getLatitude(), crewRegion.getLongitude());
+				return distance <= userRegion.getCurrentSelectedRange() && !joinedCrewIds.contains(
+					crew.getId());
+			})
+			.toList();
+
+		return filteredCrews.stream()
+			.sorted(Comparator.comparing(Crew::getScore).reversed())
+			.limit(5)
+			.map(CrewIdNameDTO::toDto)
+			.toList();
+	}
+
 	@Transactional
 	@Override
 	public void addCrewScore(CrewScoreDTO crewScoreDTO) {
@@ -283,19 +307,5 @@ public class CrewServiceImp implements CrewService {
 	// 		.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 	//
 	// 	return CrewDetailDTO.toDto(crew, addressName, hashTagList);
-	// }
-	// @Operation(summary = "소모임 정보 조회", description = "소모임 ID를 통해 소모임 정보를 조회한다.")
-	// @GetMapping("/{crewId}")
-	// public BaseResponse<CrewDetailDTO> getCrewInfo(@PathVariable long crewId) {
-	// 	return BaseResponse.onSuccess(SuccessStatus.FIND_CREW_INFO,
-	// 		crewService.getCrewInfo(crewId));
-	// }
-	//
-	// @Operation(summary = "취미와 활동 지역에 해당하는 소모임 아이디 목록 조회", description = "취미와 활동 지역에 해당하는 소모임 아이디 목록을 조회한다.(순서 랜덤)")
-	// @GetMapping("/id/{hobbyId}/{regionId}")
-	// public BaseResponse<List<CrewIdDTO>> getCrewIdList(@PathVariable long hobbyId,
-	// 	@PathVariable long regionId, @RequestHeader(name = "Uuid") String uuid) {
-	// 	return BaseResponse.onSuccess(SuccessStatus.FIND_CREWS_BY_HOBBY_AND_REGION,
-	// 		crewService.getCrewsByHobbyAndRegion(hobbyId, regionId, uuid));
 	// }
 }

@@ -9,6 +9,7 @@ import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
 import hobbiedo.crew.dto.response.CrewHomeDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewIdNameDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
@@ -36,6 +37,8 @@ public interface CrewService {
 	void forcedExitCrew(CrewOutDTO crewOutDTO, Long crewId, String uuid);
 
 	List<CrewHomeDTO> getTop5LatestCrews(long hobbyId, long regionId, String uuid);
+
+	List<CrewIdNameDTO> getTop5ScoreCrews(long regionId, String uuid);
 
 	void addCrewScore(CrewScoreDTO crewScoreDTO);
 
