@@ -19,6 +19,8 @@ public enum SuccessStatus implements BaseCode {
 	GET_LATEST_BOARD_SUCCESS(HttpStatus.OK, "200", "해당 소모임의 최신 게시글 조회 성공"),
 	// 해당 소모임의 고정 게시글 조회 성공
 	GET_PINNED_BOARD_SUCCESS(HttpStatus.OK, "200", "해당 소모임의 고정 게시글 조회 성공"),
+	// 해당 소모임의 게시글 댓글 리스트 조회 성공
+	GET_COMMENT_LIST_SUCCESS(HttpStatus.OK, "200", "해당 소모임의 게시글 댓글 리스트 조회 성공"),
 
 	/* CREW */
 	GET_CREW_MEMBERS_PROFILE(HttpStatus.OK, "200", "소모임 회원들의 프로필 목록 조회에 성공하였습니다.");

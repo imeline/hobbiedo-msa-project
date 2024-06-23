@@ -1,11 +1,24 @@
 package hobbiedo.board.application;
 
+import static hobbiedo.global.api.code.status.ErrorStatus.*;
+
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import hobbiedo.board.domain.ReplicaComment;
+import hobbiedo.board.dto.CommentListResponseDto;
+import hobbiedo.board.dto.CommentResponseDto;
+import hobbiedo.board.infrastructure.ReplicaBoardRepository;
 import hobbiedo.board.infrastructure.ReplicaCommentRepository;
 import hobbiedo.board.kafka.dto.BoardCommentDeleteDto;
 import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
+import hobbiedo.crew.infrastructure.ReplicaCrewRepository;
+import hobbiedo.global.api.code.status.ErrorStatus;
+import hobbiedo.global.api.exception.handler.ReadOnlyExceptionHandler;
 import hobbiedo.member.application.ReplicaMemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 
 	private final ReplicaCommentRepository replicaCommentRepository;
+	private final ReplicaBoardRepository replicaBoardRepository;
+	private final ReplicaCrewRepository replicaCrewRepository;
 
 	// 회원 서비스 추가
 	private final ReplicaMemberService replicaMemberService;
@@ -47,5 +62,46 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 	public void deleteReplicaComment(BoardCommentDeleteDto eventDto) {
 
 		replicaCommentRepository.deleteByCommentId(eventDto.getCommentId());
+	}
+
+	/**
+	 * 게시글 댓글 목록 조회
+	 * @param boardId
+	 * @param page
+	 * @return
+	 */
+	@Override
+	public CommentListResponseDto getCommentList(Long boardId, Pageable page) {
+
+		// 게시글이 존재하는지 확인
+		replicaBoardRepository.findById(String.valueOf(boardId))
+			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
+
+		Page<ReplicaComment> comments = replicaCommentRepository.findByBoardId(boardId, page);
+
+		// 댓글 리스트가 비어있어도 예외 처리하지 않음
+		List<CommentResponseDto> commentResponseDtoList = comments.stream()
+			.sorted(Comparator.comparing(ReplicaComment::getCreatedAt))
+			.map(comment -> CommentResponseDto.builder()
+				.commentId(comment.getCommentId())
+				.writerUuid(comment.getWriterUuid())
+				.writerName(
+					replicaMemberService.getMemberName(comment.getWriterUuid()))
+				.writerProfileImageUrl(
+					replicaMemberService.getMemberProfileImageUrl(comment.getWriterUuid()))
+				.content(comment.getContent())
+				.isInCrew(isInCrew(comment.getWriterUuid(), boardId))
+				.createdAt(comment.getCreatedAt())
+				.build())
+			.toList();
+
+		return CommentListResponseDto.commentDtoToCommentListResponseDto(comments.isLast(),
+			commentResponseDtoList);
+	}
+
+	// 댓글 작성자가 해당 소모임에 속한 회원인지 확인
+	private boolean isInCrew(String writerUuid, Long crewId) {
+
+		return replicaCrewRepository.existsByCrewIdAndMemberUuid(crewId, writerUuid).orElse(false);
 	}
 }
