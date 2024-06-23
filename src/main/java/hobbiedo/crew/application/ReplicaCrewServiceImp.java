@@ -1,5 +1,6 @@
 package hobbiedo.crew.application;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -23,9 +24,20 @@ public class ReplicaCrewServiceImp implements ReplicaCrewService {
 	private final ReplicaMemberRepository replicaMemberRepository;
 
 	@Override
-	public List<CrewMemberDTO> getCrewMembers(long crewId) {
+	public List<CrewMemberDTO> getCrewMembers(long crewId, String uuid) {
 		Crew crew = getCrew(crewId);
-		return CrewMemberDTO.toDtoList(crew.getCrewMembers());
+		return crew.getCrewMembers().stream()
+			.map(crewMember -> CrewMemberDTO.toDto(crewMember, determineRole(crewMember, uuid)))
+			.sorted(Comparator.comparing(CrewMemberDTO::getRole).reversed())
+			.toList();
+	}
+
+	private int determineRole(CrewMember crewMember, String currentUuid) {
+		if (crewMember.getUuid().equals(currentUuid)) {
+			return crewMember.isHostStatus() ? 3 : 2;
+		} else {
+			return crewMember.isHostStatus() ? 1 : 0;
+		}
 	}
 
 	@Override
@@ -38,6 +50,7 @@ public class ReplicaCrewServiceImp implements ReplicaCrewService {
 
 	@Override
 	public void addCrewMember(CrewEntryExitDTO crewEntryExitDTO) {
+
 		MemberProfile memberProfile = getMemberProfile(crewEntryExitDTO.getUuid());
 		CrewMember crewMember = crewEntryExitDTO.toCrewMemberEntity(memberProfile,
 			false); // crew 가입 때 소모임원 추가

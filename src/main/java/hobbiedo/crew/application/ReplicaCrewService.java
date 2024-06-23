@@ -6,7 +6,7 @@ import hobbiedo.crew.dto.response.CrewMemberDTO;
 import hobbiedo.crew.kafka.dto.CrewEntryExitDTO;
 
 public interface ReplicaCrewService {
-	List<CrewMemberDTO> getCrewMembers(long crewId);
+	List<CrewMemberDTO> getCrewMembers(long crewId, String uuid);
 
 	void createCrew(CrewEntryExitDTO crewEntryExitDTO);
 

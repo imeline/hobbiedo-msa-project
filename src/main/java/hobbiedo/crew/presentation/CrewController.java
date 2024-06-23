@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,9 +26,10 @@ public class CrewController {
 
 	@Operation(summary = "소모임 회원들의 프로필 목록 조회", description = "한 소모임 회원들의 프로필을 조회한다.")
 	@GetMapping("/crew/member/profiles/{crewId}")
-	public ApiResponse<List<CrewMemberDTO>> getCrewMembersProfile(@PathVariable long crewId) {
+	public ApiResponse<List<CrewMemberDTO>> getCrewMembersProfile(@PathVariable long crewId,
+		@RequestHeader(name = "Uuid") String uuid) {
 		return ApiResponse.onSuccess(SuccessStatus.GET_CREW_MEMBERS_PROFILE,
-			crewService.getCrewMembers(crewId));
+			crewService.getCrewMembers(crewId, uuid));
 	}
 
 }
