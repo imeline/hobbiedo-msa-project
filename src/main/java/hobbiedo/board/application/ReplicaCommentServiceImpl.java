@@ -102,7 +102,10 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 	// 댓글 작성자가 해당 소모임에 속한 회원인지 확인
 	private boolean isInCrew(String writerUuid, Long crewId) {
 
-		return replicaCrewRepository.existsByCrewIdAndMemberUuid(crewId.longValue(), writerUuid)
-			.orElse(false);
+		if (crewId == null) {
+			throw new ReadOnlyExceptionHandler(NOT_FOUND_CREW);
+		}
+		
+		return replicaCrewRepository.findCrewByCrewIdAndMemberUuid(crewId, writerUuid).isPresent();
 	}
 }
