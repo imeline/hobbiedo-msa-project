@@ -48,6 +48,11 @@ public class BoardDetailsResponseVo {
 	public static BoardDetailsResponseVo boardDtoToDetailsVo(
 		BoardDetailsResponseDto boardResponseDto) {
 
+		List<String> imageUrls = boardResponseDto.getImageUrls();
+		if (imageUrls.isEmpty()) {
+			imageUrls = null;
+		}
+
 		return new BoardDetailsResponseVo(
 			boardResponseDto.getBoardId(),
 			boardResponseDto.getCrewId(),
@@ -56,7 +61,7 @@ public class BoardDetailsResponseVo {
 			boardResponseDto.isPinned(),
 			boardResponseDto.getCreatedAt(),
 			boardResponseDto.isUpdated(),
-			boardResponseDto.getImageUrls(),
+			imageUrls,
 			boardResponseDto.getLikeCount(),
 			boardResponseDto.getCommentCount(),
 			boardResponseDto.getWriterName(),
