@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import hobbiedo.board.domain.ReplicaBoard;
 import hobbiedo.board.domain.ReplicaComment;
 import hobbiedo.board.dto.CommentListResponseDto;
 import hobbiedo.board.dto.CommentResponseDto;
@@ -73,7 +74,7 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 	public CommentListResponseDto getCommentList(Long boardId, Pageable page) {
 
 		// 게시글이 존재하는지 확인
-		replicaBoardRepository.findByBoardId(boardId)
+		ReplicaBoard board = replicaBoardRepository.findByBoardId(boardId)
 			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
 
 		Page<ReplicaComment> comments = replicaCommentRepository.findByBoardId(boardId, page);
@@ -89,7 +90,7 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 				.writerProfileImageUrl(
 					replicaMemberService.getMemberProfileImageUrl(comment.getWriterUuid()))
 				.content(comment.getContent())
-				.isInCrew(isInCrew(comment.getWriterUuid(), boardId))
+				.isInCrew(isInCrew(comment.getWriterUuid(), board.getCrewId()))
 				.createdAt(comment.getCreatedAt())
 				.build())
 			.toList();
