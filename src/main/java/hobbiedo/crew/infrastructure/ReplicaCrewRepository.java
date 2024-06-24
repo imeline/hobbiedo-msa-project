@@ -11,5 +11,5 @@ public interface ReplicaCrewRepository extends MongoRepository<Crew, String> {
 	Optional<Crew> findByCrewId(long crewId);
 
 	@Query("{ 'crewId' : ?0, 'crewMembers' : { $elemMatch: { 'uuid' : ?1 } } }")
-	Optional<Boolean> existsByCrewIdAndMemberUuid(Long crewId, String uuid);
+	Optional<Boolean> existsByCrewIdAndMemberUuid(long crewId, String uuid);
 }
