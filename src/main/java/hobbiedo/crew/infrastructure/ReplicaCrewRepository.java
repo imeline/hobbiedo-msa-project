@@ -10,6 +10,6 @@ import hobbiedo.crew.domain.Crew;
 public interface ReplicaCrewRepository extends MongoRepository<Crew, String> {
 	Optional<Crew> findByCrewId(long crewId);
 
-	@Query("{ 'crewId' : ?0, 'crewMembers.uuid' : ?1 }")
+	@Query("{ 'crewId' : ?0, 'crewMembers' : { $elemMatch: { 'uuid' : ?1 } } }")
 	Optional<Boolean> existsByCrewIdAndMemberUuid(Long crewId, String uuid);
 }
