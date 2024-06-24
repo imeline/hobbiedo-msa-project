@@ -2,6 +2,7 @@ package hobbiedo.region.application;
 
 import java.util.List;
 
+import hobbiedo.region.domain.Region;
 import hobbiedo.region.dto.request.RegionDetailDTO;
 import hobbiedo.region.dto.response.RegionAddressNameDTO;
 import hobbiedo.region.dto.response.RegionGetDetailDTO;
@@ -25,4 +26,8 @@ public interface RegionService {
 	List<RegionXyDTO> getRegionXY(String uuid);
 
 	void addBaseRegion(RegionDetailDTO regionDetailDTO, String uuid);
+
+	Region getRegionById(Long regionId);
+
+	String getAddressNameById(long regionId);
 }

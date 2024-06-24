@@ -2,6 +2,7 @@ package hobbiedo.crew.application;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +15,9 @@ import hobbiedo.crew.dto.request.CrewModifyDTO;
 import hobbiedo.crew.dto.request.CrewOutDTO;
 import hobbiedo.crew.dto.request.CrewRequestDTO;
 import hobbiedo.crew.dto.response.CrewDetailDTO;
+import hobbiedo.crew.dto.response.CrewHomeDTO;
 import hobbiedo.crew.dto.response.CrewIdDTO;
+import hobbiedo.crew.dto.response.CrewIdNameDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
@@ -27,8 +30,8 @@ import hobbiedo.crew.kafka.dto.CrewScoreDTO;
 import hobbiedo.crew.kafka.type.EntryExitType;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
+import hobbiedo.region.application.RegionService;
 import hobbiedo.region.domain.Region;
-import hobbiedo.region.infrastructure.RegionRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,7 +42,7 @@ public class CrewServiceImp implements CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final HashTagRepository hashTagRepository;
-	private final RegionRepository regionRepository;
+	private final RegionService regionService;
 	private final ValidationService validationService;
 	private final KafkaProducerService kafkaProducerService;
 
@@ -115,28 +118,25 @@ public class CrewServiceImp implements CrewService {
 
 	@Override
 	public List<CrewDetailDTO> getCrewInfoList(long hobbyId, long regionId, String uuid) {
-		List<CrewIdDTO> crewIds = getCrewsByHobbyAndRegion(hobbyId, regionId, uuid);
-		return crewIds.stream()
-			.map(crewId -> getCrewInfo(crewId.getCrewId()))
-			.toList();
+		List<Crew> crews = getCrewsByHobbyAndRegion(hobbyId, regionId, uuid);
+		List<CrewDetailDTO> crewDetailDTOList = new ArrayList<>(crews.stream()
+			.map(crew -> {
+				List<String> hashTagList = getHashTagList(crew.getId());
+				String addressName = regionService.getAddressNameById(crew.getRegionId());
+				return CrewDetailDTO.toDto(crew, addressName, hashTagList);
+			})
+			.toList());
+
+		Collections.shuffle(crewDetailDTOList);
+		return crewDetailDTOList;
 	}
 
-	@Override
-	public CrewDetailDTO getCrewInfo(Long crewId) {
-		Crew crew = getCrewById(crewId);
-
-		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
-		String addressName = regionRepository.findAddressNameById(crew.getRegionId())
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
-
-		return CrewDetailDTO.toDto(crew, addressName, hashTagList);
+	private List<String> getHashTagList(long crewId) {
+		return hashTagRepository.findNamesByCrewId(crewId);
 	}
 
-	@Override
-	public List<CrewIdDTO> getCrewsByHobbyAndRegion(long hobbyId, long regionId, String uuid) {
-		Region region = regionRepository.findById(regionId)
-			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
-
+	private List<Crew> getCrewsByHobbyAndRegion(long hobbyId, long regionId, String uuid) {
+		Region region = regionService.getRegionById(regionId);
 		List<Long> joinedCrewIds = crewMemberRepository.findCrewIdsByUuid(uuid);
 
 		List<Crew> crews = crewRepository.findAllByHobbyId(hobbyId).stream()
@@ -144,20 +144,14 @@ public class CrewServiceImp implements CrewService {
 			.filter(crew -> !joinedCrewIds.contains(crew.getId()))
 			.toList();
 
-		List<CrewIdDTO> crewIdDtoList = new ArrayList<>(crews.stream() // 아래에서 랜덤하게 섞기 때문에 가변 객체로
+		return crews.stream()
 			.filter(crew -> {
-				Region crewRegion = regionRepository.findById(crew.getRegionId())
-					.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
+				Region crewRegion = regionService.getRegionById(crew.getRegionId());
 				return calculateDistance(region.getLatitude(), region.getLongitude(),
 					crewRegion.getLatitude(), crewRegion.getLongitude())
 					<= region.getCurrentSelectedRange();
 			})
-			.map(crew -> CrewIdDTO.toDto(crew.getId()))
-			.toList());
-
-		Collections.shuffle(crewIdDtoList);
-
-		return crewIdDtoList;
+			.toList();
 	}
 
 	private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -213,7 +207,7 @@ public class CrewServiceImp implements CrewService {
 	@Override
 	public CrewResponseDTO getCrew(Long crewId) {
 		Crew crew = getCrewById(crewId);
-		List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
+		List<String> hashTagList = getHashTagList(crewId);
 		return CrewResponseDTO.toDto(crew, hashTagList);
 	}
 
@@ -248,6 +242,43 @@ public class CrewServiceImp implements CrewService {
 			CrewEntryExitDTO.toDto(crewId, crewOutDTO.getOutUuid(), EntryExitType.FORCE_EXIT));
 	}
 
+	@Override
+	public List<CrewHomeDTO> getTop5LatestCrews(long hobbyId, long regionId, String uuid) {
+		List<Crew> crews = getCrewsByHobbyAndRegion(hobbyId, regionId, uuid);
+		return crews.stream()
+			.sorted(Comparator.comparing(Crew::getCreatedAt).reversed())
+			.limit(5)
+			.map(crew -> {
+				List<String> hashTagList = getHashTagList(crew.getId());
+				String addressName = regionService.getAddressNameById(crew.getRegionId());
+				return CrewHomeDTO.toDto(crew, addressName, hashTagList);
+			})
+			.toList();
+	}
+
+	@Override
+	public List<CrewIdNameDTO> getTop5ScoreCrews(long regionId, String uuid) {
+		List<Long> joinedCrewIds = crewMemberRepository.findCrewIdsByUuid(uuid);
+		List<Crew> allCrews = crewRepository.findAll();
+		Region userRegion = regionService.getRegionById(regionId);
+
+		List<Crew> filteredCrews = allCrews.stream()
+			.filter(crew -> {
+				Region crewRegion = regionService.getRegionById(crew.getRegionId());
+				double distance = calculateDistance(userRegion.getLatitude(),
+					userRegion.getLongitude(), crewRegion.getLatitude(), crewRegion.getLongitude());
+				return distance <= userRegion.getCurrentSelectedRange() && !joinedCrewIds.contains(
+					crew.getId());
+			})
+			.toList();
+
+		return filteredCrews.stream()
+			.sorted(Comparator.comparing(Crew::getScore).reversed())
+			.limit(5)
+			.map(CrewIdNameDTO::toDto)
+			.toList();
+	}
+
 	@Transactional
 	@Override
 	public void addCrewScore(CrewScoreDTO crewScoreDTO) {
@@ -267,4 +298,14 @@ public class CrewServiceImp implements CrewService {
 		return crewRepository.findById(crewId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
 	}
+	// @Override
+	// public CrewDetailDTO getCrewInfo(Long crewId) {
+	// 	Crew crew = getCrewById(crewId);
+	//
+	// 	List<String> hashTagList = hashTagRepository.findNamesByCrewId(crewId);
+	// 	String addressName = regionRepository.findAddressNameById(crew.getRegionId())
+	// 		.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
+	//
+	// 	return CrewDetailDTO.toDto(crew, addressName, hashTagList);
+	// }
 }

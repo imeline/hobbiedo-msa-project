@@ -44,7 +44,7 @@ public class RegionServiceImp implements RegionService {
 
 	@Override
 	public RegionGetDetailDTO getRegionDetail(Long regionId) {
-		return RegionGetDetailDTO.toDto(getRegion(regionId));
+		return RegionGetDetailDTO.toDto(getRegionById(regionId));
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class RegionServiceImp implements RegionService {
 	@Override
 	@Transactional
 	public void modifyRegion(Long regionId, RegionDetailDTO regionDetailDTO, String uuid) {
-		Region nowRegion = getRegion(regionId);
+		Region nowRegion = getRegionById(regionId);
 		if (!nowRegion.getLegalCode().equals(regionDetailDTO.getLegalCode())) {
 			isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
 		}
@@ -83,7 +83,7 @@ public class RegionServiceImp implements RegionService {
 		// 기존 활성화된 활동 지역 비활성화
 		regionRepository.save(changeIsBaseRegion(nowRegion, false));
 		// 새로운 활동 지역 활성화
-		regionRepository.save(changeIsBaseRegion(getRegion(newRegionId), true));
+		regionRepository.save(changeIsBaseRegion(getRegionById(newRegionId), true));
 	}
 
 	private Region changeIsBaseRegion(Region region, boolean isBaseRegion) {
@@ -120,8 +120,15 @@ public class RegionServiceImp implements RegionService {
 		regionRepository.save(regionDetailDTO.toBaseEntity(uuid));
 	}
 
-	private Region getRegion(Long regionId) {
+	@Override
+	public Region getRegionById(Long regionId) {
 		return regionRepository.findById(regionId)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
+	}
+
+	@Override
+	public String getAddressNameById(long regionId) {
+		return regionRepository.findAddressNameById(regionId)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_REGION));
 	}
 
