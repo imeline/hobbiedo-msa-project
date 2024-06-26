@@ -1,5 +1,6 @@
 package hobbiedo.batch.kafka.application;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 public class KafkaConsumerService {
 
 	private final BoardStatsService boardStatsService;
+
+	private final RedisTemplate<String, Object> redisTemplate;
 
 	/**
 	 * 게시글 생성 이벤트 수신
@@ -40,25 +43,33 @@ public class KafkaConsumerService {
 	}
 
 	/**
-	 * 게시글 댓글 수 증가 이벤트 수신
+	 * 게시글 댓글 생성 이벤트 수신
 	 * @param eventDto
 	 */
 	@KafkaListener(topics = "board-comment-update-topic", groupId = "${spring.kafka.consumer.group-id}",
 		containerFactory = "commentUpdateKafkaListenerContainerFactory")
 	public void listenToBoardCommentUpdateTopic(BoardCommentUpdateDto eventDto) {
 
-		boardStatsService.updateBoardCommentStats(eventDto);
+		// 레디스에 해당 게시글 댓글 수 +1
+		// key : board:{게시글번호}:comment:count
+		String boardCommentCountKey = "board:" + eventDto.getBoardId() + ":comment:count";
+
+		redisTemplate.opsForValue().increment(boardCommentCountKey, 1);
 	}
 
 	/**
-	 * 게시글 댓글 수 감소 이벤트 수신
+	 * 게시글 댓글 삭제 이벤트 수신
 	 * @param eventDto
 	 */
 	@KafkaListener(topics = "board-comment-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
 		containerFactory = "commentDeleteKafkaListenerContainerFactory")
 	public void listenToBoardCommentDeleteTopic(BoardCommentDeleteDto eventDto) {
 
-		boardStatsService.deleteBoardCommentStats(eventDto);
+		// 레디스에 해당 게시글 댓글 수 -1
+		// key : board:{게시글번호}:comment:count
+		String boardCommentCountKey = "board:" + eventDto.getBoardId() + ":comment:count";
+
+		redisTemplate.opsForValue().decrement(boardCommentCountKey, 1);
 	}
 
 	/**
@@ -69,7 +80,11 @@ public class KafkaConsumerService {
 		containerFactory = "likeUpdateKafkaListenerContainerFactory")
 	public void listenToBoardLikeUpdateTopic(BoardLikeUpdateDto eventDto) {
 
-		boardStatsService.updateBoardLikeStats(eventDto);
+		// 레디스에 해당 게시글 좋아요 수 +1
+		// key : board:{게시글번호}:like:count
+		String boardLikeCountKey = "board:" + eventDto.getBoardId() + ":like:count";
+
+		redisTemplate.opsForValue().increment(boardLikeCountKey, 1);
 	}
 
 	/**
@@ -80,6 +95,10 @@ public class KafkaConsumerService {
 		containerFactory = "likeDeleteKafkaListenerContainerFactory")
 	public void listenToBoardLikeDeleteTopic(BoardLikeUpdateDto eventDto) {
 
-		boardStatsService.deleteBoardLikeStats(eventDto);
+		// 레디스에 해당 게시글 좋아요 수 -1
+		// key : board:{게시글번호}:like:count
+		String boardLikeCountKey = "board:" + eventDto.getBoardId() + ":like:count";
+
+		redisTemplate.opsForValue().decrement(boardLikeCountKey, 1);
 	}
 }

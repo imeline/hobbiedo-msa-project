@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.batch.domain.BoardStats;
+import hobbiedo.batch.dto.response.BoardCommentDto;
+import hobbiedo.batch.dto.response.BoardLikeDto;
 import hobbiedo.batch.dto.response.BoardStatsResponseDto;
 import hobbiedo.batch.infrastructure.BoardStatsRepository;
 import hobbiedo.batch.kafka.application.KafkaProducerService;
@@ -72,12 +74,12 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 	}
 
 	/**
-	 * 게시글 통계 댓글 수 업데이트
+	 * 게시글 통계 댓글 수 증가
 	 * @param eventDto
 	 */
 	@Override
 	@Transactional
-	public void updateBoardCommentStats(BoardCommentUpdateDto eventDto) {
+	public void increaseBoardCommentStats(BoardCommentUpdateDto eventDto) {
 
 		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
 			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
@@ -106,7 +108,7 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 	 */
 	@Override
 	@Transactional
-	public void deleteBoardCommentStats(BoardCommentDeleteDto eventDto) {
+	public void decreaseBoardCommentStats(BoardCommentDeleteDto eventDto) {
 
 		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
 			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
@@ -130,12 +132,12 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 	}
 
 	/**
-	 * 게시글 통계 좋아요 수 업데이트
+	 * 게시글 통계 좋아요 수 증가
 	 * @param eventDto
 	 */
 	@Override
 	@Transactional
-	public void updateBoardLikeStats(BoardLikeUpdateDto eventDto) {
+	public void increaseBoardLikeStats(BoardLikeUpdateDto eventDto) {
 
 		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
 			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
@@ -164,7 +166,7 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 	 */
 	@Override
 	@Transactional
-	public void deleteBoardLikeStats(BoardLikeUpdateDto eventDto) {
+	public void decreaseBoardLikeStats(BoardLikeUpdateDto eventDto) {
 
 		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
 			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
@@ -202,5 +204,65 @@ public class BoardStatsServiceImpl implements BoardStatsService {
 			.commentCount(boardStats.getCommentCount())
 			.likeCount(boardStats.getLikeCount())
 			.build();
+	}
+
+	/**
+	 * 게시글 통계 댓글 수 업데이트
+	 */
+	@Override
+	@Transactional
+	public void updateBoardCommentStats(BoardCommentDto eventDto) {
+
+		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
+
+		// 게시글 통계 댓글 수 업데이트
+		boardStatsRepository.save(
+			BoardStats.builder()
+				.id(boardStats.getId())
+				.boardId(boardStats.getBoardId())
+				.commentCount(
+					boardStats.getCommentCount() + eventDto.getCommentCount()) // 댓글 수 업데이트
+				.likeCount(boardStats.getLikeCount())
+				.build()
+		);
+
+		// 게시글의 댓글 수 변경 이벤트 메시지 전송
+		BoardCommentCountUpdateDto commentCountUpdateDto = BoardCommentCountUpdateDto.builder()
+			.boardId(eventDto.getBoardId())
+			.commentCount(eventDto.getCommentCount())
+			.build();
+
+		kafkaProducerService.sendChangeCommentCountMessage(commentCountUpdateDto);
+	}
+
+	/**
+	 * 게시글 통계 좋아요 수 업데이트
+	 */
+	@Override
+	@Transactional
+	public void updateBoardLikeStats(BoardLikeDto eventDto) {
+
+		BoardStats boardStats = boardStatsRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new BatchExceptionHandler(BOARD_STATS_NOT_FOUND));
+
+		// 게시글 통계 좋아요 수 업데이트
+		boardStatsRepository.save(
+			BoardStats.builder()
+				.id(boardStats.getId())
+				.boardId(boardStats.getBoardId())
+				.commentCount(boardStats.getCommentCount())
+				.likeCount(
+					boardStats.getLikeCount() + eventDto.getLikeCount()) // 좋아요 수 업데이트
+				.build()
+		);
+
+		// 게시글의 좋아요 수 변경 이벤트 메시지 전송
+		BoardLikeCountUpdateDto likeCountUpdateDto = BoardLikeCountUpdateDto.builder()
+			.boardId(eventDto.getBoardId())
+			.likeCount(eventDto.getLikeCount())
+			.build();
+
+		kafkaProducerService.sendChangeLikeCountMessage(likeCountUpdateDto);
 	}
 }
