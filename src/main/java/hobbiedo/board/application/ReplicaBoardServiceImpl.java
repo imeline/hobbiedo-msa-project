@@ -151,114 +151,6 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 	}
 
 	/**
-	 * 게시글 댓글 수 증가
-	 * @param eventDto
-	 */
-	@Override
-	public void increaseCommentCount(BoardCommentCountUpdateDto eventDto) {
-
-		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
-			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
-
-		replicaBoardRepository.save(
-			ReplicaBoard.builder()
-				.id(replicaBoard.getId())
-				.boardId(replicaBoard.getBoardId())
-				.crewId(replicaBoard.getCrewId())
-				.content(replicaBoard.getContent())
-				.writerUuid(replicaBoard.getWriterUuid())
-				.pinned(replicaBoard.isPinned())
-				.createdAt(replicaBoard.getCreatedAt())
-				.updated(replicaBoard.isUpdated())
-				.imageUrls(replicaBoard.getImageUrls())
-				.commentCount(replicaBoard.getCommentCount() + 1)
-				.likeCount(replicaBoard.getLikeCount())
-				.build()
-		);
-	}
-
-	/**
-	 * 게시글 댓글 수 감소
-	 * @param eventDto
-	 */
-	@Override
-	public void decreaseCommentCount(BoardCommentCountUpdateDto eventDto) {
-
-		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
-			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
-
-		replicaBoardRepository.save(
-			ReplicaBoard.builder()
-				.id(replicaBoard.getId())
-				.boardId(replicaBoard.getBoardId())
-				.crewId(replicaBoard.getCrewId())
-				.content(replicaBoard.getContent())
-				.writerUuid(replicaBoard.getWriterUuid())
-				.pinned(replicaBoard.isPinned())
-				.createdAt(replicaBoard.getCreatedAt())
-				.updated(replicaBoard.isUpdated())
-				.imageUrls(replicaBoard.getImageUrls())
-				.commentCount(replicaBoard.getCommentCount() - 1)
-				.likeCount(replicaBoard.getLikeCount())
-				.build()
-		);
-	}
-
-	/**
-	 * 게시글 좋아요 수 증가
-	 * @param eventDto
-	 */
-	@Override
-	public void increaseLikeCount(BoardLikeCountUpdateDto eventDto) {
-
-		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
-			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
-
-		replicaBoardRepository.save(
-			ReplicaBoard.builder()
-				.id(replicaBoard.getId())
-				.boardId(replicaBoard.getBoardId())
-				.crewId(replicaBoard.getCrewId())
-				.content(replicaBoard.getContent())
-				.writerUuid(replicaBoard.getWriterUuid())
-				.pinned(replicaBoard.isPinned())
-				.createdAt(replicaBoard.getCreatedAt())
-				.updated(replicaBoard.isUpdated())
-				.imageUrls(replicaBoard.getImageUrls())
-				.commentCount(replicaBoard.getCommentCount())
-				.likeCount(replicaBoard.getLikeCount() + 1)
-				.build()
-		);
-	}
-
-	/**
-	 * 게시글 좋아요 수 감소
-	 * @param eventDto
-	 */
-	@Override
-	public void decreaseLikeCount(BoardLikeCountUpdateDto eventDto) {
-
-		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
-			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
-
-		replicaBoardRepository.save(
-			ReplicaBoard.builder()
-				.id(replicaBoard.getId())
-				.boardId(replicaBoard.getBoardId())
-				.crewId(replicaBoard.getCrewId())
-				.content(replicaBoard.getContent())
-				.writerUuid(replicaBoard.getWriterUuid())
-				.pinned(replicaBoard.isPinned())
-				.createdAt(replicaBoard.getCreatedAt())
-				.updated(replicaBoard.isUpdated())
-				.imageUrls(replicaBoard.getImageUrls())
-				.commentCount(replicaBoard.getCommentCount())
-				.likeCount(replicaBoard.getLikeCount() - 1)
-				.build()
-		);
-	}
-
-	/**
 	 * 게시글 조회
 	 * @param boardId
 	 * @return
@@ -352,5 +244,61 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 			.writerName(writerName)
 			.writerProfileImageUrl(writerProfileImageUrl)
 			.build();
+	}
+
+	/**
+	 * 게시글 댓글 수 변경
+	 * @param eventDto
+	 * @return
+	 */
+	@Override
+	public void changeCommentCount(BoardCommentCountUpdateDto eventDto) {
+
+		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
+
+		replicaBoardRepository.save(
+			ReplicaBoard.builder()
+				.id(replicaBoard.getId())
+				.boardId(replicaBoard.getBoardId())
+				.crewId(replicaBoard.getCrewId())
+				.content(replicaBoard.getContent())
+				.writerUuid(replicaBoard.getWriterUuid())
+				.pinned(replicaBoard.isPinned())
+				.createdAt(replicaBoard.getCreatedAt())
+				.updated(replicaBoard.isUpdated())
+				.imageUrls(replicaBoard.getImageUrls())
+				.commentCount(replicaBoard.getCommentCount() + eventDto.getCommentCount())
+				.likeCount(replicaBoard.getLikeCount())
+				.build()
+		);
+	}
+
+	/**
+	 * 게시글 좋아요 수 변경
+	 * @param eventDto
+	 * @return
+	 */
+	@Override
+	public void changeLikeCount(BoardLikeCountUpdateDto eventDto) {
+
+		ReplicaBoard replicaBoard = replicaBoardRepository.findByBoardId(eventDto.getBoardId())
+			.orElseThrow(() -> new ReadOnlyExceptionHandler(BOARD_NOT_FOUND));
+
+		replicaBoardRepository.save(
+			ReplicaBoard.builder()
+				.id(replicaBoard.getId())
+				.boardId(replicaBoard.getBoardId())
+				.crewId(replicaBoard.getCrewId())
+				.content(replicaBoard.getContent())
+				.writerUuid(replicaBoard.getWriterUuid())
+				.pinned(replicaBoard.isPinned())
+				.createdAt(replicaBoard.getCreatedAt())
+				.updated(replicaBoard.isUpdated())
+				.imageUrls(replicaBoard.getImageUrls())
+				.commentCount(replicaBoard.getCommentCount())
+				.likeCount(replicaBoard.getLikeCount() + eventDto.getLikeCount())
+				.build()
+		);
 	}
 }
