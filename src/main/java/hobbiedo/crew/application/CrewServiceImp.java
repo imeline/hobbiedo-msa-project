@@ -259,10 +259,10 @@ public class CrewServiceImp implements CrewService {
 	@Override
 	public List<CrewIdNameDTO> getTop5ScoreCrews(long regionId, String uuid) {
 		List<Long> joinedCrewIds = crewMemberRepository.findCrewIdsByUuid(uuid);
-		List<Crew> allCrews = crewRepository.findAll();
+		List<Crew> scoreNotZeroCrews = crewRepository.findCrewsByScoreNotZero();
 		Region userRegion = regionService.getRegionById(regionId);
 
-		List<Crew> filteredCrews = allCrews.stream()
+		List<Crew> filteredCrews = scoreNotZeroCrews.stream()
 			.filter(crew -> {
 				Region crewRegion = regionService.getRegionById(crew.getRegionId());
 				double distance = calculateDistance(userRegion.getLatitude(),
