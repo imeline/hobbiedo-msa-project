@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import hobbiedo.crew.domain.Crew;
-import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
+import hobbiedo.crew.infrastructure.CrewMemberRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
 import hobbiedo.region.infrastructure.RegionRepository;

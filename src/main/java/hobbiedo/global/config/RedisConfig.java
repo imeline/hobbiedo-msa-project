@@ -9,7 +9,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories(basePackages = "hobbiedo.crew.infrastructure.redis")
+@EnableRedisRepositories
 public class RedisConfig {
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate(

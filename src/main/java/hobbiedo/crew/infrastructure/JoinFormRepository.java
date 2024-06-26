@@ -1,4 +1,4 @@
-package hobbiedo.crew.infrastructure.redis;
+package hobbiedo.crew.infrastructure;
 
 import java.util.List;
 
