@@ -21,15 +21,17 @@ import hobbiedo.crew.dto.response.CrewIdNameDTO;
 import hobbiedo.crew.dto.response.CrewNameDTO;
 import hobbiedo.crew.dto.response.CrewProfileDTO;
 import hobbiedo.crew.dto.response.CrewResponseDTO;
-import hobbiedo.crew.infrastructure.jpa.CrewMemberRepository;
-import hobbiedo.crew.infrastructure.jpa.CrewRepository;
-import hobbiedo.crew.infrastructure.jpa.HashTagRepository;
+import hobbiedo.crew.infrastructure.CrewMemberRepository;
+import hobbiedo.crew.infrastructure.CrewRepository;
+import hobbiedo.crew.infrastructure.HashTagRepository;
 import hobbiedo.crew.kafka.application.KafkaProducerService;
 import hobbiedo.crew.kafka.dto.CrewEntryExitDTO;
 import hobbiedo.crew.kafka.dto.CrewScoreDTO;
 import hobbiedo.crew.kafka.type.EntryExitType;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
+import hobbiedo.notification.application.NotificationService;
+import hobbiedo.notification.type.NotificationType;
 import hobbiedo.region.application.RegionService;
 import hobbiedo.region.domain.Region;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,7 @@ public class CrewServiceImp implements CrewService {
 	private final RegionService regionService;
 	private final ValidationService validationService;
 	private final KafkaProducerService kafkaProducerService;
+	private final NotificationService notificationService;
 
 	@Transactional
 	@Override
@@ -240,6 +243,11 @@ public class CrewServiceImp implements CrewService {
 		// 강제 퇴장 chat 전송
 		kafkaProducerService.setForceExitCrewTopic(
 			CrewEntryExitDTO.toDto(crewId, crewOutDTO.getOutUuid(), EntryExitType.FORCE_EXIT));
+
+		String notificationContent =
+			crewMember.getCrew().getName() + NotificationType.FORCED_EXIT_CREW.getContent();
+		notificationService.sendNotification(crewOutDTO.getOutUuid(), notificationContent,
+			crewMember.getCrew().getProfileUrl());
 	}
 
 	@Override

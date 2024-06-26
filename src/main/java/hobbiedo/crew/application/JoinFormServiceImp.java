@@ -6,15 +6,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.crew.domain.Crew;
+import hobbiedo.crew.domain.CrewMember;
 import hobbiedo.crew.domain.JoinForm;
 import hobbiedo.crew.dto.request.JoinFormRequestDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
 import hobbiedo.crew.dto.response.JoinFormResponseDTO;
 import hobbiedo.crew.dto.response.MyJoinFormDTO;
-import hobbiedo.crew.infrastructure.jpa.CrewRepository;
-import hobbiedo.crew.infrastructure.redis.JoinFormRepository;
+import hobbiedo.crew.infrastructure.CrewMemberRepository;
+import hobbiedo.crew.infrastructure.CrewRepository;
+import hobbiedo.crew.infrastructure.JoinFormRepository;
 import hobbiedo.global.exception.GlobalException;
 import hobbiedo.global.status.ErrorStatus;
+import hobbiedo.notification.application.NotificationService;
+import hobbiedo.notification.type.NotificationType;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,6 +30,8 @@ public class JoinFormServiceImp implements JoinFormService {
 	private final CrewRepository crewRepository;
 	private final ValidationService validationService;
 	private final CrewService crewService;
+	private final NotificationService notificationService;
+	private final CrewMemberRepository crewMemberRepository;
 
 	@Transactional
 	@Override
@@ -38,6 +44,11 @@ public class JoinFormServiceImp implements JoinFormService {
 			throw new GlobalException(ErrorStatus.ALREADY_SEND_JOIN_FORM);
 		}
 		joinFormRepository.save(joinFormDTO.toEntity(crewId, uuid));
+		// 알림
+		CrewMember host = crewMemberRepository.findByCrewIdAndRole(crewId, 1)
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_MEMBER));
+		String notificationContent = crew.getName() + NotificationType.ADD_JOIN_FORM.getContent();
+		notificationService.sendNotification(host.getUuid(), notificationContent, crew.getProfileUrl());
 	}
 
 	@Override
@@ -66,6 +77,9 @@ public class JoinFormServiceImp implements JoinFormService {
 		crewService.joinCrewMember(crew, joinForm.getUuid());
 		// JoinForm 삭제
 		joinFormRepository.delete(joinForm);
+		// 알림
+		String notificationContent = crew.getName() + NotificationType.ACCEPT_JOIN_FORM.getContent();
+		notificationService.sendNotification(joinForm.getUuid(), notificationContent, crew.getProfileUrl());
 	}
 
 	@Transactional
@@ -74,6 +88,11 @@ public class JoinFormServiceImp implements JoinFormService {
 		JoinForm joinForm = getJoinFormById(joinFormId);
 		validationService.isValidHost(joinForm.getCrewId(), uuid);
 		joinFormRepository.delete(joinForm);
+		// 알림
+		Crew crew = crewRepository.findById(joinForm.getCrewId())
+			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
+		String notificationContent = crew.getName() + NotificationType.REJECT_JOIN_FORM.getContent();
+		notificationService.sendNotification(joinForm.getUuid(), notificationContent, crew.getProfileUrl());
 	}
 
 	@Override
