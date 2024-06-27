@@ -294,6 +294,8 @@ public class CrewServiceImp implements CrewService {
 		crewRepository.save(crewScoreDTO.toEntity(crew, 1)); // 1점 추가
 	}
 
+	@Transactional
+	@Override
 	public void minusCrewScore(CrewScoreDTO crewScoreDTO) {
 		Crew crew = getCrewById(crewScoreDTO.getCrewId());
 		if (crew.getScore() <= 0) {
