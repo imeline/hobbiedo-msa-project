@@ -1,6 +1,6 @@
 package hobbiedo.board.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class BoardDetailsResponseDto {
 	private String content;
 	private String writerUuid;
 	private boolean pinned;
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 	private boolean updated;
 	private List<String> imageUrls;
 	private Integer likeCount;

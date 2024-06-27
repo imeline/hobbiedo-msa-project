@@ -1,6 +1,6 @@
 package hobbiedo.board.vo;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import hobbiedo.board.dto.BoardDetailsResponseDto;
@@ -20,7 +20,7 @@ public class BoardDetailsResponseVo {
 	private String writerName;
 	private String writerProfileImageUrl;
 	private boolean pinned;
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 	private boolean updated;
 	private List<String> imageUrls;
 	private Integer likeCount;
@@ -28,7 +28,7 @@ public class BoardDetailsResponseVo {
 
 	public BoardDetailsResponseVo(Long boardId, Long crewId, String content,
 		String writerUuid,
-		boolean pinned, LocalDateTime createdAt, boolean updated, List<String> imageUrls,
+		boolean pinned, Instant createdAt, boolean updated, List<String> imageUrls,
 		Integer likeCount,
 		Integer commentCount, String writerName, String writerProfileImageUrl) {
 		this.boardId = boardId;

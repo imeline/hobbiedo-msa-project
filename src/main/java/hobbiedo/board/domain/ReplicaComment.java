@@ -1,6 +1,6 @@
 package hobbiedo.board.domain;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,11 +22,11 @@ public class ReplicaComment {
 	private String writerUuid; // 작성자 uuid
 	private String content; // 댓글 내용
 	private Boolean isInCrew; // 소모임 회원 여부
-	private LocalDateTime createdAt; // 작성일
+	private Instant createdAt; // 작성일
 
 	@Builder
 	public ReplicaComment(String id, Long boardId, Long commentId, String writerUuid,
-		String content, Boolean isInCrew, LocalDateTime createdAt) {
+		String content, Boolean isInCrew, Instant createdAt) {
 		this.id = id;
 		this.boardId = boardId;
 		this.commentId = commentId;

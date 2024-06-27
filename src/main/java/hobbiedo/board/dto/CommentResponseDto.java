@@ -1,6 +1,6 @@
 package hobbiedo.board.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +19,5 @@ public class CommentResponseDto {
 	private String writerProfileImageUrl; // 작성자 프로필 이미지 url
 	private String content; // 댓글 내용
 	private Boolean isInCrew; // 소모임 회원 여부
-	private LocalDateTime createdAt; // 작성일
+	private Instant createdAt; // 작성일
 }

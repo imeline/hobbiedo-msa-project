@@ -1,6 +1,6 @@
 package hobbiedo.board.vo;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +20,14 @@ public class LatestBoardDetailsResponseVo {
 	private String writerUuid;
 	private String writerName;
 	private String writerProfileImageUrl;
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 	private List<String> thumbnailUrl;
 	private Integer likeCount;
 	private Integer commentCount;
 
 	public LatestBoardDetailsResponseVo(Long boardId, Long crewId, String content,
 		String writerUuid,
-		LocalDateTime createdAt, List<String> thumbnailUrl, Integer likeCount,
+		Instant createdAt, List<String> thumbnailUrl, Integer likeCount,
 		Integer commentCount, String writerName, String writerProfileImageUrl) {
 		this.boardId = boardId;
 		this.crewId = crewId;
