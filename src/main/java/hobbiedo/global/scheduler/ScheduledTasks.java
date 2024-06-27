@@ -22,7 +22,7 @@ public class ScheduledTasks {
 	private final JobLauncher jobLauncher;
 	private final Job boardStatsJob;
 
-	@Scheduled(cron = "0 */1 * * * *") // 매 1분마다 실행
+	@Scheduled(cron = "0 */1 * * * *") // 매 1분마다 실행한다
 	public void runJob() throws
 		JobExecutionAlreadyRunningException,
 		JobRestartException,
