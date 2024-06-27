@@ -2,8 +2,6 @@ package hobbiedo.crew.application;
 
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import hobbiedo.crew.dto.request.JoinFormRequestDTO;
 import hobbiedo.crew.dto.response.JoinFormListDTO;
 import hobbiedo.crew.dto.response.JoinFormResponseDTO;

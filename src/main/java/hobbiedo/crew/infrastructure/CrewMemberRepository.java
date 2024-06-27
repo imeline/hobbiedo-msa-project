@@ -1,4 +1,4 @@
-package hobbiedo.crew.infrastructure.jpa;
+package hobbiedo.crew.infrastructure;
 
 import java.util.List;
 import java.util.Optional;

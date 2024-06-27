@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@Tag(name = "소모임", description = "Crew API")
+@Tag(name = "가입 신청서", description = "Crew JoinForm API")
 @RequestMapping("/v1/users/crew")
 public class JoinFormController {
 
