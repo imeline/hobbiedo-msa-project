@@ -84,50 +84,6 @@ public class KafkaConsumerService {
 	}
 
 	/**
-	 * 게시글 댓글 수 증가 이벤트 수신
-	 * @param eventDto
-	 */
-	@KafkaListener(topics = "statistics-board-comment-update-topic", groupId = "${spring.kafka.consumer.group-id}",
-		containerFactory = "commentCountUpdateKafkaListenerContainerFactory")
-	public void listenToCommentCountUpdateTopic(BoardCommentCountUpdateDto eventDto) {
-
-		replicaBoardService.increaseCommentCount(eventDto);
-	}
-
-	/**
-	 * 게시글 댓글 수 감소 이벤트 수신
-	 * @param eventDto
-	 */
-	@KafkaListener(topics = "statistics-board-comment-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
-		containerFactory = "commentCountDeleteKafkaListenerContainerFactory")
-	public void listenToCommentCountDeleteTopic(BoardCommentCountUpdateDto eventDto) {
-
-		replicaBoardService.decreaseCommentCount(eventDto);
-	}
-
-	/**
-	 * 게시글 좋아요 수 증가 이벤트 수신
-	 * @param eventDto
-	 */
-	@KafkaListener(topics = "statistics-board-like-update-topic", groupId = "${spring.kafka.consumer.group-id}",
-		containerFactory = "likeCountUpdateKafkaListenerContainerFactory")
-	public void listenToLikeCountUpdateTopic(BoardLikeCountUpdateDto eventDto) {
-
-		replicaBoardService.increaseLikeCount(eventDto);
-	}
-
-	/**
-	 * 게시글 좋아요 수 감소 이벤트 수신
-	 * @param eventDto
-	 */
-	@KafkaListener(topics = "statistics-board-like-delete-topic", groupId = "${spring.kafka.consumer.group-id}",
-		containerFactory = "likeCountDeleteKafkaListenerContainerFactory")
-	public void listenToLikeCountDeleteTopic(BoardLikeCountUpdateDto eventDto) {
-
-		replicaBoardService.decreaseLikeCount(eventDto);
-	}
-
-	/**
 	 * 게시글 댓글 테이블 생성 이벤트 수신
 	 * @param eventDto
 	 */
@@ -147,5 +103,27 @@ public class KafkaConsumerService {
 	public void listenToCommentDeleteTopic(BoardCommentDeleteDto eventDto) {
 
 		replicaCommentService.deleteReplicaComment(eventDto);
+	}
+
+	/**
+	 * 게시글 댓글 수 변경 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "statistics-board-comment-change-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "commentCountChangeKafkaListenerContainerFactory")
+	public void listenToCommentCountChangeTopic(BoardCommentCountUpdateDto eventDto) {
+
+		replicaBoardService.changeCommentCount(eventDto);
+	}
+
+	/**
+	 * 게시글 좋아요 수 변경 이벤트 수신
+	 * @param eventDto
+	 */
+	@KafkaListener(topics = "statistics-board-like-change-topic", groupId = "${spring.kafka.consumer.group-id}",
+		containerFactory = "likeCountChangeKafkaListenerContainerFactory")
+	public void listenToLikeCountChangeTopic(BoardLikeCountUpdateDto eventDto) {
+
+		replicaBoardService.changeLikeCount(eventDto);
 	}
 }

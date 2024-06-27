@@ -21,17 +21,13 @@ public interface ReplicaBoardService {
 
 	void unPinReplicaBoard(BoardUnPinEventDto eventDto);
 
-	void increaseCommentCount(BoardCommentCountUpdateDto eventDto);
-
-	void decreaseCommentCount(BoardCommentCountUpdateDto eventDto);
-
-	void increaseLikeCount(BoardLikeCountUpdateDto eventDto);
-
-	void decreaseLikeCount(BoardLikeCountUpdateDto eventDto);
-
 	BoardDetailsResponseDto getBoard(Long boardId);
 
 	BoardDetailsResponseDto getLatestBoard(Long crewId);
 
 	BoardDetailsResponseDto getPinnedBoard(Long crewId);
+
+	void changeCommentCount(BoardCommentCountUpdateDto eventDto);
+
+	void changeLikeCount(BoardLikeCountUpdateDto eventDto);
 }
