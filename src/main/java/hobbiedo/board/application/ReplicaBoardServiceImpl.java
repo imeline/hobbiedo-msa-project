@@ -217,6 +217,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 		String writerProfileImageUrl = replicaMemberService.getMemberProfileImageUrl(
 			replicaBoard.getWriterUuid());
 
+		boolean hostStatus = replicaCrewService.isHost(replicaBoard.getCrewId(),
+			replicaBoard.getWriterUuid());
+
 		return BoardDetailsResponseDto.builder()
 			.boardId(replicaBoard.getBoardId())
 			.crewId(replicaBoard.getCrewId())
@@ -230,6 +233,7 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 			.likeCount(replicaBoard.getLikeCount())
 			.writerName(writerName)
 			.writerProfileImageUrl(writerProfileImageUrl)
+			.hostStatus(hostStatus)
 			.build();
 	}
 
