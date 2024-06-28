@@ -50,7 +50,8 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 		LocalDateTime localDateTime = eventDto.getCreatedAt();
 
 		// LocalDateTime 을 ZonedDateTime 으로 변환
-		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault())
+			.withZoneSameInstant(ZoneId.of("UTC"));
 
 		// ZonedDateTime 을 Instant 로 변환
 		Instant instant = zonedDateTime.toInstant();
