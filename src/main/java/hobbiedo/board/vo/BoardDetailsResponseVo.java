@@ -25,12 +25,12 @@ public class BoardDetailsResponseVo {
 	private List<String> imageUrls;
 	private Integer likeCount;
 	private Integer commentCount;
+	private boolean hostStatus;
 
 	public BoardDetailsResponseVo(Long boardId, Long crewId, String content,
-		String writerUuid,
-		boolean pinned, Instant createdAt, boolean updated, List<String> imageUrls,
-		Integer likeCount,
-		Integer commentCount, String writerName, String writerProfileImageUrl) {
+		String writerUuid, boolean pinned, Instant createdAt, boolean updated,
+		List<String> imageUrls, Integer likeCount, Integer commentCount,
+		String writerName, String writerProfileImageUrl, boolean hostStatus) {
 		this.boardId = boardId;
 		this.crewId = crewId;
 		this.content = content;
@@ -43,6 +43,7 @@ public class BoardDetailsResponseVo {
 		this.commentCount = commentCount;
 		this.writerName = writerName;
 		this.writerProfileImageUrl = writerProfileImageUrl;
+		this.hostStatus = hostStatus;
 	}
 
 	public static BoardDetailsResponseVo boardDtoToDetailsVo(
@@ -65,7 +66,8 @@ public class BoardDetailsResponseVo {
 			boardResponseDto.getLikeCount(),
 			boardResponseDto.getCommentCount(),
 			boardResponseDto.getWriterName(),
-			boardResponseDto.getWriterProfileImageUrl()
+			boardResponseDto.getWriterProfileImageUrl(),
+			boardResponseDto.isHostStatus()
 		);
 	}
 }

@@ -77,4 +77,21 @@ public class ReplicaCrewServiceImp implements ReplicaCrewService {
 		return replicaCrewRepository.findByCrewId(crewId)
 			.orElseThrow(() -> new ReadOnlyExceptionHandler(ErrorStatus.NOT_FOUND_CREW));
 	}
+
+	/**
+	 * 소모임장 여부 확인
+	 * @param crewId
+	 * @param writerUuid
+	 * @return
+	 */
+	@Override
+	public boolean isHost(Long crewId, String writerUuid) {
+
+		Crew crew = getCrew(crewId);
+
+		// 소모임원 중 소모임장인지 확인
+		return crew.getCrewMembers().stream()
+			.anyMatch(
+				crewMember -> crewMember.getUuid().equals(writerUuid) && crewMember.isHostStatus());
+	}
 }

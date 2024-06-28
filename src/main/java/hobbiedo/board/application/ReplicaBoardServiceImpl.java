@@ -21,6 +21,7 @@ import hobbiedo.board.kafka.dto.BoardLikeCountUpdateDto;
 import hobbiedo.board.kafka.dto.BoardPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUnPinEventDto;
 import hobbiedo.board.kafka.dto.BoardUpdateEventDto;
+import hobbiedo.crew.application.ReplicaCrewService;
 import hobbiedo.global.api.exception.handler.ReadOnlyExceptionHandler;
 import hobbiedo.member.application.ReplicaMemberService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 	// 회원 서비스 추가
 	private final ReplicaMemberService replicaMemberService;
 
+	// 소모임 서비스 추가
+	private final ReplicaCrewService replicaCrewService;
+
 	/**
 	 * 게시글 CQRS 패턴을 통해 복제
 	 * @param eventDto
@@ -47,8 +51,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 		// 기존 LocalDateTime 객체
 		LocalDateTime localDateTime = eventDto.getCreatedAt();
 
-		// LocalDateTime 을 ZonedDateTime 으로 변환
-		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+		// LocalDateTime 을 ZonedDateTime 으로 변환하여 UTC로 변환
+		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault())
+			.withZoneSameInstant(ZoneId.of("UTC"));
 
 		// ZonedDateTime 을 Instant 로 변환
 		Instant instant = zonedDateTime.toInstant();
@@ -178,6 +183,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 		String writerProfileImageUrl = replicaMemberService.getMemberProfileImageUrl(
 			replicaBoard.getWriterUuid());
 
+		boolean hostStatus = replicaCrewService.isHost(replicaBoard.getCrewId(),
+			replicaBoard.getWriterUuid());
+
 		return BoardDetailsResponseDto.builder()
 			.boardId(replicaBoard.getBoardId())
 			.crewId(replicaBoard.getCrewId())
@@ -191,6 +199,7 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 			.likeCount(replicaBoard.getLikeCount())
 			.writerName(writerName)
 			.writerProfileImageUrl(writerProfileImageUrl)
+			.hostStatus(hostStatus)
 			.build();
 	}
 
@@ -208,6 +217,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 		String writerProfileImageUrl = replicaMemberService.getMemberProfileImageUrl(
 			replicaBoard.getWriterUuid());
 
+		boolean hostStatus = replicaCrewService.isHost(replicaBoard.getCrewId(),
+			replicaBoard.getWriterUuid());
+
 		return BoardDetailsResponseDto.builder()
 			.boardId(replicaBoard.getBoardId())
 			.crewId(replicaBoard.getCrewId())
@@ -221,6 +233,7 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 			.likeCount(replicaBoard.getLikeCount())
 			.writerName(writerName)
 			.writerProfileImageUrl(writerProfileImageUrl)
+			.hostStatus(hostStatus)
 			.build();
 	}
 
@@ -243,6 +256,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 		String writerProfileImageUrl = replicaMemberService.getMemberProfileImageUrl(
 			replicaBoard.get().getWriterUuid());
 
+		boolean hostStatus = replicaCrewService.isHost(replicaBoard.get().getCrewId(),
+			replicaBoard.get().getWriterUuid());
+
 		return BoardDetailsResponseDto.builder()
 			.boardId(replicaBoard.get().getBoardId())
 			.crewId(replicaBoard.get().getCrewId())
@@ -256,6 +272,7 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 			.likeCount(replicaBoard.get().getLikeCount())
 			.writerName(writerName)
 			.writerProfileImageUrl(writerProfileImageUrl)
+			.hostStatus(hostStatus)
 			.build();
 	}
 
