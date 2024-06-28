@@ -26,4 +26,5 @@ public class BoardDetailsResponseDto {
 	private Integer commentCount;
 	private String writerName;
 	private String writerProfileImageUrl;
+	private boolean hostStatus;
 }

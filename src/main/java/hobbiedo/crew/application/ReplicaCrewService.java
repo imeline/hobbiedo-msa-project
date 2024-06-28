@@ -13,4 +13,6 @@ public interface ReplicaCrewService {
 	void addCrewMember(CrewEntryExitDTO crewEntryExitDTO);
 
 	void deleteCrewMember(CrewEntryExitDTO crewEntryExitDTO);
+
+	boolean isHost(Long crewId, String writerUuid);
 }
