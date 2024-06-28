@@ -47,8 +47,9 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 		// 기존 LocalDateTime 객체
 		LocalDateTime localDateTime = eventDto.getCreatedAt();
 
-		// LocalDateTime 을 ZonedDateTime 으로 변환
-		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+		// LocalDateTime 을 ZonedDateTime 으로 변환하여 UTC로 변환
+		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault())
+			.withZoneSameInstant(ZoneId.of("UTC"));
 
 		// ZonedDateTime 을 Instant 로 변환
 		Instant instant = zonedDateTime.toInstant();
