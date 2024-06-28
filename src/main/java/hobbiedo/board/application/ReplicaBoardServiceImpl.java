@@ -2,6 +2,10 @@ package hobbiedo.board.application;
 
 import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -40,6 +44,15 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 	@Override
 	public void createReplicaBoard(BoardCreateEventDto eventDto) {
 
+		// 기존 LocalDateTime 객체
+		LocalDateTime localDateTime = eventDto.getCreatedAt();
+
+		// LocalDateTime 을 ZonedDateTime 으로 변환
+		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+
+		// ZonedDateTime 을 Instant 로 변환
+		Instant instant = zonedDateTime.toInstant();
+
 		replicaBoardRepository.save(
 			ReplicaBoard.builder()
 				.boardId(eventDto.getBoardId())
@@ -47,7 +60,7 @@ public class ReplicaBoardServiceImpl implements ReplicaBoardService {
 				.content(eventDto.getContent())
 				.writerUuid(eventDto.getWriterUuid())
 				.pinned(eventDto.isPinned())
-				.createdAt(eventDto.getCreatedAt())
+				.createdAt(instant)
 				.updated(eventDto.isUpdated())
 				.imageUrls(eventDto.getImageUrls())
 				.commentCount(0)

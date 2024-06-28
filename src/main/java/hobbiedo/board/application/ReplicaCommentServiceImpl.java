@@ -2,6 +2,10 @@ package hobbiedo.board.application;
 
 import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -42,6 +46,15 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 	@Override
 	public void createReplicaComment(BoardCommentUpdateDto eventDto) {
 
+		// 기존 LocalDateTime 객체
+		LocalDateTime localDateTime = eventDto.getCreatedAt();
+
+		// LocalDateTime 을 ZonedDateTime 으로 변환
+		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+
+		// ZonedDateTime 을 Instant 로 변환
+		Instant instant = zonedDateTime.toInstant();
+
 		replicaCommentRepository.save(
 			ReplicaComment.builder()
 				.boardId(eventDto.getBoardId())
@@ -49,7 +62,7 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 				.writerUuid(eventDto.getWriterUuid())
 				.content(eventDto.getContent())
 				.isInCrew(eventDto.getIsInCrew())
-				.createdAt(eventDto.getCreatedAt())
+				.createdAt(instant)
 				.build()
 		);
 	}
@@ -105,7 +118,7 @@ public class ReplicaCommentServiceImpl implements ReplicaCommentService {
 		if (crewId == null) {
 			throw new ReadOnlyExceptionHandler(NOT_FOUND_CREW);
 		}
-		
+
 		return replicaCrewRepository.findCrewByCrewIdAndMemberUuid(crewId, writerUuid).isPresent();
 	}
 }

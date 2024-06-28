@@ -1,6 +1,6 @@
 package hobbiedo.board.domain;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,7 +23,7 @@ public class ReplicaBoard {
 	private String content;
 	private String writerUuid;
 	private boolean pinned;
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 	private boolean updated;
 	private List<String> imageUrls;
 	private Integer likeCount;
@@ -32,7 +32,7 @@ public class ReplicaBoard {
 	@Builder
 	public ReplicaBoard(String id, Long boardId, Long crewId, String content, String writerUuid,
 		boolean pinned,
-		LocalDateTime createdAt, boolean updated, List<String> imageUrls, Integer likeCount,
+		Instant createdAt, boolean updated, List<String> imageUrls, Integer likeCount,
 		Integer commentCount) {
 		this.id = id;
 		this.boardId = boardId;
