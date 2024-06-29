@@ -20,14 +20,18 @@ public class Notification {
 	private String id;
 	@Indexed
 	private String uuid;
+	private String crewName;
 	private String content;
 	private String crewProfileUrl;
 	private LocalDateTime createdAt;
 
 	@Builder
-	public Notification(String id, String uuid, String content, String crewProfileUrl, LocalDateTime createdAt) {
+	public Notification(String id, String uuid, String crewName, String content,
+		String crewProfileUrl,
+		LocalDateTime createdAt) {
 		this.id = id;
 		this.uuid = uuid;
+		this.crewName = crewName;
 		this.content = content;
 		this.crewProfileUrl = crewProfileUrl;
 		this.createdAt = createdAt;

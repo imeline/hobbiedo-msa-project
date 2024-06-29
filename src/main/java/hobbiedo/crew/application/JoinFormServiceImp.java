@@ -47,8 +47,8 @@ public class JoinFormServiceImp implements JoinFormService {
 		// 알림
 		CrewMember host = crewMemberRepository.findByCrewIdAndRole(crewId, 1)
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW_MEMBER));
-		String notificationContent = crew.getName() + NotificationType.ADD_JOIN_FORM.getContent();
-		notificationService.sendNotification(host.getUuid(), notificationContent, crew.getProfileUrl());
+		notificationService.sendNotification(host.getUuid(), crew.getName(),
+			NotificationType.ADD_JOIN_FORM.getContent(), crew.getProfileUrl());
 	}
 
 	@Override
@@ -78,8 +78,9 @@ public class JoinFormServiceImp implements JoinFormService {
 		// JoinForm 삭제
 		joinFormRepository.delete(joinForm);
 		// 알림
-		String notificationContent = crew.getName() + NotificationType.ACCEPT_JOIN_FORM.getContent();
-		notificationService.sendNotification(joinForm.getUuid(), notificationContent, crew.getProfileUrl());
+		notificationService.sendNotification(joinForm.getUuid(), crew.getName(),
+			NotificationType.ACCEPT_JOIN_FORM.getContent(),
+			crew.getProfileUrl());
 	}
 
 	@Transactional
@@ -91,8 +92,9 @@ public class JoinFormServiceImp implements JoinFormService {
 		// 알림
 		Crew crew = crewRepository.findById(joinForm.getCrewId())
 			.orElseThrow(() -> new GlobalException(ErrorStatus.NO_EXIST_CREW));
-		String notificationContent = crew.getName() + NotificationType.REJECT_JOIN_FORM.getContent();
-		notificationService.sendNotification(joinForm.getUuid(), notificationContent, crew.getProfileUrl());
+		notificationService.sendNotification(joinForm.getUuid(), crew.getName(),
+			NotificationType.REJECT_JOIN_FORM.getContent(),
+			crew.getProfileUrl());
 	}
 
 	@Override

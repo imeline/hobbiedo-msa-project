@@ -42,13 +42,14 @@ public class NotificationServiceImp implements NotificationService {
 	}
 
 	@Override
-	public void sendNotification(String uuid, String content, String crewProfileUrl) {
+	public void sendNotification(String uuid, String crewName, String content, String crewProfileUrl) {
 		Notification notification = notificationRepository.save(Notification.builder()
-			.uuid(uuid)
-			.content(content)
-			.crewProfileUrl(crewProfileUrl)
-			.createdAt(LocalDateTime.now())
-			.build());
+				.uuid(uuid)
+				.crewName(crewName)
+				.content(content)
+				.crewProfileUrl(crewProfileUrl)
+				.createdAt(LocalDateTime.now())
+				.build());
 
 		if (sseEmitters.containsKey(uuid)) {
 			SseEmitter sseEmitter = sseEmitters.get(uuid);
