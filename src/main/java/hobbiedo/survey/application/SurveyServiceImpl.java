@@ -38,7 +38,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 	@Override
 	public List<HobbySurveyResponseDto> getHobbySurveyQuestions() {
-		
+
 		// 데이터베이스에서 모든 취미 설문 문항을 가져옴
 		List<HobbySurvey> allQuestions = hobbySurveyRepository.findAll();
 
@@ -51,9 +51,9 @@ public class SurveyServiceImpl implements SurveyService {
 		for (QuestionType questionType : QuestionType.values()) {
 			List<HobbySurvey> questions = questionsByType.get(questionType);
 
-			// 해당 QuestionType의 문항이 없으면 예외 처리
+			// 해당 QuestionType 의 문항이 없으면 예외 처리
 			if (questions == null || questions.isEmpty()) {
-				throw new SurveyExceptionHandler(GET_HOBBY_SURVEY_QUESTIONS_EMPTY);
+				throw new SurveyExceptionHandler(HOBBY_SURVEY_QUESTION_TYPE_NOT_FOUND);
 			}
 
 			// 문항을 셔플
