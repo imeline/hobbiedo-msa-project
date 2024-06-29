@@ -243,10 +243,9 @@ public class CrewServiceImp implements CrewService {
 		// 강제 퇴장 chat 전송
 		kafkaProducerService.setForceExitCrewTopic(
 			CrewEntryExitDTO.toDto(crewId, crewOutDTO.getOutUuid(), EntryExitType.FORCE_EXIT));
-
-		String notificationContent =
-			crewMember.getCrew().getName() + NotificationType.FORCED_EXIT_CREW.getContent();
-		notificationService.sendNotification(crewOutDTO.getOutUuid(), notificationContent,
+		// 알림
+		notificationService.sendNotification(crewOutDTO.getOutUuid(),
+			crewMember.getCrew().getName(), NotificationType.FORCED_EXIT_CREW.getContent(),
 			crewMember.getCrew().getProfileUrl());
 	}
 

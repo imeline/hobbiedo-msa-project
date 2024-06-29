@@ -9,7 +9,7 @@ import hobbiedo.notification.dto.NotificationDTO;
 public interface NotificationService {
 	SseEmitter subscribe(String uuid);
 
-	void sendNotification(String uuid, String content, String crewProfileUrl);
+	void sendNotification(String uuid, String crewName, String content, String crewProfileUrl);
 
 	List<NotificationDTO> getNotificationList(String uuid);
 
