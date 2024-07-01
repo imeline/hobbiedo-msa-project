@@ -5,7 +5,6 @@ import static hobbiedo.global.api.code.status.ErrorStatus.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -38,29 +37,18 @@ public class SurveyServiceImpl implements SurveyService {
 
 	@Override
 	public List<HobbySurveyResponseDto> getHobbySurveyQuestions() {
-
-		// 데이터베이스에서 모든 취미 설문 문항을 가져옴
-		List<HobbySurvey> allQuestions = hobbySurveyRepository.findAll();
-
-		// QuestionType 별로 문항을 그룹화
-		Map<QuestionType, List<HobbySurvey>> questionsByType = allQuestions.stream()
-			.collect(Collectors.groupingBy(HobbySurvey::getQuestionType));
-
 		List<HobbySurvey> selectedQuestions = new ArrayList<>();
 
 		for (QuestionType questionType : QuestionType.values()) {
-			List<HobbySurvey> questions = questionsByType.get(questionType);
+			List<HobbySurvey> questions = hobbySurveyRepository.findRandomQuestionsByType(
+				questionType.name());
 
 			// 해당 QuestionType 의 문항이 없으면 예외 처리
 			if (questions == null || questions.isEmpty()) {
 				throw new SurveyExceptionHandler(HOBBY_SURVEY_QUESTION_TYPE_NOT_FOUND);
 			}
 
-			// 문항을 셔플
-			Collections.shuffle(questions);
-
-			// 상위 5개 문항 선택
-			selectedQuestions.addAll(questions.subList(0, Math.min(5, questions.size())));
+			selectedQuestions.addAll(questions);
 		}
 
 		log.info("Get Hobby Survey Questions Size (취미 설문 조사 질문 수) : {}", selectedQuestions.size());
@@ -70,7 +58,10 @@ public class SurveyServiceImpl implements SurveyService {
 			throw new SurveyExceptionHandler(GET_HOBBY_SURVEY_QUESTIONS_LESS);
 		}
 
-		// 취미 설문 문항을 DTO로 변환하여 반환
+		// 취미 설문 문항을 셔플
+		Collections.shuffle(selectedQuestions);
+
+		// 셔플된 취미 설문 문항을 DTO로 변환하여 반환
 		List<HobbySurveyResponseDto> getHobbySurveyDtoList = selectedQuestions.stream()
 			.map(HobbySurveyResponseDto::hobbySurveyToDto)
 			.collect(Collectors.toList());
