@@ -27,7 +27,11 @@ public class ReplicaCrewServiceImp implements ReplicaCrewService {
 	public List<CrewMemberDTO> getCrewMembers(long crewId, String uuid) {
 		Crew crew = getCrew(crewId);
 		return crew.getCrewMembers().stream()
-			.map(crewMember -> CrewMemberDTO.toDto(crewMember, determineRole(crewMember, uuid)))
+			.map(crewMember -> {
+				MemberProfile memberProfile = getMemberProfile(crewMember.getUuid());
+				return CrewMemberDTO.toDto(crewMember, memberProfile,
+					determineRole(crewMember, uuid));
+			})
 			.sorted(Comparator.comparing(CrewMemberDTO::getRole).reversed())
 			.toList();
 	}
@@ -42,18 +46,13 @@ public class ReplicaCrewServiceImp implements ReplicaCrewService {
 
 	@Override
 	public void createCrew(CrewEntryExitDTO crewEntryExitDTO) {
-		MemberProfile memberProfile = getMemberProfile(crewEntryExitDTO.getUuid());
-		CrewMember crewMember = crewEntryExitDTO.toCrewMemberEntity(memberProfile,
-			true); // crew 생성 때 소모임장 추가
+		CrewMember crewMember = crewEntryExitDTO.toCrewMemberEntity(true); // crew 생성 때 소모임장 추가
 		replicaCrewRepository.save(crewEntryExitDTO.toCrewEntity(List.of(crewMember)));
 	}
 
 	@Override
 	public void addCrewMember(CrewEntryExitDTO crewEntryExitDTO) {
-
-		MemberProfile memberProfile = getMemberProfile(crewEntryExitDTO.getUuid());
-		CrewMember crewMember = crewEntryExitDTO.toCrewMemberEntity(memberProfile,
-			false); // crew 가입 때 소모임원 추가
+		CrewMember crewMember = crewEntryExitDTO.toCrewMemberEntity(false); // crew 가입 때 소모임원 추가
 		Crew crew = getCrew(crewEntryExitDTO.getCrewId());
 		crew.getCrewMembers().add(crewMember);
 		replicaCrewRepository.save(crew);

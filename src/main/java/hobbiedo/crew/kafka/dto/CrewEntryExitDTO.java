@@ -4,7 +4,6 @@ import java.util.List;
 
 import hobbiedo.crew.domain.Crew;
 import hobbiedo.crew.domain.CrewMember;
-import hobbiedo.member.domain.MemberProfile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +15,9 @@ public class CrewEntryExitDTO {
 	private long crewId;
 	private String uuid;
 
-	public CrewMember toCrewMemberEntity(MemberProfile memberProfile, boolean hostStatus) {
+	public CrewMember toCrewMemberEntity(boolean hostStatus) {
 		return CrewMember.builder()
 			.uuid(uuid)
-			.name(memberProfile.getName())
-			.profileUrl(memberProfile.getProfileUrl())
 			.hostStatus(hostStatus)
 			.build();
 	}
