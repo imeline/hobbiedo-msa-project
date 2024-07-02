@@ -21,4 +21,6 @@ public interface UserHobbyRepository extends JpaRepository<UserHobby, Long> {
 	@Modifying
 	@Query("DELETE FROM UserHobby uh WHERE uh.uuid = :uuid")
 	void deleteByUuid(@Param("uuid") String uuid);
+
+	List<UserHobby> findByUuidOrderByFitRateDesc(String uuid);
 }
