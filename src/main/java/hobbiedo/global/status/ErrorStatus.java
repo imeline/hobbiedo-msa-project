@@ -1,0 +1,49 @@
+package hobbiedo.global.status;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum ErrorStatus {
+
+	INTERNAL_SERVER_ERROR("SERVER500", "Internal server error"),
+	BAD_REQUEST("REQUEST400", "Bad request"),
+
+	// CHAT 체팅
+	NO_EXIST_IMAGE_CHAT("CHAT401", "조회 가능한 사진 체팅이 존재하지 않습니다."),
+	NO_EXIST_CHAT("CHAT406", "조회 가능한 체팅이 존재하지 않습니다."),
+	NO_EXIST_CHAT_UNREAD_STATUS("CHAT407", "조회 가능한 체팅 읽음 상태가 존재하지 않습니다."),
+	NO_EXIST_UNREAD_COUNT("CHAT408", "조회 가능한 읽지 않은 체팅 개수가 존재하지 않습니다."),
+
+	// REGION 활동지역
+	NO_EXIST_REGION("REGION401", "활동 지역이 존재하지 않습니다."),
+	NO_EXIST_BASE_REGION("REGION402", "기본 활동 지역이 존재하지 않습니다."),
+	INVALID_RANGE("REGION403", "활동 지역 범위 단위(3,5,7,10)에 맞지 않습니다."),
+	EXIST_REGION("REGION404", "이미 등록된 같은 지역 코드의 활동 지역이 존재합니다."),
+	EXIST_BASE_REGION("REGION405", "이미 기본 활동 지역이 존재합니다."),
+
+	// CREW 소모임
+	INVALID_HASH_TAG_COUNT("CREW401", "해시태그는 5개까지 등록 가능합니다."),
+	INVALID_JOIN_TYPE("CREW402", "가입 유형이 올바르지 않습니다."),
+	INVALID_MAX_HOST_COUNT("CREW403", "한 회원은 최대 5개 소모임 생성이 가능 합니다."),
+	NO_EXIST_CREW("CREW404", "해당 소모임이 존재하지 않습니다."),
+	ALREADY_JOINED_CREW("CREW405", "이미 가입된 소모임입니다."),
+	INVALID_BANNED("CREW406", "해당 소모임에 가입할 수 없는 회원입니다."),
+	INVALID_MAX_PARTICIPANT("CREW407", "현재 소모임은 최대 인원 100명을 충족한 상태입니다."),
+	ALREADY_SEND_JOIN_FORM("CREW408", "이미 해당 소모임에 가입 신청을 보냈습니다."),
+	NO_EXIST_CREW_MEMBER("CREW409", "해당 소모임 회원이 존재하지 않습니다."),
+	INVALID_HOST_WITHDRAWAL("CREW410", "방장은 소모임을 탈퇴할 수 없습니다."),
+	INVALID_HOST_ACCESS("CREW411", "방장만 접근 가능한 페이지입니다."),
+	NO_EXIST_CREW_ID_OR_HOST("CREW412", "없는 소모임 ID 이거나 해당 소모임에 방장이 존재하지 않습니다."),
+	NO_EXIST_JOIN_FORM("CREW413", "해당 ID의 가입 신청서가 존재하지 않습니다."),
+	INVALID_JOIN_FORM_ACCESS("CREW414", "가입 신청서에 접근 권한이 없습니다."),
+
+	// KAFAK 카프카
+	KAFKA_SEND_ERROR("KAFKA401", "카프카 메시지 전송에 실패하였습니다."),
+	INVALID_SCORE("KAFKA402", "차감할 수 있는 점수가 없습니다."),;
+
+	private final String status;
+	private final String message;
+
+}
