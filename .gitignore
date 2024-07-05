@@ -1,3 +1,4 @@
+HEHELP.md
 HELP.md
 .gradle
 build/
@@ -36,7 +37,13 @@ out/
 ### VS Code ###
 .vscode/
 
-### application yaml ###
-application.yml
-application-local.yml
-application-prod.yml
+### property files ###
+**/application.yml
+**/application-local.yml
+**/application-prod.yml
+
+### .DS_store ###
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
