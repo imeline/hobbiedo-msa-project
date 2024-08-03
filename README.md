@@ -25,7 +25,6 @@
   <img src="https://github.com/5-HANDA/.github/assets/140376727/f5025bf6-128e-4964-bfb9-5bc219c7dcf1" width=220 height=440 />
   <img src="https://github.com/5-HANDA/.github/assets/140376727/5535d0f2-5f9e-4e6d-b17d-b8795c1f39ee" width=220 height=440 />
   <img src="https://github.com/5-HANDA/.github/assets/99894394/d20150f2-58b7-40e8-8339-65e3859bc147" width=220 height=440 />
-  <img src="https://github.com/5-HANDA/.github/assets/99894394/82d0932c-32d8-4412-ba67-029142ed445c" width=220 height=440 />
 </p>
 
 - `주요 기능`: <br>
