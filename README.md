@@ -1,4 +1,4 @@
-# 🎸 취미 추천 SNS 커뮤니티 프로젝트 🎧
+# 🎸 취미 추천 SNS 커뮤니티 프로젝트 ⚽️
 
 ## ✔️ 목차
 - [프로젝트 개요](#%EF%B8%8F-프로젝트-개요)
@@ -119,7 +119,7 @@
 
 [요구사항 정의서](https://ionized-eagle-cdd.notion.site/996ef5ce8cf34af19b3db85b297033c1?pvs=4)
 
-[API 명세서](https://ionized-eagle-cdd.notion.site/API-dcf4a465592d4918bee198fc0d5c1c9d?pvs=4)
+[API 명세서](https://sugared-visitor-f84.notion.site/API-41985b3b6b3c4053bc693370a380bcdc?pvs=4)
 <br>
 
 ## ✔️ 시연 영상
