@@ -59,7 +59,7 @@ public class RegionServiceImp implements RegionService {
 	@Transactional
 	public void modifyRegion(Long regionId, RegionDetailDTO regionDetailDTO, String uuid) {
 		Region nowRegion = getRegionById(regionId);
-		if (!nowRegion.getLegalCode().equals(regionDetailDTO.getLegalCode())) {
+		if (!(nowRegion.getLegalCode() == regionDetailDTO.getLegalCode())) {
 			isValidLegalCode(uuid, regionDetailDTO.getLegalCode());
 		}
 		isValidRange(regionDetailDTO.getCurrentSelectedRange());
@@ -140,7 +140,7 @@ public class RegionServiceImp implements RegionService {
 
 	}
 
-	private void isValidLegalCode(String uuid, String legalCode) {
+	private void isValidLegalCode(String uuid, int legalCode) {
 		if (regionRepository.existsByUuidAndLegalCode(uuid, legalCode)) {
 			throw new GlobalException(ErrorStatus.EXIST_REGION);
 		}

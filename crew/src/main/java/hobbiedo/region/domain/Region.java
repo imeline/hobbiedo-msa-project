@@ -36,8 +36,8 @@ public class Region {
 	@Column(nullable = false, length = 30)
 	private String addressName;
 
-	@Column(nullable = false, length = 15)
-	private String legalCode;
+	@Column(nullable = false)
+	private Integer legalCode;
 
 	@Column(nullable = false)
 	private boolean isBaseRegion;

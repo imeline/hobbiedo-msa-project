@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class RegionDetailDTO {
 	private String addressName;
-	private String legalCode;
+	private int legalCode;
 	private double latitude;
 	private double longitude;
 	private int currentSelectedRange;
