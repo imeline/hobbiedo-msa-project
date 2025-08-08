@@ -1,5 +1,5 @@
 # 🎸 취미 소모임 커뮤니티(SNS) 프로젝트 ⚽️ 
-[팀 GitHub Organization 보기](https://github.com/5-HANDA) (<- 커밋 및 협업 관련 확인 가능)
+[팀 GitHub Organization 보기](https://github.com/5-HANDA) (← 커밋 및 협업 관련 확인 가능)
 
 ## ✔️ 목차
 - [프로젝트 개요](#%EF%B8%8F-프로젝트-개요)
